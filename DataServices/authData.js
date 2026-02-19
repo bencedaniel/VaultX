@@ -39,7 +39,7 @@ export async function createUser(userData) {
     
     await newUser.save();
     logAuth('CREATE', 'User', `${username}`);
-    logDb(`User ${newUser.username} registered successfully.`);
+    logDb(`CREATE`, 'User', `${username}`);
     return newUser;
 }
 
@@ -65,6 +65,6 @@ export async function blacklistToken(token) {
     const newBlacklist = new Blacklist({ token });
     await newBlacklist.save();
     logAuth('CREATE', 'Blacklist', `${token.substring(0, 10)}...`);
-    logDb(`Token blacklisted successfully.`);
+    logDb(`CREATE`, 'Blacklist', `${token.substring(0, 10)}...`);
     return newBlacklist;
 }
