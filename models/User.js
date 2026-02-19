@@ -21,10 +21,17 @@ const userSchema = new mongoose.Schema({
 
         feiid:{
             type: String,
-            minlength: [8, 'FEI ID must be at 8 characters!'],
-            maxlength: [8, 'FEI ID must be at 8 characters!'],
-            default: '00000000',
-        unique: true,
+          trim: true,
+          set: (value) => value === '' ? undefined : value,
+          validate: {
+            validator: function (value) {
+              return value == null || value.length === 8;
+            },
+            message: 'FEI ID must be 8 characters!'
+          },
+          unique: true,
+          sparse: true,
+          required: false,
         },
         active:{
           type: Boolean,
