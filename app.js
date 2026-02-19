@@ -175,9 +175,3 @@ app.listen(PORT, () => {
       : 'https://vaultx.bencedaniel.hu'}`
   );
 });
-
-req.session.destroy((err) => {
-    if (err) logError('SESSION_DESTROY', err.toString());
-    res.setHeader('Clear-Site-Data', '"cookies"');
-    return res.redirect('/login');
-});

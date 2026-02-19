@@ -27,24 +27,27 @@ export const logger = createLogger({
     operation: 1,   // Operations: user-initiated actions
     auth: 2,        // Auth: login, logout, token events
     validation: 3,  // Validation: field validation errors
-    error: 4,       // Errors: application errors
-    warn: 5,        // Warnings: potential issues
+    warn: 4,        // Warnings: potential issues
+    error: 5,       // Errors: application errors
+
     info: 6,        // Info: general information
+    
     debug: 7        // Debug: development information
   },
   level: process.env.LOG_LEVEL || (process.env.NODE_ENV === 'production' ? 'info' : 'debug'),
-  format: format.combine(
-    format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    format.colorize({ all: true }),
-    format.printf(({ timestamp, level, message }) => {
-      return `${timestamp} [${level}]: ${message}`;
-    })
-  ),
   transports: [
-    // Console output for development
-    new transports.Console(),
+    // Console output for development (with colors)
+    new transports.Console({
+      format: format.combine(
+        format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        format.colorize({ all: true }),
+        format.printf(({ timestamp, level, message }) => {
+          return `${timestamp} [${level}]: ${message}`;
+        })
+      )
+    }),
     
-    // File transports for production/archiving
+    // File transports for production/archiving (no colors)
     new transports.File({
       filename: path.join(__dirname, 'logs', 'error.log'),
       level: 'error',

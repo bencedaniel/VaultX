@@ -41,8 +41,8 @@
       <tr>
         <td><%= horse.Horsename %></td>
         <td><%= horse.feiid %></td>
-        <td><%= horse.HeadNr[0].headNumber %></td>
-        <td><%= horse.BoxNr[0].boxNumber%></td>
+        <td><%= horse.HeadNr[0]?.armNumber ? horse.HeadNr[0]?.armNumber : 'No head Nr' %></td>
+        <td><%= horse.BoxNr[0]?.boxNumber ? horse.BoxNr[0]?.boxNumber : 'No box Nr' %></td>
         <td><%= horse.HorseStatus %></td>
         <td><%= horse.ResponsiblePersonName %></td>
         <td class="text-center" style="width: 15%;">
