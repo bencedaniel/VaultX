@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { set } from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { SECRET_ACCESS_TOKEN } from '../app.js';
@@ -21,17 +21,17 @@ const userSchema = new mongoose.Schema({
 
         feiid:{
             type: String,
-          trim: true,
-          set: (value) => value === '' ? undefined : value,
+            set: v => v === '' || v == null || v == undefined ? undefined : v, // Convert empty string to undefined
           validate: {
+
             validator: function (value) {
-              return value == null || value.length === 8;
+              return value == undefined || value.length === 8;
             },
             message: 'FEI ID must be 8 characters!'
           },
-          unique: true,
-          sparse: true,
           required: false,
+          sparse: true,
+          unique: true,
         },
         active:{
           type: Boolean,
@@ -61,6 +61,8 @@ userSchema.pre("save", function (next) {
         });
     });
 });
+
+
 
 userSchema.methods.generateAccessJWT = function () {
   let payload = {
