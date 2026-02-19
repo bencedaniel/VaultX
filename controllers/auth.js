@@ -86,6 +86,15 @@ const Logout = asyncHandler(async (req, res) => {
     await blacklistToken(accessToken);
     logAuth('LOGOUT', username, true);
     
+    // Destroy session
+    req.session.destroy((err) => {
+        if (err) {
+            logError('SESSION_DESTROY', `Failed to destroy session for user ${username}: ${err.toString()}`);
+        } else {
+            logAuth('SESSION_DESTROY', username, true);
+        }
+    });
+    
     res.setHeader('Clear-Site-Data', '"cookies"');
     return res.redirect('/login');
 });

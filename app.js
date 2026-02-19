@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import connectDB from './database/db.js';
 import expressLayouts from 'express-ejs-layouts';
 import session from 'express-session';
+import MongoStore from "connect-mongo";
 import { logger, logInfo, logWarn, logError, logDebug } from './logger.js';
 import { HTTP_STATUS, MESSAGES } from './config/index.js';
 import cors from 'cors';
@@ -22,7 +23,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 // ============================================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const version = '1.0.0';
+const version = '1.0.2';
 
 // Load environment variables first!
 dotenv.config({ path: path.join(__dirname, '.env') });
@@ -71,7 +72,13 @@ if (process.env.NODE_ENV !== 'production') {
 app.use(session({
   secret: SECRET_API_KEY,            // titkos kulcs a session-hoz
   resave: false,                // csak ha változott a session, mentsük
-  saveUninitialized: false,     // üres session-t ne mentsünk
+  saveUninitialized: false,
+       // üres session-t ne mentsünk
+  store: MongoStore.create({
+    mongoUrl: MONGODB_URI,
+    collectionName: "sessions",
+    touchAfter: 24 * 3600 // resave session every 24 hours (lazy session update)
+  }),
   cookie: { 
     ...COOKIE_CONFIG.OPTIONS,
     maxAge: JWT_CONFIG.SESSION_MAX_AGE, // 1 nap
@@ -118,12 +125,6 @@ setupRoutes(app);
 // ============================================
 // ERROR HANDLING MIDDLEWARE
 // ============================================
-
-
-
-
-
-
 
 // 404 Not Found handler
 app.use(StoreUserWithoutValidation);
@@ -173,4 +174,10 @@ app.listen(PORT, () => {
       ? `http://localhost:${PORT}`
       : 'https://vaultx.bencedaniel.hu'}`
   );
+});
+
+req.session.destroy((err) => {
+    if (err) logError('SESSION_DESTROY', err.toString());
+    res.setHeader('Clear-Site-Data', '"cookies"');
+    return res.redirect('/login');
 });
