@@ -1,6 +1,8 @@
 
 function listCreator(searchInput, hiddenInput, list, items, icon) {
     if (!searchInput || !hiddenInput || !list) return;
+  if (searchInput.dataset.listCreatorBound === '1') return;
+  searchInput.dataset.listCreatorBound = '1';
 
     // Érvényes értékek (ha li-hez data-value/val van megadva, azt is figyelembe vesszük)
     const validValues = Array.from(items).map(i => (i.dataset.value ?? i.getAttribute('val') ?? i.textContent.trim()));
@@ -71,6 +73,7 @@ function listCreator(searchInput, hiddenInput, list, items, icon) {
     const form = searchInput.closest('form');
     if (form) {
       form.addEventListener("submit", function(e) {
+        if (!document.contains(hiddenInput)) return;
         const value = hiddenInput.value.trim();
         // validValues tartalmazza a megengedett értékeket (data-value vagy text)
         if (!validValues.includes(value)) {

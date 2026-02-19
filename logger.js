@@ -23,16 +23,14 @@ addColors({
 
 export const logger = createLogger({
   levels: {
-    db: 0,          // Database: CREATE, READ, UPDATE, DELETE
     operation: 1,   // Operations: user-initiated actions
     auth: 2,        // Auth: login, logout, token events
     validation: 3,  // Validation: field validation errors
-    warn: 4,        // Warnings: potential issues
-    error: 5,       // Errors: application errors
-
-    info: 6,        // Info: general information
-    
-    debug: 7        // Debug: development information
+    error: 4,        // Warnings: potential issues
+    warn: 5,       // Errors: application errors
+    db: 6,          // Database: CREATE, READ, UPDATE, DELETE
+    info: 7,        // Info: general information
+    debug: 8        // Debug: development information
   },
   level: process.env.LOG_LEVEL || (process.env.NODE_ENV === 'production' ? 'info' : 'debug'),
   transports: [

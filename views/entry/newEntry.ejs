@@ -259,6 +259,7 @@
     categorySelect.addEventListener('change', function() {
       // Ha a kategória változik, ne legyenek előre kiválasztott vaulterek
       const selectedCategoryId = categorySelect.value;
+      const teamNameDiv = document.getElementById('teamNameDiv');
       const type = categoryTypeMap[selectedCategoryId];
       if (type === 'Squad') {
         teamNameDiv.style.display = 'block';
@@ -277,13 +278,13 @@
         document.getElementById('vaulterContainer').innerHTML = '';
       }
 
-      document.querySelectorAll('.searchable-dropdown').forEach(wrapper => {
+      document.querySelectorAll('#vaulterContainer .searchable-dropdown').forEach(wrapper => {
 
-         input = wrapper.querySelector('.searchable-input');
-         hidden = wrapper.querySelector('.searchable-hidden');
-         list = wrapper.querySelector('.searchable-list');
-         items = list ? list.querySelectorAll('.searchable-item') : null;
-         icon = wrapper.querySelector('.bi-chevron-down');
+         const input = wrapper.querySelector('.searchable-input');
+         const hidden = wrapper.querySelector('.searchable-hidden');
+         const list = wrapper.querySelector('.searchable-list');
+         const items = list ? list.querySelectorAll('.searchable-item') : null;
+         const icon = wrapper.querySelector('.bi-chevron-down');
 
         if (input && hidden && list && items && typeof listCreator === 'function') {
           listCreator(input, hidden, list, items, icon);
