@@ -84,6 +84,7 @@ const createNewCardHandler = asyncHandler(async (req, res) => {
  */
 const updateCardHandler = asyncHandler(async (req, res) => {
     await updateCard(req.params.id, req.body);
+    
     logOperation('CARD_UPDATE', `Card updated: ${req.body.title}`, req.user.username, HTTP_STATUS.OK);
     req.session.successMessage = MESSAGES.SUCCESS.CARD_MODIFIED;
     res.redirect('/admin/dashboard/cards');

@@ -1,4 +1,4 @@
-import { logDb } from '../logger.js';
+import { logDb, logger } from '../logger.js';
 import DashCards from '../models/DashCards.js';
 import Permissions from '../models/Permissions.js';
 
@@ -38,6 +38,7 @@ export async function createCard(cardData) {
  * Update dashboard card
  */
 export async function updateCard(cardId, cardData) {
+    logger.debug(`Updating card ${cardId} with data: ${JSON.stringify(cardData)}`);
     const card = await DashCards.findByIdAndUpdate(cardId, cardData, { runValidators: true });
     logDb('UPDATE', 'DashCard', `${cardId}`);
     return card;
