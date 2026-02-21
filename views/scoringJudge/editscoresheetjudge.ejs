@@ -243,8 +243,8 @@ function calculateScore() {
   validateScoreInputs(bannedFields); // Validate all fields 0-10 and only numbers, without banned fields
   horseCalc();
   indCompcalc();
-  artisticScore();
   calcSquadPddComp();
+  artisticScore();
   techArtisticScore();
   techCalc();
   techtestTechCalc();
@@ -380,8 +380,9 @@ function horseTotal(A1,A2,A3){
 function indCompcalc(){
   const inputs = document.querySelectorAll('.input-field');
   const compfields = ['input-vault-on', 'input-flag','input-mill', 'input-scrissors-forward', 'input-scrissors-backward','input-stand','input-flank1st','input-swingoff','input-basic-seat','input-swingforward', 'input-halfMill','input-swingBack','input-flank']
-  let indcomp = 0;
+  let indcompScaled = 0;
   let NoOfComp = 0;
+  const scale = 1000;
   inputs.forEach(element => {
 
       if(compfields.includes(element.getAttribute('id'))){
@@ -389,17 +390,18 @@ function indCompcalc(){
 
           const val = parseLocaleNumber(element.value);
           if(!isNaN(val)){
-              indcomp += val;
+              indcompScaled += Math.round(val * scale);
           }
             const indcompElement = document.getElementById('output-sumOfComp');
-            indcompElement.innerHTML = excelRound(nullLimit(indcomp),3);
+            indcompElement.innerHTML = excelRound(nullLimit(indcompScaled / scale),3);
 
       }
   });
   if(NoOfComp > 0){
       const indcompElement = document.getElementById('output-total');
       const totalScoreInput = document.getElementById('totalScore');
-      const average = indcomp / NoOfComp;
+      const averageScaled = Math.round(indcompScaled / NoOfComp);
+      const average = averageScaled / scale;
       totalScoreInput.value = excelRound(nullLimit(average),3);
       indcompElement.innerHTML = excelRound(nullLimit(average),3);
 
@@ -601,6 +603,7 @@ function calcSquadPddComp(){
 
     const inputs = document.querySelectorAll('.input-field');
     let vaultOn = 0, flag = 0, mill = 0, scissF = 0, scissB = 0, stand = 0, flank = 0, swingOff = 0, basicSeat = 0, swingF = 0, halfM = 0, swingB = 0;
+    const scale = 1000;
 
     const fieldMappings = {
         'vaultOn': { variable: () => vaultOn, setter: (v) => vaultOn = v, output: 'output-sumOfVaultOn' },
@@ -625,12 +628,12 @@ function calcSquadPddComp(){
                 numberOffields += 1;
                 const val = parseLocaleNumber(element.value);
                 if (!isNaN(val)) {
-                    config.setter(config.variable() + val);
+                  config.setter(config.variable() + Math.round(val * scale));
 
                 }
                 const sum = document.getElementById(config.output);
                 if (sum) {
-                    sum.innerHTML = excelRound(nullLimit(config.variable()), 3);
+                  sum.innerHTML = excelRound(nullLimit(config.variable() / scale), 3);
                 }
                 break;
             }
@@ -648,14 +651,16 @@ function calcSquadPddComp(){
     const sumOfComps = document.getElementById('output-sumOfComp');
     const sumOfCompPerVaulter = document.getElementById('output-sumofCompPerVaulter');
     if (sumOfComps && sumOfCompPerVaulter) {
-          const sum = vaultOn + flag + mill + scissF + scissB + stand + flank + swingOff + basicSeat + swingF + halfM + swingB;
-          sumOfComps.innerHTML = excelRound(nullLimit(sum),3);
-          sumOfCompPerVaulter.innerHTML = excelRound(nullLimit(sum / numberOfVaulters),3);
+          const totalScaled = vaultOn + flag + mill + scissF + scissB + stand + flank + swingOff + basicSeat + swingF + halfM + swingB;
+          const sumPerVaulterScaled = numberOfVaulters > 0 ? Math.round(totalScaled / numberOfVaulters) : 0;
+          sumOfComps.innerHTML = excelRound(nullLimit(totalScaled / scale),3);
+          sumOfCompPerVaulter.innerHTML = excelRound(nullLimit(sumPerVaulterScaled / scale),3);
     const totalComp = document.getElementById('output-total');
     const totalScoreInput = document.getElementById('totalScore');
-    const total = vaultOn + flag + mill + scissF + scissB + stand + flank + swingOff + basicSeat + swingF + halfM + swingB;
-    totalComp.innerHTML = excelRound(nullLimit((total/numberOfVaulters)/numberOfExercises),3);
-    totalScoreInput.value = excelRound(nullLimit((total/numberOfVaulters)/numberOfExercises),3);
+        const resultScaled = numberOfExercises > 0 ? Math.round(sumPerVaulterScaled / numberOfExercises) : 0;
+        const result = resultScaled / scale;
+        totalComp.innerHTML = excelRound(nullLimit(result),3);
+        totalScoreInput.value = excelRound(nullLimit(result),3);
     }
 
   }
@@ -929,6 +934,13 @@ function techtestTechCalc(){
 
 document.addEventListener('DOMContentLoaded', () => {
   calculateScore()
+
+  const form = document.querySelector('form[action^="/scoring/office/scoresheet/edit/"]');
+  if (form) {
+    form.addEventListener('submit', () => {
+      calculateScore();
+    });
+  }
 });
 
 function parseLocaleNumber(value) {

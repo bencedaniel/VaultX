@@ -1,4 +1,4 @@
-import { logger, logOperation, logAuth, logError, logValidation, logWarn } from '../logger.js';
+import { logger, logOperation, logAuth, logError, logValidation, logWarn, logDebug } from '../logger.js';
 import { asyncHandler } from '../middleware/asyncHandler.js';
 import { MESSAGES } from '../config/index.js';
 import { calculateScore } from '../LogicServices/scoreCalculations.js';

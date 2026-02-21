@@ -185,16 +185,16 @@ function dataLookup(id, inputDatas) {
 
 function indCompcalc(inputDatas){
   const compfields = ['vault-on', 'flag','mill', 'scrissors-forward', 'scrissors-backward','stand','flank1st','swingoff','basic-seat','swingforward', 'halfMill','swingBack','flank']
-  let indcomp = 0;
+  let indcompScaled = 0;
   let NoOfComp = 0;
+  const scale = 1000;
   compfields.forEach(element => {
       const dataelement = dataLookup(element, inputDatas);
       if(dataelement !== undefined && dataelement !== null && dataelement !== ''){
           NoOfComp += 1;
           const val = parseLocaleNumber(dataelement);
           if(!isNaN(val)){
-              
-              indcomp += val;
+              indcompScaled += Math.round(val * scale);
           }
 
 
@@ -202,7 +202,8 @@ function indCompcalc(inputDatas){
       }
   });
   if(NoOfComp > 0){
-      const average = indcomp / NoOfComp;
+      const averageScaled = Math.round(indcompScaled / NoOfComp);
+      const average = averageScaled / scale;
       return excelRound(nullLimit(average),3);
 }
 }
@@ -211,6 +212,7 @@ function calcSquadPddComp(inputDatas,category){
   if (category.Type === 'Squad' || (category.Type === 'PDD')) {
     const inputs = inputDatas;
     let vaultOn = 0, flag = 0, mill = 0, scissF = 0, scissB = 0, stand = 0, flank = 0, swingOff = 0, basicSeat = 0, swingF = 0, halfM = 0, swingB = 0;
+    const scale = 1000;
     
     const fieldMappings = {
         'vaultOn': { variable: () => vaultOn, setter: (v) => vaultOn = v},
@@ -236,7 +238,7 @@ function calcSquadPddComp(inputDatas,category){
                 numberOfFields++;
                 const val = parseLocaleNumber(element.value);
                 if (!isNaN(val)) {
-                    config.setter(config.variable() + val);
+                  config.setter(config.variable() + Math.round(val * scale));
 
                 }
                 
@@ -254,11 +256,13 @@ function calcSquadPddComp(inputDatas,category){
     }
 
     
-    const total = vaultOn + flag + mill + scissF + scissB + stand + flank + swingOff + basicSeat + swingF + halfM + swingB;
-    const result = excelRound(nullLimit((total/numberOfVaulters)/numberOfExercises),3);
-    
-    if(result !== NaN){
-    return result;
+    const totalScaled = vaultOn + flag + mill + scissF + scissB + stand + flank + swingOff + basicSeat + swingF + halfM + swingB;
+    const sumPerVaulterScaled = numberOfVaulters > 0 ? Math.round(totalScaled / numberOfVaulters) : 0;
+    const resultScaled = numberOfExercises > 0 ? Math.round(sumPerVaulterScaled / numberOfExercises) : 0;
+    const result = resultScaled / scale;
+
+    if(!isNaN(result)){
+      return excelRound(nullLimit(result),3);
     }
 
   }
@@ -267,95 +271,52 @@ function calcSquadPddComp(inputDatas,category){
 
 
 function artisticScore(inputDatas,category){
+  const hasValue = (value) => value !== undefined && value !== null && value !== '';
   const cohInput = dataLookup('coh', inputDatas);
+  const c1Input = dataLookup('c1', inputDatas);
+  const c2Input = dataLookup('c2', inputDatas);
+  const c3Input = dataLookup('c3', inputDatas);
+  const c4Input = dataLookup('c4', inputDatas);
+
   const artisticCH = category.Artistic?.CH;
   const artisticC1 = category.Artistic?.C1;
   const artisticC2 = category.Artistic?.C2;
   const artisticC3 = category.Artistic?.C3;
   const artisticC4 = category.Artistic?.C4;
+
   let CH = 0, C1 = 0, C2 = 0, C3 = 0, C4 = 0;
-  if(cohInput !== undefined || cohInput !== null || cohInput !== ''){
-    const val = cohInput
-    if(!isNaN(parseLocaleNumber(val))){
-    CH = nullLimit(parseLocaleNumber(val))*artisticCH;
-    }
-    else{
-      CH = 0;
-    }
-    
 
-  };
+  if (hasValue(cohInput)) {
+    const val = parseLocaleNumber(cohInput);
+    CH = !isNaN(val) ? nullLimit(val) * artisticCH : 0;
+  }
 
-  const c1Input = dataLookup('c1', inputDatas);
-  if(c1Input !== undefined || c1Input !== null || c1Input !== ''){
-    const val = c1Input
-    if(!isNaN(parseLocaleNumber(val))){
-    C1 = nullLimit(parseLocaleNumber(val))*artisticC1;
-    }
-    else{
-      C1 = 0;
+  if (hasValue(c1Input)) {
+    const val = parseLocaleNumber(c1Input);
+    C1 = !isNaN(val) ? nullLimit(val) * artisticC1 : 0;
+  }
 
-    }
+  if (hasValue(c2Input)) {
+    const val = parseLocaleNumber(c2Input);
+    C2 = !isNaN(val) ? nullLimit(val) * artisticC2 : 0;
+  }
 
-    
+  if (hasValue(c3Input)) {
+    const val = parseLocaleNumber(c3Input);
+    C3 = !isNaN(val) ? nullLimit(val) * artisticC3 : 0;
+  }
 
-  };
+  if (hasValue(c4Input)) {
+    const val = parseLocaleNumber(c4Input);
+    C4 = !isNaN(val) ? nullLimit(val) * artisticC4 : 0;
+  }
 
-  const c2Input = dataLookup('c2', inputDatas);
-  if(c2Input !== undefined || c2Input !== null || c2Input !== ''){
-    const val = c2Input
-    if(!isNaN(parseLocaleNumber(val))){
-    C2 = nullLimit(parseLocaleNumber(val))*artisticC2;
-    }
-    else{
-      C2 = 0;
-    }
-
-    
-
-  };
-    const c3Input = dataLookup('c3', inputDatas);
-  if(c3Input !== undefined || c3Input !== null || c3Input !== ''){
-    const val = c3Input
-    if(!isNaN(parseLocaleNumber(val))){
-    C3 = nullLimit(parseLocaleNumber(val))*artisticC3;
-    }
-    else{
-      C3 = 0;
-    }
-
-
-    
-
-  };
-  const c4Input = dataLookup('c4', inputDatas);
-  if(c4Input !== undefined || c4Input !== null || c4Input !== ''){
-    
-    const val = c4Input
-    if(!isNaN(parseLocaleNumber(val))){
-    C4 = nullLimit(parseLocaleNumber(val))*artisticC4;
-    }
-    else{
-      C4 = 0;
-    }
-
-
-    
-
-  };
-
-  if(c1Input !== NaN && c2Input !== NaN && c3Input !== NaN && c4Input !== NaN && cohInput !== NaN  
-    && cohInput !== undefined && cohInput !== null && cohInput !== '' && c1Input !== undefined 
-    && c1Input !== null && c1Input !== '' && c2Input !== undefined && c2Input !== null && c2Input !== '' 
-    && c3Input !== undefined && c3Input !== null && c3Input !== '' && c4Input !== undefined && c4Input !== null && c4Input !== ''){
-  const deduction = dataLookup('deduction', inputDatas);
-  const deductionVal = parseLocaleNumber(deduction) || 0;
-  const total = nullLimit((CH + C1 + C2 + C3 + C4) - deductionVal);
-  return excelRound(total,3);
-  
-};
-
-
+  if (hasValue(cohInput) && hasValue(c1Input) && hasValue(c2Input) && hasValue(c3Input) && hasValue(c4Input)) {
+    const deduction = dataLookup('deduction', inputDatas);
+    const deductionVal = parseLocaleNumber(deduction) || 0;
+    const total = nullLimit((CH + C1 + C2 + C3 + C4) - deductionVal);
+    return excelRound(total,3);
+  }
 }
 
 

@@ -47,21 +47,23 @@
         </thead>
         <tbody class="align-middle" id="TableBody">
 
+
               <% timetablePart.StartingOrder
                   .slice()
                   .sort((a, b) => a.Order - b.Order)
                   .forEach(order => { %>
-      <tr>
-        <td><%= order.Order %></td>
-        <% const entry = order.Entry; %>
-        <td><%= entry.vaulter.map(v => v.Name).join(', ') %></td>
-        <td><%= entry && entry.lunger ? entry.lunger.Name : '' %></td>
-        <td><%= entry && entry.horse ? entry.horse.Horsename : '' %></td>
-        <td><%= entry && entry.category ? entry.category.CategoryDispName : '' %></td>
-
         <% const scoreSheetSubmittedForEntry = ScoreSheetsSubmitted.some(sheet => sheet.EntryId.toString() === order.Entry._id.toString()); %>
 
-        <td class="text-center">
+      <tr>
+        <td class="<%= scoreSheetSubmittedForEntry ? 'bg-success bg-opacity-25' : '' %>"><%= order.Order %></td>
+        <% const entry = order.Entry; %>
+        <td class="<%= scoreSheetSubmittedForEntry ? 'bg-success bg-opacity-25' : '' %>"><%= entry.vaulter.map(v => v.Name).join(', ') %></td>
+        <td class="<%= scoreSheetSubmittedForEntry ? 'bg-success bg-opacity-25' : '' %>"><%= entry && entry.lunger ? entry.lunger.Name : '' %></td>
+        <td class="<%= scoreSheetSubmittedForEntry ? 'bg-success bg-opacity-25' : '' %>"><%= entry && entry.horse ? entry.horse.Horsename : '' %></td>
+        <td  class="<%= scoreSheetSubmittedForEntry ? 'bg-success bg-opacity-25' : '' %>"><%= entry && entry.category ? entry.category.CategoryDispName : '' %></td>
+
+
+        <td class=" <%= scoreSheetSubmittedForEntry ? 'bg-success bg-opacity-25' : '' %> text-center">
             <button type="button" class="btn btn-info btn-sm shadow-none m-1"onclick="location.href='/scoring/newscoresheet/<%= order.Entry._id%>/<%= timetablePart._id%>'" <%= judgeName === "Not authorized judge" || scoreSheetSubmittedForEntry ? 'disabled': '' %> ><i class="bi bi-list"></i>Add Score sheet</button>
       </tr>
             <% }); %>

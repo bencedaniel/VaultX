@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
 
+function roundToDecimals(value, decimals = 3) {
+    const numericValue = Number(value);
+    if (!Number.isFinite(numericValue)) return NaN;
+    const multiplier = Math.pow(10, decimals);
+    return Number((Math.round((numericValue * multiplier) + Number.EPSILON) / multiplier).toFixed(decimals));
+}
+
 const ScoreSheetSchema = new mongoose.Schema(
     {
         EventId: {
@@ -58,9 +65,19 @@ ScoreSheetSchema.index(
   { unique: true }
 );
 ScoreSheetSchema.pre('save', function(next) {
-    if(this.totalScoreBE !== this.totalScoreFE){
-        throw new Error('Total score mismatch between front-end and back-end values');
-    }   
+    const normalizedFE = roundToDecimals(this.totalScoreFE, 3);
+    const normalizedBE = roundToDecimals(this.totalScoreBE, 3);
+
+    if (!Number.isFinite(normalizedFE) || !Number.isFinite(normalizedBE)) {
+        throw new Error('Invalid total score value' + ` (FE: ${this.totalScoreFE}, BE: ${this.totalScoreBE})`);
+    }
+
+    this.totalScoreFE = normalizedFE;
+    this.totalScoreBE = normalizedBE;
+
+    if(normalizedBE !== normalizedFE){
+        throw new Error('Total score mismatch between front-end and back-end values' + ` (FE: ${normalizedFE}, BE: ${normalizedBE})`);
+    }
 
     next();
 });

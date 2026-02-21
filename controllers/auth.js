@@ -73,12 +73,13 @@ const Login = asyncHandler(async (req, res) => {
  * @access Public
  */
 const Logout = asyncHandler(async (req, res) => {
+    
     const authHeader = req.headers['cookie'];
     if (!authHeader) return res.sendStatus(HTTP_STATUS.NO_CONTENT);
-    
-    const cookie = authHeader.split('=')[1];
+     const cookie = authHeader.split('=')[1];
     const accessToken = cookie.split(';')[0];
     const username = req.user?.username || 'unknown';
+   
     
     const checkIfBlacklisted = await isTokenBlacklisted(accessToken);
     if (checkIfBlacklisted) return res.sendStatus(HTTP_STATUS.NO_CONTENT);

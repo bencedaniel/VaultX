@@ -34,7 +34,7 @@ router.get("/profile/:id", Verify, UserIDValidator, profileController.getProfile
 
 router.post("/profile/:id", Verify, UserIDValidator, profileController.updateProfile);
 router.get('/creators', StoreUserWithoutValidation, creatorsController.getCreatorsPage);
-router.get('/logout', auth.Logout);
+router.get('/logout', Verify, auth.Logout);
 
 
 

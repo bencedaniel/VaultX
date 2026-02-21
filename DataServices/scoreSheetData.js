@@ -8,12 +8,20 @@ import { logDb } from '../logger.js';
  * Fetch submitted score sheets for a judge in a timetable part
  */
 export async function getSubmittedScoreSheets(timetablePartId, entryId, eventId, judgeId) {
-  return await ScoreSheet.find({
+  const query = {
     TimetablePartId: timetablePartId,
-    EntryId: entryId,
-    EventId: eventId,
-    'Judge.userId': judgeId
-  }).exec();
+    EventId: eventId
+  };
+
+  if (entryId !== undefined && entryId !== null) {
+    query.EntryId = entryId;
+  }
+
+  if (judgeId !== undefined && judgeId !== null) {
+    query['Judge.userId'] = judgeId;
+  }
+
+  return await ScoreSheet.find(query).exec();
 }
 
 /**
@@ -93,9 +101,12 @@ export async function saveScoreSheet(scoreSheetData, timetablePartId, entryId) {
  * Update a score sheet and update timetable part's starting order
  */
 export async function updateScoreSheet(scoresheetId, scoreSheetData, timetablePartId, entryId) {
-  const scoreSheet = await ScoreSheet.findByIdAndUpdate(scoresheetId, scoreSheetData, {
-    runValidators: true
-  });
+  const scoreSheet = await ScoreSheet.findById(scoresheetId);
+  if (!scoreSheet) {
+    throw new Error(`ScoreSheet not found: ${scoresheetId}`);
+  }
+
+  scoreSheet.set(scoreSheetData);
   await scoreSheet.save();
   logDb('UPDATE', 'ScoreSheet', `${scoresheetId}`);
 
