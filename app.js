@@ -23,18 +23,18 @@ import { errorHandler } from './middleware/errorHandler.js';
 // ============================================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const version = '1.0.3';
+const version = '1.0.4';
 
 // Load environment variables first!
 dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
-const { MONGODB_URI, PORT, SECRET_ACCESS_TOKEN, SECURE_MODE, SECRET_API_KEY, TESTDB } = process.env;
-export { MONGODB_URI, PORT, SECRET_ACCESS_TOKEN, SECURE_MODE, SECRET_API_KEY, TESTDB };
+const { MONGODB_URI, PORT, SECRET_ACCESS_TOKEN, SECURE_MODE, SECRET_API_KEY, TESTDB, TRUST_PROXY } = process.env;
+export { MONGODB_URI, PORT, SECRET_ACCESS_TOKEN, SECURE_MODE, SECRET_API_KEY, TESTDB, TRUST_PROXY };
 
 // Validate environment variables
-if (!MONGODB_URI || !PORT || !SECRET_ACCESS_TOKEN || !SECRET_API_KEY) {
-  logError('ENV_VALIDATION', 'Missing required environment variables');
+if (!MONGODB_URI || !PORT || !SECRET_ACCESS_TOKEN || !SECRET_API_KEY || !TRUST_PROXY) {
+  logError('ENV_VALIDATION', 'Missing required environment variables ');
   process.exit(1);
 } else {
   logInfo('All required environment variables are set');
@@ -47,6 +47,7 @@ connectDB(); // Database connection
 // ============================================
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.set('trust proxy', TRUST_PROXY === 'true'); // Enable if behind a proxy (e.g., Heroku, Nginx)
 
 // ============================================
 // GLOBAL MIDDLEWARE - ORDER MATTERS
@@ -91,7 +92,7 @@ app.use((req, res, next) => {
   res.on('finish', () => {
     const userInfo = req.user ? req.user.username || req.user._id : 'Anonymous';
     logInfo(
-      `${req.method} ${req.originalUrl} - ${req.ip} - User-Agent: ${req.get('User-Agent')} - User: ${userInfo}`
+      `${req.method} ${req.originalUrl} - ${req.ip} // ${req.ip} - User-Agent: ${req.get('User-Agent')} - User: ${userInfo}`
     );
   });
   next();
@@ -168,6 +169,7 @@ app.listen(PORT, () => {
   logInfo(`MongoDB: ${MONGODB_URI ? 'connected' : 'NOT SET'}`);
   logWarn('SECURE_MODE', `Secure mode: ${SECURE_MODE}`);
   logWarn('TEST_DB', `Test DB: ${TESTDB === 'true' ? 'ACTIVE' : 'inactive'}`);
+  logInfo(`Trust Proxy: ${TRUST_PROXY}`);
   logInfo('---------------------------------------------');
   logInfo(
     `Server running at ${process.env.NODE_ENV === 'development'
