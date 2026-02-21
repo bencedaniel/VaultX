@@ -1,3 +1,4 @@
+
 /**
  * Application-wide constants
  * Includes JWT configuration, HTTP status codes, and other magic numbers
@@ -34,10 +35,14 @@ export const JWT_CONFIG = {
   ACCESS_TOKEN_EXPIRY: '90m',
   REFRESH_TOKEN_EXPIRY: '20m',
   
-  // Cookie settings
-  COOKIE_MAX_AGE: 20 * 60 * 1000, // 20 minutes in milliseconds
+  // Cookie settings - uses default value, can be overridden at runtime
   SESSION_MAX_AGE: 24 * 60 * 60 * 1000 // 24 hours in milliseconds
 };
+
+/**
+ * Function to set  max age based on TIMEOUT from environment
+ */
+
 
 /**
  * Cookie Configuration

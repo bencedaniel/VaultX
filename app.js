@@ -6,7 +6,7 @@ import connectDB from './database/db.js';
 import expressLayouts from 'express-ejs-layouts';
 import session from 'express-session';
 import MongoStore from "connect-mongo";
-import { logger, logInfo, logWarn, logError, logDebug } from './logger.js';
+import { logger, logInfo, logWarn, logError } from './logger.js';
 import { HTTP_STATUS, MESSAGES } from './config/index.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -17,6 +17,7 @@ import Alert from './models/Alert.js';
 import { StoreUserWithoutValidation } from './middleware/Verify.js';
 import setupRoutes from './routes/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { log } from 'console';
 
 // ============================================
 // INITIALIZATION
@@ -29,16 +30,17 @@ const version = '1.0.6';
 dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
-const { MONGODB_URI, PORT, SECRET_ACCESS_TOKEN, SECURE_MODE, SECRET_API_KEY, TESTDB, TRUST_PROXY, DOMAIN } = process.env;
-export { MONGODB_URI, PORT, SECRET_ACCESS_TOKEN, SECURE_MODE, SECRET_API_KEY, TESTDB, TRUST_PROXY, DOMAIN };
+const { MONGODB_URI, PORT, SECRET_ACCESS_TOKEN, SECURE_MODE, SECRET_API_KEY, TESTDB, TRUST_PROXY, DOMAIN, TIMEOUT } = process.env;
+export { MONGODB_URI, PORT, SECRET_ACCESS_TOKEN, SECURE_MODE, SECRET_API_KEY, TESTDB, TRUST_PROXY, DOMAIN, TIMEOUT };
 
 // Validate environment variables
-if (!MONGODB_URI || !PORT || !SECRET_ACCESS_TOKEN || !SECRET_API_KEY || !TRUST_PROXY || !DOMAIN) {
+if (!MONGODB_URI || !PORT || !SECRET_ACCESS_TOKEN || !SECRET_API_KEY || !TRUST_PROXY || !DOMAIN || !TIMEOUT) {
   logError('ENV_VALIDATION', 'Missing required environment variables ');
   process.exit(1);
 } else {
   logInfo('All required environment variables are set');
 }
+
 
 connectDB(); // Database connection
 
@@ -106,6 +108,7 @@ app.use(async (req, res, next) => {
     res.locals.parent = '/dashboard';
     res.locals.selectedEvent = await Event.findOne({ selected: true });
     res.locals.version = version;
+    res.locals.timeout = parseInt(TIMEOUT, 10);
     next();
   } catch (err) {
     logError('GLOBAL_MIDDLEWARE', `Error in global middleware: ${err}`);
@@ -114,6 +117,7 @@ app.use(async (req, res, next) => {
     res.locals.parent = '/dashboard';
     res.locals.selectedEvent = null;
     res.locals.version = version;
+    res.locals.timeout = parseInt(TIMEOUT, 10);
     next();
   }
 });
@@ -170,6 +174,8 @@ app.listen(PORT, () => {
   logWarn('SECURE_MODE', `Secure mode: ${SECURE_MODE}`);
   logWarn('TEST_DB', `Test DB: ${TESTDB === 'true' ? 'ACTIVE' : 'inactive'}`);
   logInfo(`Trust Proxy: ${TRUST_PROXY}`);
+  logInfo(`Domain: ${DOMAIN}`);
+  logInfo(`Timeout: ${TIMEOUT} minutes`);
   logInfo('---------------------------------------------');
   logInfo(
     `Server running at ${process.env.NODE_ENV === 'development'

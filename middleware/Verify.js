@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
-import { SECRET_ACCESS_TOKEN, SECURE_MODE } from "../app.js";
+import { SECRET_ACCESS_TOKEN, SECURE_MODE, TIMEOUT } from "../app.js";
 import { logger, logAuth, logError, logWarn } from "../logger.js";
 import { asyncHandler } from "./asyncHandler.js";
-import { JWT_CONFIG, COOKIE_CONFIG, HTTP_STATUS, MESSAGES } from "../config/index.js";
+import { JWT_CONFIG, HTTP_STATUS, MESSAGES } from "../config/index.js";
 import { 
   isTokenBlacklisted, 
   blacklistToken, 
@@ -80,7 +80,7 @@ export const Verify = asyncHandler(async (req, res, next) => {
   res.cookie(COOKIE_CONFIG.TOKEN_NAME, newToken, {
     ...COOKIE_CONFIG.OPTIONS,
     secure: SECURE_MODE === 'true', // élesben: true
-    maxAge: JWT_CONFIG.COOKIE_MAX_AGE
+    maxAge: parseInt(TIMEOUT, 10) * 60 * 1000 // maxAge beállítása a TIMEOUT alapján
   });
 
   // 7️⃣ User adatok a requesthez
@@ -199,7 +199,7 @@ export const StoreUserWithoutValidation = asyncHandler(async (req, res, next) =>
   res.cookie(COOKIE_CONFIG.TOKEN_NAME, newToken, {
     ...COOKIE_CONFIG.OPTIONS,
     secure: SECURE_MODE === 'true', // élesben: true
-    maxAge: JWT_CONFIG.COOKIE_MAX_AGE
+    maxAge: parseInt(TIMEOUT, 10) * 60 * 1000 // maxAge beállítása a TIMEOUT alapján
   });
 
   // 7️⃣ User adatok a requesthez

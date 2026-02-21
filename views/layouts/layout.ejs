@@ -213,6 +213,7 @@
         <div class="container-fluid bg-dark text-light p-3 position-fixed bottom-0" style="z-index: 999;">
             <div class="container d-flex justify-content-between align-items-center flex-wrap">
                 <p class="mb-0"><button <% if (test) { %> onclick="showTestDbIndicator()" <% } %> class="bg-dark border-0 text-white text-decoration-none">VaultX</button> &copy; 2025 || Version: <%= version %></p>
+                <p class="mb-0">Logout time: <span id="logouttime"></span> minutes</p>
                 <p class="mb-0"> Event: <button onclick="showEventPopup()" class="bg-dark border-0 text-white text-decoration-underline" ><%= selectedEvent?.EventName || 'N/A' %></button></p>
 
                 <div>
@@ -325,6 +326,28 @@ window.addEventListener("popstate", function () {
             window.location.href = "<%= parent %>";
         <% } %>
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const timeoutMinutes = parseInt("<%= timeout %>"); // EJS-ből kapott érték
+    var remaining = timeoutMinutes * 60 * 1000; // Convert minutes to milliseconds
+    document.getElementById("logouttime").innerHTML = timeoutMinutes;
+    setTimeout(() => {
+      remaining = remaining - (1 * 60 * 1000); // 1 minute before actual timeout
+      document.getElementById("logouttime").innerHTML = remaining / (60 * 1000);
+    }, 1 * 60 * 1000); // timeout minutes
+    
+    setTimeout(() => {
+        ShowErrorToast('1 minute left before auto logout due to inactivity.');
+    },  timeoutMinutes * 60 * 1000 - (1 * 60 * 1000)); // timeout minutes
+
+    setTimeout(() => {
+        window.location.reload();
+    }, timeoutMinutes * 60 * 1000); // timeout minutes
+});
+
+
+
 </script>
 
 </html>

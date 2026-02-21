@@ -227,6 +227,12 @@
         calculateScore();
 
       });
+      // Megakadályozza az Enter billentyű lenyomásának form submitálást
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+        }
+      });
   });
 
   function refreshOutputField(id,value) {

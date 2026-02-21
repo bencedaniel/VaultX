@@ -303,14 +303,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        ShowErrorToast('1 minute left before auto logout due to inactivity.');
-    }, 19 * 60 * 1000); // 19 minutes
 
-    setTimeout(() => {
-        window.location.reload();
-
-    }, 21 * 60 * 1000); // 21 minutes
-
-});
