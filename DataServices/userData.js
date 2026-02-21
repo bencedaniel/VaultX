@@ -1,7 +1,7 @@
 import User from '../models/User.js';
 import Role from '../models/Role.js';
 import bcrypt from 'bcrypt';
-import { logDb } from '../logger.js';
+import { logDb, logDebug } from '../logger.js';
 
 /**
  * Get user by ID
@@ -29,8 +29,9 @@ export const getUserByIdWithRole = async (id) => {
  * Update user profile (username, feiid, password)
  */
 export const updateUserProfile = async (id, data) => {
-    const { username, feiid, password } = data;
-    const updateData = { username, feiid };
+    logDebug(`Updating user ${id} with data: ${JSON.stringify(data)}`);
+    const { username, feiid, password, fullname } = data;
+    const updateData = { username, feiid, fullname };
     
     if (!password || password === '') {
         const user = await User.findById(id);

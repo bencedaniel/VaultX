@@ -23,17 +23,17 @@ import { errorHandler } from './middleware/errorHandler.js';
 // ============================================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const version = '1.0.4';
+const version = '1.0.5';
 
 // Load environment variables first!
 dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
-const { MONGODB_URI, PORT, SECRET_ACCESS_TOKEN, SECURE_MODE, SECRET_API_KEY, TESTDB, TRUST_PROXY } = process.env;
-export { MONGODB_URI, PORT, SECRET_ACCESS_TOKEN, SECURE_MODE, SECRET_API_KEY, TESTDB, TRUST_PROXY };
+const { MONGODB_URI, PORT, SECRET_ACCESS_TOKEN, SECURE_MODE, SECRET_API_KEY, TESTDB, TRUST_PROXY, DOMAIN } = process.env;
+export { MONGODB_URI, PORT, SECRET_ACCESS_TOKEN, SECURE_MODE, SECRET_API_KEY, TESTDB, TRUST_PROXY, DOMAIN };
 
 // Validate environment variables
-if (!MONGODB_URI || !PORT || !SECRET_ACCESS_TOKEN || !SECRET_API_KEY || !TRUST_PROXY) {
+if (!MONGODB_URI || !PORT || !SECRET_ACCESS_TOKEN || !SECRET_API_KEY || !TRUST_PROXY || !DOMAIN) {
   logError('ENV_VALIDATION', 'Missing required environment variables ');
   process.exit(1);
 } else {
@@ -92,7 +92,7 @@ app.use((req, res, next) => {
   res.on('finish', () => {
     const userInfo = req.user ? req.user.username || req.user._id : 'Anonymous';
     logInfo(
-      `${req.method} ${req.originalUrl} - ${req.ip} // ${req.ip} - User-Agent: ${req.get('User-Agent')} - User: ${userInfo}`
+      `${req.method} ${req.originalUrl} - ${req.ip} - User-Agent: ${req.get('User-Agent')} - User: ${userInfo}`
     );
   });
   next();
@@ -174,6 +174,6 @@ app.listen(PORT, () => {
   logInfo(
     `Server running at ${process.env.NODE_ENV === 'development'
       ? `http://localhost:${PORT}`
-      : 'https://vaultx.bencedaniel.hu'}`
+      : `https://${DOMAIN}`}`
   );
 });
