@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 import { SECRET_ACCESS_TOKEN, SECURE_MODE, TIMEOUT } from "../app.js";
-import { logger, logAuth, logError, logWarn } from "../logger.js";
+import { logAuth, logError, logWarn, logDebug } from "../logger.js";
 import { asyncHandler } from "./asyncHandler.js";
-import { JWT_CONFIG, COOKIE_CONFIG, HTTP_STATUS, MESSAGES } from "../config/index.js";
+import { COOKIE_CONFIG, HTTP_STATUS, MESSAGES } from "../config/index.js";
 import { 
   isTokenBlacklisted, 
   blacklistToken, 

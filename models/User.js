@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { SECRET_ACCESS_TOKEN } from '../app.js';
 import { JWT_CONFIG } from '../config/index.js';
 import RoleSchema from './Role.js';
+import { TIMEOUT } from '../app.js';
 const userSchema = new mongoose.Schema({
       username:{
         type: String,
@@ -65,11 +66,12 @@ userSchema.pre("save", function (next) {
 
 
 userSchema.methods.generateAccessJWT = function () {
+    const timeoutMinutes = parseInt(TIMEOUT, 10)*3 || 90;
   let payload = {
     id: this._id,
   };
   return jwt.sign(payload, SECRET_ACCESS_TOKEN, {
-    expiresIn: JWT_CONFIG.REFRESH_TOKEN_EXPIRY,
+    expiresIn: `${timeoutMinutes}m` ,
   });
 };
 const User = mongoose.model('users', userSchema);

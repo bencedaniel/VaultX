@@ -29,7 +29,7 @@ const editGet = asyncHandler(async (req, res) => {
 
   const validEntryIds = entries.map(e => e._id);
   await validateAndFilterStartingOrder(timetablePart, validEntryIds);
-
+  console.log('Valid starting order:', req.session.failMessage);
   res.render('order/editorder', {
     entries: entries,
     formData: timetablePart,
@@ -43,6 +43,12 @@ const editGet = asyncHandler(async (req, res) => {
 });
 
 const overwrite = asyncHandler(async (req, res) => {
+  if (!req.body.id || !req.body.newOrder || isNaN(req.body.newOrder) || req.body.newOrder < 1) {
+    req.session.failMessage = MESSAGES.ERROR.INVALID_ORDER_DATA;
+    logValidation('ORDER_UPDATE', `Invalid order data: ${JSON.stringify(req.body)}`, req.user.username, HTTP_STATUS.BAD_REQUEST);
+    req.session.failMessage = MESSAGES.ERROR.INVALID_ORDER_DATA;
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: MESSAGES.ERROR.INVALID_ORDER_DATA });
+  }
   const timetablePart = await updateStartingOrder(req.params.id, {
     entryId: req.body.id,
     newOrder: req.body.newOrder

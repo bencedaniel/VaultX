@@ -986,6 +986,11 @@ function validateScoreInputs(bannedFields) {
       const id = element.getAttribute('id');
       if(!bannedFields.includes(id)){
           const val = parseLocaleNumber(element.value);
+          if(isNaN(val) && element.value.trim() !== '') {
+              ShowErrorToast('Invalid input in field: ' + id);
+              element.value = '';
+          }
+           else
           if(!isNaN(val) && (val > 10 || val < 0)){
               ShowErrorToast('Invalid input in field: ' + id);
               element.value = '';

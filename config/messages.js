@@ -170,6 +170,7 @@ export const MESSAGES = {
     NO_STARTING_ORDER: "No starting order set for this timetable part.",
     INVALID_TIMETABLE_PART: "Invalid timetable part specified.",
     TIMETABLE_PART_NOT_DEFINED: "Selected timetable part is not defined for this result group.",
+    INVALID_ORDER_DATA: "Invalid order data. Please provide a valid entry ID and a new order number greater than 0.",
     
     // Scoring & Judges
     SCORE_ALREADY_SUBMITTED: "You have already submitted a score sheet for this entry in this timetable part",
