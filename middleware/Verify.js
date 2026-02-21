@@ -74,7 +74,8 @@ export const Verify = asyncHandler(async (req, res, next) => {
   }
 
   // 5️⃣ Rolling JWT generálása
-  const newToken = jwt.sign({ id: user._id }, SECRET_ACCESS_TOKEN, { expiresIn: JWT_CONFIG.ACCESS_TOKEN_EXPIRY });
+  const timeoutMinutes = parseInt(TIMEOUT, 10)*3 || 90;
+  const newToken = jwt.sign({ id: user._id }, SECRET_ACCESS_TOKEN, { expiresIn: `${timeoutMinutes}m` });
 
   // 6️⃣ Cookie-ba írás
   res.cookie(COOKIE_CONFIG.TOKEN_NAME, newToken, {
@@ -193,7 +194,7 @@ export const StoreUserWithoutValidation = asyncHandler(async (req, res, next) =>
   }
 
   // 5️⃣ Rolling JWT generálása
-  const newToken = jwt.sign({ id: user._id }, SECRET_ACCESS_TOKEN, { expiresIn: JWT_CONFIG.ACCESS_TOKEN_EXPIRY });
+  const newToken = jwt.sign({ id: user._id }, SECRET_ACCESS_TOKEN, { expiresIn: `${timeoutMinutes}m`  });
 
   // 6️⃣ Cookie-ba írás
   res.cookie(COOKIE_CONFIG.TOKEN_NAME, newToken, {

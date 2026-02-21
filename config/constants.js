@@ -32,7 +32,6 @@ export const HTTP_STATUS = {
  */
 export const JWT_CONFIG = {
   // Token expiration times
-  ACCESS_TOKEN_EXPIRY: '90m',
   REFRESH_TOKEN_EXPIRY: '20m',
   
   // Cookie settings - uses default value, can be overridden at runtime
