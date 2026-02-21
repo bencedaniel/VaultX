@@ -54,7 +54,7 @@
         </td>
         <td><%= scoresheet.EntryId.category.CategoryDispName %></td>
         <td><%= scoresheet.Judge.userId.fullname %> - <%= scoresheet.Judge.table %></td>
-        <td><%= scoresheet.totalScoreBE ? excelRound(scoresheet.totalScoreBE,3) : 'Not calculated' %></td>
+        <td id="total-<%= scoresheet._id %>"><%= scoresheet.totalScoreBE || 'Not calculated' %></td>
         <td class="text-center" style="width: 15%;">
           <a href="/scoring/office/scoresheet/edit1/<%= scoresheet._id %>" class="btn btn-warning btn-sm shadow-none m-1"><i class="bi bi-pen"></i></a>
 
@@ -88,6 +88,15 @@ document.addEventListener('DOMContentLoaded', function() {
     let IdToDelete = null;
     const deleteModal = document.getElementById('deleteModal');
     const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+
+    // Format TotalScore values with excelRound
+    const scoreSheets = <%- JSON.stringify(scoreSheets) %>;
+    scoreSheets.forEach(scoresheet => {
+        const elem = document.getElementById('total-' + scoresheet._id);
+        if (elem && scoresheet.totalScoreBE) {
+            elem.textContent = excelRound(scoresheet.totalScoreBE, 3);
+        }
+    });
 
     deleteModal?.addEventListener('show.bs.modal', event => {
         const button = event.relatedTarget;
