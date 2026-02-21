@@ -54,7 +54,7 @@ const ScoreSheetSchema = new mongoose.Schema(
 );
 
 ScoreSheetSchema.index(
-  { EventId: 1, EntryId: 1, TemplateId: 1 , TimetablePartId: 1, 'Judge.JudgeTable': 1 },
+  { EventId: 1, EntryId: 1, TemplateId: 1 , TimetablePartId: 1, 'Judge.table': 1 },
   { unique: true }
 );
 ScoreSheetSchema.pre('save', function(next) {

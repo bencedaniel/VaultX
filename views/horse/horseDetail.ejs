@@ -74,7 +74,7 @@
       <div class="col-md-12">
         <div class="form-floating">
           <input type="text" class="form-control shadow-none" id="BoxNr" name="BoxNr" placeholder="Box Number" disabled
-                 value="<%= formData ? formData.BoxNr[0].boxNumber ? formData.BoxNr[0].boxNumber : 'No Box Nr' : '' %>">
+                 value="<%= formData && formData.BoxNr && formData.BoxNr[0] && formData.BoxNr[0].boxNumber ? formData.BoxNr[0].boxNumber : 'No Box Nr' %>">
           <label for="BoxNr">Box Number</label>
         </div>
       </div>
@@ -83,7 +83,7 @@
       <div class="col-md-12">
         <div class="form-floating">
           <input type="text" class="form-control shadow-none" id="HeadNr" name="HeadNr" placeholder="Head Number" disabled
-                 value="<%= formData ? formData.HeadNr[0].headNumber ? formData.HeadNr[0].headNumber : 'No Head Nr' : '' %>">
+                 value="<%= formData && formData.HeadNr && formData.HeadNr[0] && formData.HeadNr[0].headNumber ? formData.HeadNr[0].headNumber : 'No Head Nr' %>">
           <label for="HeadNr">Head Number</label>
         </div>
       </div>

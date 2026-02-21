@@ -23,7 +23,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 // ============================================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const version = '1.0.5';
+const version = '1.0.6';
 
 // Load environment variables first!
 dotenv.config({ path: path.join(__dirname, '.env') });

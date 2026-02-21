@@ -1,5 +1,5 @@
 <div class="container my-4 border border-black border-1 border-opacity-10 rounded p-3  shadow bg-primary bg-opacity-10 " style="max-width: 80vh;">
-  <h1 class="text-center mb-3">New result calc template</h1>
+  <h1 class="text-center mb-3">Edit result calc template</h1>
 
   <form action="/result/generator/new" method="POST">
     <div class="row justify-content-center g-3 m-auto">
@@ -38,11 +38,11 @@
         <div class="form-floating position-relative searchable-dropdown">
           <i class="bi bi-chevron-down position-absolute top-50 end-0 pe-3 translate-middle-y"></i>
           <input type="text" class="form-control shadow-none searchable-input"
-                 placeholder="Search calculation template"
+                 placeholder="Search Calculation template"
                  autocomplete="off"
                  <% if (formData) { %>
-                 <% timetableParts.forEach(element => { %>
-                    <% if (String(element._id) === String(formData?.calcSchemaTemplate?._id)) { %>
+                 <% resultCalcs.forEach(element => { %>
+                    <% if (String(element._id) === String(formData?.calcSchemaTemplate)) { %>
                       value="<%= element.round1FirstP + "," + element.round1SecondP + "," + element.round2FirstP %>"
                     <% } %>
                  <% }) %>
@@ -51,12 +51,12 @@
                   >
           <label class="form-label">Required calculation template</label>
           <input type="hidden" class="searchable-hidden" name="calcSchemaTemplate"
-                 value="<%= formData ? (formData?.calcTemp?._id || formData?.calcTemp || '') : '' %>">
+                 value="<%= formData ? (formData?.calcSchemaTemplate || '') : '' %>">
 
           <!-- Dropdown list -->
           <ul class="list-group position-absolute w-100 mt-1 shadow-sm d-none searchable-list"
               style="max-height: 200px; overflow-y: auto; z-index: 1000;">
-              <% timetableParts.forEach(element => { %>
+              <% resultCalcs.forEach(element => { %>
               <li class="list-group-item list-group-item-action searchable-item" val="<%= element._id %>" ><%= element.round1FirstP + "," + element.round1SecondP + "," + element.round2FirstP %></li>
 
             <% }) %>
@@ -65,7 +65,7 @@
       </div>
 
       <div class="col-md-12 mt-3">
-        <button type="submit" class="btn btn-primary w-100">Create</button>
+        <button type="submit" class="btn btn-primary w-100">Edite</button>
       </div>
 
     </div>

@@ -17,6 +17,7 @@ import {
     updateHorseVetStatus,
     getSelectedEvent
 } from '../DataServices/entryData.js';
+import { log } from 'console';
 
 class EntryController {
   renderNew = asyncHandler(async (req, res) => {
@@ -109,8 +110,13 @@ class EntryController {
   vetCheckGet = asyncHandler(async (req, res) => {
     const horses = await getHorsesForEvent(res.locals.selectedEvent._id);
     horses.forEach(horse => {
+      logDebug(`Processing horse: ${horse.Horsename} (ID: ${horse._id})` + ` - Original HeadNr: ${JSON.stringify(horse.HeadNr)}, BoxNr: ${JSON.stringify(horse.BoxNr)}, VetCheckStatus: ${JSON.stringify(horse.VetCheckStatus)}`);
       horse.HeadNr = horse.HeadNr.filter(h => String(h.eventID) === String(res.locals.selectedEvent._id));
       horse.BoxNr = horse.BoxNr.filter(b => String(b.eventID) === String(res.locals.selectedEvent._id));
+      horse.VetCheckStatus = horse.VetCheckStatus.filter(b => String(b.eventID) === String(res.locals.selectedEvent._id));
+      logDebug(`Horse ${horse.Horsename} - HeadNr: ${JSON.stringify(horse.HeadNr)}, BoxNr: ${JSON.stringify(horse.BoxNr)}, VetCheckStatus: ${JSON.stringify(horse.VetCheckStatus)}`);
+
+
     });
     res.render('entry/vetcheckdash', {
       horses,

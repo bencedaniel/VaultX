@@ -43,7 +43,7 @@
         <td><%= horse.feiid %></td>
         <td><%= horse.Nationality %></td>
         <td><%= horse.ResponsiblePersonName %></td>
-        <td><%= horse.HeadNr[0].headNumber %></td>
+        <td><%= horse.HeadNr[0]?.armNumber ? horse.HeadNr[0]?.armNumber : 'No head Nr' %></td>
         <td><%= horse.HorseStatus %></td>
 
         <%
