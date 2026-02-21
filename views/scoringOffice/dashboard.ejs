@@ -54,7 +54,7 @@
         </td>
         <td><%= scoresheet.EntryId.category.CategoryDispName %></td>
         <td><%= scoresheet.Judge.userId.fullname %> - <%= scoresheet.Judge.table %></td>
-        <td><%= scoresheet.totalScoreBE ? scoresheet.totalScoreBE : 'Not calculated' %></td>
+        <td><%= scoresheet.totalScoreBE ? excelRound(scoresheet.totalScoreBE,3) : 'Not calculated' %></td>
         <td class="text-center" style="width: 15%;">
           <a href="/scoring/office/scoresheet/edit1/<%= scoresheet._id %>" class="btn btn-warning btn-sm shadow-none m-1"><i class="bi bi-pen"></i></a>
 
