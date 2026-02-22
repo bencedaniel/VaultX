@@ -686,15 +686,25 @@ function techCalc(){
 
         }
         else{
+          
           valuewithoutFalls.push(element);
+
         }
     });
 
    const chars = records.value.split('');
+    document.querySelector('button[type="submit"]').disabled = false;
+
    chars.forEach((char) => {
 
     if ((char == 'R' || char == 'r')) {
+      if(!document.getElementById('output-noR')){
+        ShowErrorToast('Number of R elements cannot be added in this category');
+        document.querySelector('button[type="submit"]').disabled = true;
+      }else{
       R++;
+      }
+      ;
     } else if ((char == 'D' || char == 'd')) {
       D++;
     }
@@ -703,6 +713,16 @@ function techCalc(){
     }
     else if ((char == 'E' || char == 'e')) {
       E++;
+
+    }
+        else if (!isNaN(char)){
+      // Skip numbers, they will be processed in deduction calculation
+    } 
+    else{
+      if(char.trim() !== ''){ // Skip spaces
+      document.querySelector('button[type="submit"]').disabled = true;
+      ShowErrorToast('Invalid character in records: ' + char);
+      }
     }
 
    });
@@ -766,7 +786,6 @@ function techCalc(){
     console.log(pointbyElements);
 
     const PerformanceScore = nullLimit(pointbyElementsinv - (sumOfFalls/10));
-    console.log(NumberOfMaxExercises);
     const MaxExercisesCount = NumberOfMaxExercises || 10;
     let MaxR = 0, MaxD = 0, MaxM = 0, MaxE = 0;
     let ClonedR = R, ClonedD = D, ClonedM = M, ClonedE = E;
@@ -994,6 +1013,7 @@ function transformElement(records,height){
       }
 }
 
+
 function validateScoreInputs(bannedFields) {
   const inputs = document.querySelectorAll('.input-field');
   inputs.forEach(element => {
@@ -1012,5 +1032,9 @@ function validateScoreInputs(bannedFields) {
      };
   });
 }
+
+
+
+
 
 </script>

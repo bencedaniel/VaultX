@@ -1,3 +1,5 @@
+import { logError } from "../logger";
+
 export function calculateScore(inputDatas, category) {
   const horse = horseCalc(inputDatas, category);
   const indComp = indCompcalc(inputDatas);
@@ -420,7 +422,12 @@ function techCalc(inputDatas,category){
    chars.forEach((char) => {
 
     if (char == 'R' || char == 'r' ) {
-      R++;
+      if(Rmultipler === 0){
+        logError('INVALID_CHAR: R unallowed in Tech score calculation');
+      } else {
+        R++;
+      }
+
     } else if (char == 'D' || char == 'd' ) {
       D++;
     } 

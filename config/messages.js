@@ -3,6 +3,7 @@
  * Used for success messages, error messages, and user-facing notifications
  */
 
+
 export const MESSAGES = {
   // Authentication & Authorization Messages
   AUTH: {
@@ -167,6 +168,7 @@ export const MESSAGES = {
     DRAWING_NOT_DONE: "Drawing not done yet for this timetable part",
     CONFLICTS_NOT_CHECKED: "Conflicts not checked yet for this timetable part",
     TIMETABLE_PART_NOT_FOUND: "Timetable part not found",
+    TIMETABLE_PART_NOT_FOUND_FOR_THIS_DAY: "Timetable part not found for this day",
     NO_STARTING_ORDER: "No starting order set for this timetable part.",
     INVALID_TIMETABLE_PART: "Invalid timetable part specified.",
     TIMETABLE_PART_NOT_DEFINED: "Selected timetable part is not defined for this result group.",

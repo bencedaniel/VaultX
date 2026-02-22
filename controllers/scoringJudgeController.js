@@ -24,7 +24,7 @@ import {
 const getScoringDashboard = asyncHandler(async function (req, res) {
     const day = await getTodaysTimetable();
     if (!day) {
-        req.session.failMessage = MESSAGES.ERROR.TIMETABLE_PART_NOT_FOUND;
+        req.session.failMessage = MESSAGES.ERROR.TIMETABLE_PART_NOT_FOUND_FOR_THIS_DAY;
         return res.redirect('/dashboard');
     }
 

@@ -687,7 +687,13 @@ function techCalc(){
    chars.forEach((char) => {
 
     if ((char == 'R' || char == 'r')) {
+      if(!document.getElementById('output-noR')){
+        ShowErrorToast('Number of R elements cannot be added in this category');
+        document.querySelector('button[type="submit"]').disabled = true;
+      }else{
       R++;
+      }
+      ;
     } else if ((char == 'D' || char == 'd')) {
       D++;
     }
@@ -696,6 +702,16 @@ function techCalc(){
     }
     else if ((char == 'E' || char == 'e')) {
       E++;
+
+    } 
+    else if (!isNaN(char)){
+      // Skip numbers, they will be processed in deduction calculation
+    }
+    else{
+      if(char.trim() !== ''){ // Skip spaces
+      document.querySelector('button[type="submit"]').disabled = true;
+      ShowErrorToast('Invalid character in records: ' + char);
+      }
     }
 
    });
