@@ -1,4 +1,4 @@
-import { logError } from "../logger";
+import { logError } from "../logger.js";
 
 export function calculateScore(inputDatas, category) {
   const horse = horseCalc(inputDatas, category);
