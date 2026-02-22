@@ -4,7 +4,14 @@ import Category from '../models/Category.js';
 import calcTemplate from '../models/calcTemplate.js';
 import DailyTimeTable from '../models/DailyTimeTable.js';
 import TimetablePart from '../models/Timetablepart.js';
-import { logDb } from '../logger.js';
+import { logDb, logDebug } from '../logger.js';
+
+const normalizeID = (value) => {
+    if (value === '' || value === null || value === undefined) {
+        return null;
+    }
+    return String(value);
+};
 
 /**
  * Get all result groups for a specific event with full population
@@ -109,17 +116,20 @@ export const getGroupFormData = async (eventId) => {
  * Update result group
  */
 export const updateResultGroup = async (id, data) => {
-    // Validate timetable parts are not the same
-    if (data.round1First === data.round1Second || 
-        data.round1First === data.round2First || 
-        data.round1Second === data.round2First) {
+    const round1First = normalizeID(data.round1First);
+    const round1Second = normalizeID(data.round1Second);
+    const round2First = normalizeID(data.round2First);
+
+    // Validate timetable parts are not the same (ignore empty values)
+    if ((round1First && round1Second && round1First === round1Second) || 
+        (round1First && round2First && round1First === round2First) || 
+        (round1Second && round2First && round1Second === round2First)) {
         throw new Error("The same timetable part cannot be selected for multiple rounds.");
     }
 
-    // Convert empty strings to null
-    if (data.round1First === "") data.round1First = null;
-    if (data.round1Second === "") data.round1Second = null;
-    if (data.round2First === "") data.round2First = null;
+    data.round1First = round1First;
+    data.round1Second = round1Second;
+    data.round2First = round2First;
 
     const updated = await resultGroup.findByIdAndUpdate(id, data, { new: true });
     logDb('UPDATE', 'ResultGroup', `${id}`);
@@ -130,17 +140,20 @@ export const updateResultGroup = async (id, data) => {
  * Create new result group
  */
 export const createResultGroup = async (eventId, data) => {
-    // Validate timetable parts are not the same
-    if (data.round1First === data.round1Second || 
-        data.round1First === data.round2First || 
-        data.round1Second === data.round2First) {
+    const round1First = normalizeID(data.round1First);
+    const round1Second = normalizeID(data.round1Second);
+    const round2First = normalizeID(data.round2First);
+
+    // Validate timetable parts are not the same (ignore empty values)
+    if ((round1First && round1Second && round1First === round1Second) || 
+        (round1First && round2First && round1First === round2First) || 
+        (round1Second && round2First && round1Second === round2First)) {
         throw new Error("The same timetable part cannot be selected for multiple rounds.");
     }
 
-    // Convert empty strings to null
-    if (data.round1First === "") data.round1First = null;
-    if (data.round1Second === "") data.round1Second = null;
-    if (data.round2First === "") data.round2First = null;
+    data.round1First = round1First;
+    data.round1Second = round1Second;
+    data.round2First = round2First;
 
     data.event = eventId;
 

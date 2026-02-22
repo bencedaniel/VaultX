@@ -1,4 +1,5 @@
-import { logError } from "../logger.js";
+
+import { logDebug, logError } from "../logger.js";
 
 export function calculateScore(inputDatas, category) {
   const horse = horseCalc(inputDatas, category);
@@ -231,6 +232,9 @@ function calcSquadPddComp(inputDatas,category){
         'swingB': { variable: () => swingB, setter: (v) => swingB = v},
     };
     let numberOfFields = 0;
+    if(numberOfFields === 0){
+      return null;
+    }
     
     
     inputs.forEach(element => {
@@ -274,18 +278,19 @@ function calcSquadPddComp(inputDatas,category){
 
 function artisticScore(inputDatas,category){
   const hasValue = (value) => value !== undefined && value !== null && value !== '';
+  logDebug('ARTISTIC_SCORE_CALCULATION', `Calculating artistic score for category: ${category.CategoryDispName}` + `Input data: ${JSON.stringify(inputDatas)}`);
   const cohInput = dataLookup('coh', inputDatas);
   const c1Input = dataLookup('c1', inputDatas);
   const c2Input = dataLookup('c2', inputDatas);
   const c3Input = dataLookup('c3', inputDatas);
   const c4Input = dataLookup('c4', inputDatas);
-
+  logDebug('ARTISTIC_SCORE_CALCULATION', `Artistic score inputs - COH: ${cohInput}, C1: ${c1Input}, C2: ${c2Input}, C3: ${c3Input}, C4: ${c4Input}`);
   const artisticCH = category.Artistic?.CH;
   const artisticC1 = category.Artistic?.C1;
   const artisticC2 = category.Artistic?.C2;
   const artisticC3 = category.Artistic?.C3;
   const artisticC4 = category.Artistic?.C4;
-
+  logDebug('ARTISTIC_SCORE_CALCULATION', `Artistic score multipliers - CH: ${artisticCH}, C1: ${artisticC1}, C2: ${artisticC2}, C3: ${artisticC3}, C4: ${artisticC4}`);
   let CH = 0, C1 = 0, C2 = 0, C3 = 0, C4 = 0;
 
   if (hasValue(cohInput)) {
@@ -312,11 +317,13 @@ function artisticScore(inputDatas,category){
     const val = parseLocaleNumber(c4Input);
     C4 = !isNaN(val) ? nullLimit(val) * artisticC4 : 0;
   }
+    logDebug('ARTISTIC_SCORE_CALCULATION', `Calculated artistic score components - CH: ${CH}, C1: ${C1}, C2: ${C2}, C3: ${C3}, C4: ${C4}`);
 
   if (hasValue(cohInput) && hasValue(c1Input) && hasValue(c2Input) && hasValue(c3Input) && hasValue(c4Input)) {
     const deduction = dataLookup('deduction', inputDatas);
     const deductionVal = parseLocaleNumber(deduction) || 0;
     const total = nullLimit((CH + C1 + C2 + C3 + C4) - deductionVal);
+    logDebug('ARTISTIC_SCORE_CALCULATION', `Total artistic score before rounding: ${total}`);
     return excelRound(total,3);
   }
 }

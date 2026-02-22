@@ -83,18 +83,18 @@
         <% if (parent && parent.includes(':did')) { %>
             <li class="nav-item">
             <a href="<%= parent.split(':did')[0] + dtId %>" class="nav-link btn btn-primary m-1 px-3 d-flex align-items-center">
-                <i class="bi bi-arrow-return-left fs-5 "></i></a>
+                <i class="bi bi-arrow-return-left fs-5 pe-2"></i> Back</a>
           </li>
           <% } else if (parent && parent.includes(':pid')) { %>
             <li class="nav-item">
             <a href="<%= parent.split(':pid')[0] + pid %>" class="nav-link btn btn-primary m-1 px-3 d-flex align-items-center">
-                <i class="bi bi-arrow-return-left fs-5 "></i></a>
+                <i class="bi bi-arrow-return-left fs-5 pe-2"></i> Back</a>
 
           </li>
         <% } else { %>
           <li class="nav-item">
             <a href="<%= parent %>" class="nav-link btn btn-primary m-1 px-3 d-flex align-items-center">
-                <i class="bi bi-arrow-return-left fs-5 "></i></a>
+                <i class="bi bi-arrow-return-left fs-5 pe-2"></i> Back</a>
           </li>
         <% } %>
 
