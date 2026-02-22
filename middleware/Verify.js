@@ -194,6 +194,7 @@ export const StoreUserWithoutValidation = asyncHandler(async (req, res, next) =>
   }
 
   // 5️⃣ Rolling JWT generálása
+    const timeoutMinutes = parseInt(TIMEOUT, 10)*3 || 90;
   const newToken = jwt.sign({ id: user._id }, SECRET_ACCESS_TOKEN, { expiresIn: `${timeoutMinutes}m`  });
 
   // 6️⃣ Cookie-ba írás

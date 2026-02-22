@@ -13,7 +13,8 @@ import {
     getEntryById, 
     getTableMapping, 
     getEventById, 
-    getScoreSheetTemplate 
+    getScoreSheetTemplate, 
+    getTimetablePartByIdWithDaily
 } from '../DataServices/scoringData.js';
 
 /**
@@ -104,7 +105,7 @@ const getProgramDetails = asyncHandler(async function (req, res) {
 const getNewScoresheetForm = asyncHandler(async function (req, res) {
     const judgeID = req.user._id;
     
-    const timetablePart = await getTimetablePartById(req.params.tpid);
+    const timetablePart = await getTimetablePartByIdWithDaily(req.params.tpid);
     
     // Filter judges list to only current judge
     timetablePart.JudgesList = timetablePart.JudgesList.filter(j => j.JudgeUserID.toString() === judgeID.toString());

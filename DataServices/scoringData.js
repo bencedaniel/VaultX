@@ -41,6 +41,22 @@ export async function getTimetablePartById(id) {
     .exec();
 }
 
+export async function getTimetablePartByIdWithDay(id) {
+  return await TimetablePart.findById(id)
+    .populate('Category')
+    .populate({
+      path: 'StartingOrder.Entry',
+      populate: [
+        { path: 'vaulter' },
+        { path: 'category' },
+        { path: 'lunger' },
+        { path: 'horse' },
+        { path: 'dailytimetable' }
+      ]
+    })
+    .exec();
+}
+
 /**
  * Get a timetable part with dailytimetable populated
  */

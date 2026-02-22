@@ -238,7 +238,7 @@
   }
 
 function calculateScore() {
-  const bannedFields = ['input-records','input-dedfalls']; // ID-s of non score input fields
+  const bannedFields = ['input-records','input-dedfalls','input-techrecords']; // ID-s of non score input fields
   validateScoreInputs(bannedFields); // Validate all fields 0-10 and only numbers, without banned fields
   horseCalc();
   indCompcalc();
