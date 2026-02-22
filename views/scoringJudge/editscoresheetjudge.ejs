@@ -240,7 +240,6 @@
 
 function calculateScore() {
   const bannedFields = ['input-records','input-dedfalls','input-techrecords']; // ID-s of non score input fields
-']; // ID-s of non score input fields
   validateScoreInputs(bannedFields); // Validate all fields 0-10 and only numbers, without banned fields
   horseCalc();
   indCompcalc();
@@ -681,11 +680,12 @@ function techCalc(){
 
         }
         else{
+          console.log(valuewithoutFalls);
           valuewithoutFalls.push(element);
         }
     });
 
-   const chars = records.value.split('');
+   const chars = valuewithoutFalls.join(' ').split('');
    chars.forEach((char) => {
 
     if ((char == 'R' || char == 'r')) {

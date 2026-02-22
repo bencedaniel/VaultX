@@ -24,7 +24,7 @@ import { log } from 'console';
 // ============================================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const version = '1.0.9';
+const version = '1.0.10';
 
 // Load environment variables first!
 dotenv.config({ path: path.join(__dirname, '.env') });
@@ -63,6 +63,24 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.disable('x-powered-by');
 app.use(cookieParser());
+
+// Security headers to prevent crawling of sensitive pages
+app.use((req, res, next) => {
+  // Apply X-Robots-Tag to sensitive paths
+  const sensitivePaths = ['/login', '/scoring', '/office', '/scoresheet', '/admin'];
+  if (sensitivePaths.some(path => req.path.startsWith(path))) {
+    res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+  }
+  
+  // Content Security Policy
+  res.setHeader('Content-Security-Policy', "frame-ancestors 'self'");
+  
+  // Additional security headers
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  
+  next();
+});
 
 // 2. Static files
 app.use('/static', express.static(path.join(__dirname, '/static')));

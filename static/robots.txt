@@ -1,0 +1,28 @@
+# Robotok.txt - VaultX Scoring System
+# Prevent search engines from indexing sensitive areas
+
+User-agent: *
+
+# Disallow login and authentication pages
+Disallow: /login
+Disallow: /logout
+Disallow: /auth/
+
+# Disallow scoring and judging interfaces
+Disallow: /scoring/
+Disallow: /judges/
+Disallow: /office/
+Disallow: /scoresheet/
+
+# Disallow admin areas
+Disallow: /admin/
+
+# Disallow API endpoints
+Disallow: /api/
+
+# Allow public pages (if any)
+Disallow: /
+Disallow: /static/
+
+# Crawl delay
+Crawl-delay: 10

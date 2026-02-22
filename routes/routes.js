@@ -1,4 +1,6 @@
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import auth from '../controllers/auth.js';
 import dashboardController from '../controllers/dashboardController.js';
@@ -9,8 +11,16 @@ import Validate from "../middleware/Validate.js";
 import { check } from "express-validator";
 import { CheckLoggedIn, UserIDValidator, Verify, VerifyRole, StoreUserWithoutValidation, VerifyNoerror } from "../middleware/Verify.js";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const router = express.Router();
 
+// Serve robots.txt from root
+router.get("/robots.txt", (req, res) => {
+    res.type('text/plain');
+    res.sendFile(path.join(__dirname, '../static/robots.txt'));
+});
 
 router.get("/", async (req, res) => {
     res.redirect("/dashboard");

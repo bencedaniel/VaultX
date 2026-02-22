@@ -9,7 +9,8 @@ const getLoginPage = asyncHandler(async (req, res) => {
     res.render("login", { 
         failMessage, 
         rolePermissons: req.user?.role.permissions, 
-        successMessage: req.session.successMessage
+        successMessage: req.session.successMessage,
+        noindex: true // Prevent search engine indexing
     });
     req.session.failMessage = null;
     req.session.successMessage = null;

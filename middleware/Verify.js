@@ -10,13 +10,79 @@ import {
   getRoleWithPermissions 
 } from "../DataServices/authMiddlewareData.js";
 
+/**
+ * Helper to detect if client wants HTML response (browser) vs JSON (API)
+ */
+function wantsHtml(req) {
+  const acceptHeader = req.headers['accept'] || '';
+  return acceptHeader.includes('text/html');
+}
+
+/**
+ * Send 401 Unauthorized response
+ */
+function unauthorized(req, res, message = MESSAGES.AUTH.SESSION_EXPIRED) {
+  req.session.failMessage = message;
+  
+  if (wantsHtml(req)) {
+    // Browser request - send 401 with login page redirect via meta refresh
+    return res.status(HTTP_STATUS.UNAUTHORIZED).send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta http-equiv="refresh" content="0;url=/login">
+        <title>Unauthorized</title>
+      </head>
+      <body>
+        <p>Unauthorized. Redirecting to login...</p>
+      </body>
+      </html>
+    `);
+  } else {
+    // API request - send JSON
+    return res.status(HTTP_STATUS.UNAUTHORIZED).json({ 
+      error: 'Unauthorized', 
+      message 
+    });
+  }
+}
+
+/**
+ * Send 403 Forbidden response
+ */
+function forbidden(req, res, message = MESSAGES.AUTH.PERMISSION_DENIED, redirectPath = null) {
+  req.session.failMessage = message;
+  
+  if (wantsHtml(req)) {
+    const referer = redirectPath || req.get('Referer') || '/dashboard';
+    // Browser request - send 403 with redirect via meta refresh
+    return res.status(HTTP_STATUS.FORBIDDEN).send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta http-equiv="refresh" content="0;url=${referer}">
+        <title>Forbidden</title>
+      </head>
+      <body>
+        <p>Access forbidden. Redirecting...</p>
+      </body>
+      </html>
+    `);
+  } else {
+    // API request - send JSON
+    return res.status(HTTP_STATUS.FORBIDDEN).json({ 
+      error: 'Forbidden', 
+      message 
+    });
+  }
+}
+
 export const Verify = asyncHandler(async (req, res, next) => {
   // 1️⃣ Token lekérése cookie-ból vagy Authorization headerből
   const token = req.cookies.token || req.headers["authorization"]?.split(" ")[1];
   if (!token) {
     logAuth('VERIFY_TOKEN', 'unknown', false, 'TOKEN_MISSING');
-    req.session.failMessage = MESSAGES.AUTH.SESSION_EXPIRED;
-    return res.redirect("/login");
+    return unauthorized(req, res, MESSAGES.AUTH.SESSION_EXPIRED);
   }
   
   // 2️⃣ Blacklist ellenőrzés
@@ -24,8 +90,7 @@ export const Verify = asyncHandler(async (req, res, next) => {
 
   if (blacklisted) {
     logAuth('VERIFY_TOKEN', 'unknown', false, 'TOKEN_BLACKLISTED');
-    req.session.failMessage = MESSAGES.AUTH.SESSION_LOGGED_OUT;
-    return res.redirect("/login");
+    return unauthorized(req, res, MESSAGES.AUTH.SESSION_LOGGED_OUT);
   }
 
   // 3️⃣ Token validálás
@@ -34,8 +99,7 @@ export const Verify = asyncHandler(async (req, res, next) => {
     decoded = jwt.verify(token, SECRET_ACCESS_TOKEN);
   } catch (err) {
     logError('TOKEN_VERIFICATION_FAILED', err.message, 'Token validation');
-    req.session.failMessage = MESSAGES.AUTH.INVALID_TOKEN;
-    return res.redirect("/login");
+    return unauthorized(req, res, MESSAGES.AUTH.INVALID_TOKEN);
   }
 
   // 4️⃣ Felhasználó lekérése az adatbázisból
@@ -43,8 +107,7 @@ export const Verify = asyncHandler(async (req, res, next) => {
 
   if (!user) {
     logAuth('VERIFY_TOKEN', decoded.id, false, 'USER_NOT_FOUND');
-    req.session.failMessage = MESSAGES.AUTH.USER_NOT_FOUND;
-    return res.redirect("/login");
+    return unauthorized(req, res, MESSAGES.AUTH.USER_NOT_FOUND);
   }
   
   if(!user.active){
@@ -70,7 +133,7 @@ export const Verify = asyncHandler(async (req, res, next) => {
       secure: process.env.SECURE_MODE === 'true'
     });
     req.session.failMessage = MESSAGES.AUTH.ACCOUNT_DEACTIVATED;
-    return res.redirect('/login'); // redirect to home page
+    return unauthorized(req, res, MESSAGES.AUTH.ACCOUNT_DEACTIVATED);
   }
 
   // 5️⃣ Rolling JWT generálása
@@ -94,7 +157,7 @@ export const VerifyNoerror = asyncHandler(async (req, res, next) => {
   // 1️⃣ Token lekérése cookie-ból vagy Authorization headerből
   const token = req.cookies.token || req.headers["authorization"]?.split(" ")[1];
   if (!token) {
-    return res.redirect("/login");
+    return unauthorized(req, res, MESSAGES.AUTH.SESSION_EXPIRED);
   }
 
   next();
@@ -116,14 +179,12 @@ export function VerifyRole() {
         const user = req.user;
         const { role } = user;
         if (!role) {
-            req.session.failMessage = MESSAGES.AUTH.USER_ROLE_NOT_FOUND;
-            return res.redirect("/login");
+            return unauthorized(req, res, MESSAGES.AUTH.USER_ROLE_NOT_FOUND);
         }
 
         const roleData = await getRoleWithPermissions(role);
         if (!roleData) {
-            req.session.failMessage = MESSAGES.AUTH.ROLE_NOT_FOUND;
-            return res.redirect("/login");
+            return unauthorized(req, res, MESSAGES.AUTH.ROLE_NOT_FOUND);
         }
 
         const { role: roleFromDB, permissions: permissionsDocs } = roleData;
@@ -145,8 +206,7 @@ export function VerifyRole() {
         }
         if (!roleFromDB || !hasPermission)  {
             logWarn('PERMISSION_DENIED', `User ${user.username} with role ${roleFromDB ? roleFromDB.roleName : 'unknown'} tried to access ${req.originalUrl} without permission.`);
-            req.session.failMessage = MESSAGES.AUTH.PERMISSION_DENIED;
-            return res.redirect(req.get('Referer') || '/dashboard'); // vissza az előző oldalra, vagy login ha nincs
+            return forbidden(req, res, MESSAGES.AUTH.PERMISSION_DENIED, '/dashboard');
           }
         next();
     });
@@ -154,12 +214,10 @@ export function VerifyRole() {
 export const UserIDValidator = asyncHandler(async (req, res, next) => {
     const userId = req.params.id;
     if (!userId) {
-        req.session.failMessage = MESSAGES.AUTH.USER_ID_REQUIRED;
-        return res.redirect("/login");
+        return unauthorized(req, res, MESSAGES.AUTH.USER_ID_REQUIRED);
     }
     if (userId !== req.user._id.toString()) {
-        req.session.failMessage = MESSAGES.AUTH.PERMISSION_DENIED;
-        return res.redirect(req.get('Referer') || '/login');
+        return forbidden(req, res, MESSAGES.AUTH.PERMISSION_DENIED);
     }
     next();
 });
