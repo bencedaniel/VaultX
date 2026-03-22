@@ -276,7 +276,7 @@ const editGet = asyncHandler(async (req, res) => {
 
 const editPost = asyncHandler(async (req, res) => {
   const lunger = await updateLunger(req.params.id, req.body);
-  logOperation('LUNGER_UPDATE', `Lunger updated: ${lunger.Name}`, req.user.username, HTTP_STATUS.OK);
+  logOperation('LUNGER_UPDATE', `Lunger updated: ${lunger?.Name || req.params.id}`, req.user.username, HTTP_STATUS.OK);
   req.session.successMessage = MESSAGES.SUCCESS.LUNGER_UPDATED;
   res.redirect('/lunger/dashboard');
 });
@@ -286,7 +286,7 @@ const deleteIncident = asyncHandler(async (req, res) => {
     description: req.body.description,
     type: req.body.type
   });
-  logOperation('LUNGER_UPDATE', `Lunger updated: ${lunger.Name}`, req.user.username, HTTP_STATUS.OK);
+  logOperation('LUNGER_UPDATE', `Lunger updated: ${lunger?.Name || req.params.id}`, req.user.username, HTTP_STATUS.OK);
   res.status(HTTP_STATUS.OK).json({ message: MESSAGES.SUCCESS.INCIDENT_DELETED });
 });
 
@@ -297,7 +297,7 @@ const newIncidentPost = asyncHandler(async (req, res) => {
     userId: req.user._id,
     eventId: res.locals.selectedEvent._id
   });
-  logOperation('LUNGER_UPDATE', `Lunger incident created: ${lunger.Name}`, req.user.username, HTTP_STATUS.CREATED);
+  logOperation('LUNGER_UPDATE', `Lunger incident created: ${lunger?.Name || req.params.id}`, req.user.username, HTTP_STATUS.CREATED);
   res.status(HTTP_STATUS.OK).json({ message: MESSAGES.SUCCESS.INCIDENT_ADDED });
 });
 

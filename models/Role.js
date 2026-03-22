@@ -15,11 +15,7 @@ const RoleSchema = new mongoose.Schema({
             type: String,
             default: '',
             required: [true, 'Description required!'],
-        },
-        power:{
-            type: Number,
-            default: 1, // Default power level
-        },
+        }
 },{ timestamps: true });
 
 export default mongoose.model('roles', RoleSchema);

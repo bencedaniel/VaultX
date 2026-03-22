@@ -41,7 +41,7 @@ class EntryController {
 
   createNew = asyncHandler(async (req, res) => {
     const newEntry = await createEntry(req.body);
-    logOperation('ENTRY_CREATE', `Entry created: ${newEntry.name}`, req.user.username, HTTP_STATUS.CREATED);
+    logOperation('ENTRY_CREATE', `Entry created: ${newEntry?.name || req.body?.name || 'unknown'}`, req.user.username, HTTP_STATUS.CREATED);
     req.session.successMessage = MESSAGES.SUCCESS.ENTRY_CREATED;
     res.redirect('/entry/dashboard');
   })
@@ -85,14 +85,14 @@ class EntryController {
     const updateData = { ...req.body, _id: req.params.id };
     const { oldEntry, newEntry } = await updateEntry(req.params.id, updateData, res.locals.selectedEvent._id);
 
-    logOperation('ENTRY_UPDATE', `Entry updated: ${oldEntry.EntryDispName}`, req.user.username, HTTP_STATUS.OK);
+    logOperation('ENTRY_UPDATE', `Entry updated: ${oldEntry?.EntryDispName || req.params.id}`, req.user.username, HTTP_STATUS.OK);
     req.session.successMessage = MESSAGES.SUCCESS.ENTRY_UPDATED;
     res.redirect('/entry/dashboard');
   })
 
   deleteIncident = asyncHandler(async (req, res) => {
     const entry = await deleteEntryIncident(req.params.id, req.body);
-    logOperation('ENTRY_UPDATE', `Entry updated: ${entry.name}`, req.user.username, HTTP_STATUS.OK);
+    logOperation('ENTRY_UPDATE', `Entry updated: ${entry?.name || req.params.id}`, req.user.username, HTTP_STATUS.OK);
     res.status(HTTP_STATUS.OK).json({ message: 'Incident deleted successfully' });
   })
 
@@ -103,7 +103,7 @@ class EntryController {
       userId: req.user._id
     };
     const entry = await addEntryIncident(req.params.id, incidentData);
-    logOperation('ENTRY_UPDATE', `Entry incident created: ${entry.Name}`, req.user.username, HTTP_STATUS.CREATED);
+    logOperation('ENTRY_UPDATE', `Entry incident created: ${entry?.Name || req.params.id}`, req.user.username, HTTP_STATUS.CREATED);
     res.status(HTTP_STATUS.OK).json({ message: MESSAGES.SUCCESS.INCIDENT_ADDED });
   })
 
@@ -134,7 +134,7 @@ class EntryController {
       eventId: res.locals.selectedEvent._id
     };
     const horse = await updateHorseVetStatus(req.params.horseId, statusData);
-    logOperation('HORSE_UPDATE', `Horse updated: ${horse.Horsename}`, req.user.username, HTTP_STATUS.OK);
+    logOperation('HORSE_UPDATE', `Horse updated: ${horse?.Horsename || req.params.horseId}`, req.user.username, HTTP_STATUS.OK);
     res.status(HTTP_STATUS.OK).json({ message: MESSAGES.SUCCESS.VET_STATUS_UPDATED });
   })
 }

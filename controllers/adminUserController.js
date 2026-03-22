@@ -16,7 +16,7 @@ import User from "../models/User.js";
  */
 const getNewUserForm = asyncHandler(async (req, res) => {
     const { roles } = await getUserFormData();
-    const userrole = req.user?.role.permissions;
+    const userrole = req.user?.role?.permissions;
     res.render("admin/newUser", {
         rolePermissons: userrole,
         failMessage: req.session.failMessage,
@@ -46,7 +46,7 @@ const createNewUser = asyncHandler(async (req, res) => {
  */
 const getUsersDashboard = asyncHandler(async (req, res) => {
     const users = await getAllUsersWithRoles();
-    const rolePermissons = req.user.role.permissions;
+    const rolePermissons = req.user?.role?.permissions;
 
     res.render("admin/userdash", {
         rolePermissons: rolePermissons,
@@ -69,9 +69,9 @@ const getEditUserForm = asyncHandler(async (req, res) => {
     res.render('admin/editUser', {
         failMessage: req.session.failMessage, 
         formData: user,
-        userrole: req.user.role,
+        userrole: req.user?.role,
         roleList: roles,
-        rolePermissons: req.user.role.permissions,
+        rolePermissons: req.user?.role?.permissions,
         successMessage: req.session.successMessage,
         user: req.user
     });

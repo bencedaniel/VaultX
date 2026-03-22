@@ -215,6 +215,9 @@ class DailyTimeTableController {
   })
 
   newTTelementGet = asyncHandler(async (req, res) => {
+    if (!res.locals.selectedEvent?._id) {
+      throw new Error('Event required');
+    }
     const { judges, days, categorys } = await getTimetablePartFormData(res.locals.selectedEvent._id);
 
     res.render('dailytimetable/newttelement', {

@@ -76,7 +76,7 @@ const getEditCategoryForm = asyncHandler(async (req, res) => {
  */
 const updateCategoryHandler = asyncHandler(async (req, res) => {
     const updated = await updateCategory(req.params.id, req.body);
-    logOperation('CATEGORY_UPDATE', `Category updated: ${updated.CategoryDispName}`, req.user.username, HTTP_STATUS.OK);
+    logOperation('CATEGORY_UPDATE', `Category updated: ${updated?.CategoryDispName || req.params.id}`, req.user.username, HTTP_STATUS.OK);
     req.session.successMessage = MESSAGES.SUCCESS.CATEGORY_UPDATED;
     res.redirect('/category/dashboard');
 });
@@ -88,11 +88,11 @@ const updateCategoryHandler = asyncHandler(async (req, res) => {
  */
 const deleteCategoryHandler = asyncHandler(async (req, res) => {
     const category = await deleteCategory(req.params.id);
-    logOperation('CATEGORY_DELETE', `Category deleted: ${category.name}`, req.user.username, HTTP_STATUS.OK);
     if (!category) {
         req.session.failMessage = MESSAGES.ERROR.CATEGORY_NOT_FOUND;
         return res.status(HTTP_STATUS.NOT_FOUND).json({ message: MESSAGES.ERROR.CATEGORY_NOT_FOUND });
     }
+    logOperation('CATEGORY_DELETE', `Category deleted: ${category.name}`, req.user.username, HTTP_STATUS.OK);
     res.status(HTTP_STATUS.OK).json({ message: MESSAGES.SUCCESS.CATEGORY_DELETED });
 });
 

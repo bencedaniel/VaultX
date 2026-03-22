@@ -1,4 +1,3 @@
-import dotenv from 'dotenv';
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -12,6 +11,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import { JWT_CONFIG, COOKIE_CONFIG } from './config/index.js';
+import { MONGODB_URI, PORT, SECRET_ACCESS_TOKEN, SECURE_MODE, SECRET_API_KEY, TESTDB, TRUST_PROXY, DOMAIN, TIMEOUT } from './config/env.js';
 import Event from './models/Event.js';
 import Alert from './models/Alert.js';
 import { StoreUserWithoutValidation } from './middleware/Verify.js';
@@ -26,12 +26,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const version = '1.0.11';
 
-// Load environment variables first!
-dotenv.config({ path: path.join(__dirname, '.env') });
-
 const app = express();
-const { MONGODB_URI, PORT, SECRET_ACCESS_TOKEN, SECURE_MODE, SECRET_API_KEY, TESTDB, TRUST_PROXY, DOMAIN, TIMEOUT } = process.env;
-export { MONGODB_URI, PORT, SECRET_ACCESS_TOKEN, SECURE_MODE, SECRET_API_KEY, TESTDB, TRUST_PROXY, DOMAIN, TIMEOUT };
 
 // Validate environment variables
 if (!MONGODB_URI || !PORT || !SECRET_ACCESS_TOKEN || !SECRET_API_KEY || !TRUST_PROXY || !DOMAIN || !TIMEOUT) {

@@ -16,7 +16,7 @@ import {
  */
 const getNewCardForm = asyncHandler(async (req, res) => {
     const { permissionList } = await getCardFormData();
-    const userrole = req.user?.role.permissions;
+    const userrole = req.user?.role?.permissions;
     res.render("admin/newCard", {
         permissionList: permissionList,
         rolePermissons: userrole,
@@ -36,7 +36,7 @@ const getNewCardForm = asyncHandler(async (req, res) => {
  */
 const getCardsDashboard = asyncHandler(async (req, res) => {
     const cards = await getAllCards();
-    const rolePermissons = req.user.role.permissions;
+    const rolePermissons = req.user?.role?.permissions;
     res.render("admin/carddash", {
         rolePermissons: rolePermissons,
         cards: cards,
@@ -59,7 +59,7 @@ const getEditCardForm = asyncHandler(async (req, res) => {
         permissionList: permissionList,
         formData: card,
         failMessage: req.session.failMessage,
-        rolePermissons: req.user.role.permissions,
+        rolePermissons: req.user?.role?.permissions,
         successMessage: req.session.successMessage,
         user: req.user
     });

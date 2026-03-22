@@ -19,7 +19,7 @@ const editGet = asyncHandler(async (req, res) => {
   const timetablePart = await getTimetablePartById(req.params.id);
   const eventID = res.locals.selectedEvent?._id;
 
-  if (!timetablePart.StartingOrder.length === 0 || timetablePart.drawingDone === false) {
+  if (timetablePart.StartingOrder.length === 0 || timetablePart.drawingDone === false) {
     req.session.failMessage = MESSAGES.ERROR.NO_STARTING_ORDER;
     return res.redirect('/order/createSelect/' + req.params.id);
   }

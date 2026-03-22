@@ -8,7 +8,7 @@ import { getAdminDashboardData } from '../DataServices/adminDashboardData.js';
  */
 const getAdminDashboard = asyncHandler(async (req, res) => {
     const { cards, userCount, permissionCount, roleCount } = await getAdminDashboardData();
-    const rolePermissons = req.user.role.permissions;
+    const rolePermissons = req.user?.role?.permissions;
     res.render("admin/admindash", {
         cardsFromDB: cards,
         userCount,

@@ -1,10 +1,9 @@
 import mongoose, { set } from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { SECRET_ACCESS_TOKEN } from '../app.js';
+import { SECRET_ACCESS_TOKEN, TIMEOUT } from '../config/env.js';
 import { JWT_CONFIG } from '../config/index.js';
 import RoleSchema from './Role.js';
-import { TIMEOUT } from '../app.js';
 const userSchema = new mongoose.Schema({
       username:{
         type: String,

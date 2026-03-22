@@ -1,5 +1,6 @@
 import TableMapping from '../models/TableMapping.js';
 import Permissions from '../models/Permissions.js';
+import { logDb } from '../logger.js';
 
 /**
  * Retrieves all table mappings sorted by name

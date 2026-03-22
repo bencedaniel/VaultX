@@ -61,7 +61,7 @@ const editGet = asyncHandler(async (req, res) => {
 
 const editPost = asyncHandler(async (req, res) => {
   const event = await updateEvent(req.params.id, req.body);
-  logOperation('EVENT_UPDATE', `Event updated: ${event.name}`, req.user.username, HTTP_STATUS.OK);
+  logOperation('EVENT_UPDATE', `Event updated: ${event?.name || req.params.id}`, req.user.username, HTTP_STATUS.OK);
   req.session.successMessage = MESSAGES.SUCCESS.EVENT_UPDATED;
   res.redirect('/admin/event/dashboard');
 });
@@ -83,22 +83,22 @@ const details = asyncHandler(async (req, res) => {
 
 const deleteResponsiblePersonHandler = asyncHandler(async (req, res) => {
   const event = await deleteResponsiblePerson(req.params.id, req.body);
-  logOperation('EVENT_UPDATE', `Event updated: ${event.EventName}`, req.user.username, HTTP_STATUS.OK);
+  logOperation('EVENT_UPDATE', `Event updated: ${event?.EventName || req.params.id}`, req.user.username, HTTP_STATUS.OK);
   res.status(HTTP_STATUS.OK).json({ message: req.body.name + ' ' + MESSAGES.SUCCESS.RESPONSIBLE_PERSON_DELETED + req.user.username });
 });
 
 const addResponsiblePersonHandler = asyncHandler(async (req, res) => {
   const event = await addResponsiblePerson(req.params.id, req.body);
-  logOperation('EVENT_UPDATE', `Event updated: ${event.EventName}`, req.user.username, HTTP_STATUS.OK);
+  logOperation('EVENT_UPDATE', `Event updated: ${event?.EventName || req.params.id}`, req.user.username, HTTP_STATUS.OK);
   res.status(HTTP_STATUS.OK).json({ message: MESSAGES.SUCCESS.RESPONSIBLE_PERSON_ADDED });
 });
 
 const selectEventHandler = asyncHandler(async (req, res) => {
   const event = await selectEvent(req.params.eventId);
-  logOperation('EVENT_UPDATE', `Event updated: ${event.EventName}`, req.user.username, HTTP_STATUS.OK);
-  req.session.selectedEvent = event._id;
-  req.session.successMessage = MESSAGES.SUCCESS.EVENT_SELECTED + ' ' + event.EventName;
-  res.status(HTTP_STATUS.OK).json({ message: MESSAGES.SUCCESS.EVENT_SELECTED + ' ' + event.EventName });
+  logOperation('EVENT_UPDATE', `Event updated: ${event?.EventName || req.params.eventId}`, req.user.username, HTTP_STATUS.OK);
+  req.session.selectedEvent = event?._id;
+  req.session.successMessage = MESSAGES.SUCCESS.EVENT_SELECTED + ' ' + (event?.EventName || '');
+  res.status(HTTP_STATUS.OK).json({ message: MESSAGES.SUCCESS.EVENT_SELECTED + ' ' + (event?.EventName || '') });
 });
 
 export default {

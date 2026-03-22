@@ -34,7 +34,8 @@ export const JWT_CONFIG = {
   // Token expiration times
   
   // Cookie settings - uses default value, can be overridden at runtime
-  SESSION_MAX_AGE: 24 * 60 * 60 * 1000 // 24 hours in milliseconds
+  SESSION_MAX_AGE: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+  COOKIE_MAX_AGE: 24 * 60 * 60 * 1000
 };
 
 /**

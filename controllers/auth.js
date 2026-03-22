@@ -1,4 +1,4 @@
-import { SECURE_MODE } from "../app.js";
+import { SECURE_MODE } from "../config/env.js";
 import { logger, logAuth, logError, logValidation } from "../logger.js";
 import { asyncHandler } from '../middleware/asyncHandler.js';
 import { JWT_CONFIG, COOKIE_CONFIG, HTTP_STATUS, MESSAGES } from '../config/index.js';
@@ -55,9 +55,9 @@ const Login = asyncHandler(async (req, res) => {
 
     let options = {
         ...COOKIE_CONFIG.OPTIONS,
-        maxAge: JWT_CONFIG.COOKIE_MAX_AGE,
+        maxAge: JWT_CONFIG.COOKIE_MAX_AGE || JWT_CONFIG.SESSION_MAX_AGE,
         secure: SECURE_MODE === 'true',
-        sameSite: COOKIE_CONFIG.OPTIONS.sameSite || "None"
+        sameSite: "None"
     };
 
     const token = user.generateAccessJWT();

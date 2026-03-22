@@ -18,7 +18,7 @@ const getProfileEditForm = asyncHandler(async (req, res) => {
         formID: req.params.id,
         formData: user,
         roleList,
-        rolePermissons: req.user?.role.permissions,
+        rolePermissons: req.user?.role?.permissions,
         user: req.user,
         successMessage: req.session.successMessage,
         failMessage: req.session.failMessage

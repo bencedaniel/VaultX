@@ -81,7 +81,7 @@ const getEditAlertForm = asyncHandler(async function (req, res) {
  */
 const updateAlertHandler = asyncHandler(async function (req, res) {
     const alert = await updateAlert(req.params.id, req.body);
-    logOperation('ALERT_UPDATE', `Alert updated: ${alert._id}`, req.user.username, HTTP_STATUS.OK);
+    logOperation('ALERT_UPDATE', `Alert updated: ${alert?._id || req.params.id}`, req.user.username, HTTP_STATUS.OK);
     req.session.successMessage = MESSAGES.SUCCESS.ALERT_UPDATED;
     res.redirect('/alerts/dashboard');
 });
@@ -92,7 +92,7 @@ const updateAlertHandler = asyncHandler(async function (req, res) {
  */
 const deleteAlertHandler = asyncHandler(async function (req, res) {
     const alert = await deleteAlert(req.params.id);
-    logOperation('ALERT_DELETE', `Alert deleted: ${alert._id}`, req.user.username, HTTP_STATUS.OK);
+    logOperation('ALERT_DELETE', `Alert deleted: ${alert?._id || req.params.id}`, req.user.username, HTTP_STATUS.OK);
     res.status(HTTP_STATUS.OK).json({ message: MESSAGES.SUCCESS.ALERT_DELETED });
 });
 

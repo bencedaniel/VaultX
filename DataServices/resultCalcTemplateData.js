@@ -2,6 +2,7 @@ import calcTemplate from '../models/calcTemplate.js';
 import resultGenerator from '../models/resultGenerator.js';
 import resultGroup from '../models/resultGroup.js';
 import Category from '../models/Category.js';
+import { logDb } from '../logger.js';
 
 /**
  * Get all calculation templates

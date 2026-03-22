@@ -8,7 +8,7 @@ const getLoginPage = asyncHandler(async (req, res) => {
     const failMessage = req.session.failMessage;
     res.render("login", { 
         failMessage, 
-        rolePermissons: req.user?.role.permissions, 
+        rolePermissons: req.user?.role?.permissions, 
         successMessage: req.session.successMessage,
         noindex: true // Prevent search engine indexing
     });

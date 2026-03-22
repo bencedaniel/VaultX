@@ -58,14 +58,14 @@ const editGet = asyncHandler(async (req, res) => {
 
 const editPost = asyncHandler(async (req, res) => {
   const mapping = await updateMapping(req.params.id, req.body);
-  logOperation('MAPPING_UPDATE', `Mapping updated: ${mapping._id}`, req.user.username, HTTP_STATUS.OK);
+  logOperation('MAPPING_UPDATE', `Mapping updated: ${mapping?._id || req.params.id}`, req.user.username, HTTP_STATUS.OK);
   req.session.successMessage = MESSAGES.SUCCESS.MAPPING_UPDATED;
   res.redirect('/mapping/dashboard');
 });
 
 const delete_ = asyncHandler(async (req, res) => {
   const mapping = await deleteMapping(req.params.id);
-  logOperation('MAPPING_DELETE', `Mapping deleted: ${mapping._id}`, req.user.username, HTTP_STATUS.OK);
+  logOperation('MAPPING_DELETE', `Mapping deleted: ${mapping?._id || req.params.id}`, req.user.username, HTTP_STATUS.OK);
   req.session.successMessage = MESSAGES.SUCCESS.MAPPING_DELETED;
   res.status(HTTP_STATUS.OK).json({ message: MESSAGES.SUCCESS.MAPPING_DELETED });
 });

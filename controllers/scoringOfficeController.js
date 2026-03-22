@@ -46,6 +46,10 @@ const getOfficeDashboard = asyncHandler(async function (req, res) {
  */
 const getEditScoresheetForm = asyncHandler(async function (req, res) {
     const scoresheet = await getScoreSheetById(req.params.id);
+    if (!scoresheet) {
+        req.session.failMessage = MESSAGES.ERROR.SCORE_SHEET_NOT_FOUND || MESSAGES.ERROR.SCORE_NOT_FOUND;
+        return res.redirect('/scoring/office/dashboard');
+    }
 
     res.render('scoringJudge/editscoresheetjudge', {
         scoresheet: scoresheet,
@@ -124,6 +128,10 @@ const getOfficeNewScoresheetForm = asyncHandler(async function (req, res) {
     const judgeID = req.session.judgeID;
     
     const timetablePart = await getTimetablePartById(req.params.tpid);
+    if (!timetablePart) {
+        req.session.failMessage = MESSAGES.ERROR.TIMETABLE_PART_NOT_FOUND;
+        return res.redirect('/scoring/office/dashboard');
+    }
     
     // Filter judges list to only current judge
     timetablePart.JudgesList = timetablePart.JudgesList.filter(j => j.JudgeUserID.toString() === judgeID.toString());
@@ -163,11 +171,6 @@ const getOfficeNewScoresheetForm = asyncHandler(async function (req, res) {
     const entry = await getEntryById(req.params.entryid);
     if (!entry) {
         req.session.failMessage = MESSAGES.ERROR.ENTRY_NOT_FOUND;
-        return res.redirect('/scoring/office/dashboard');
-    }
-    
-    if (!timetablePart) {
-        req.session.failMessage = MESSAGES.ERROR.TIMETABLE_PART_NOT_FOUND;
         return res.redirect('/scoring/office/dashboard');
     }
     

@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import {logger, logError, logInfo, logDb, logWarn} from "../logger.js";
-import { MONGODB_URI } from '../app.js';
+import { MONGODB_URI } from '../config/env.js';
 async function connectDB() {
     try {
         // Adatbázis kapcsolódás
