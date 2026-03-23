@@ -256,57 +256,6 @@ describe('Daily Timetable Controller - Unit Tests', () => {
     });
   });
 
-  describe('details', () => {
-    
-    test('should render timetable details', async () => {
-      req.params.id = 'table123';
-
-      dailyTimetableData.getDailyTimeTableById.mockResolvedValue(mockDailyTimeTable);
-
-      await dailyTimetableController.details(req, res, next);
-
-      expect(res.render).toHaveBeenCalledWith(
-        'dailytimetable/dailytimetableDetail',
-        expect.objectContaining({
-          formData: mockDailyTimeTable
-        })
-      );
-    });
-
-    test('should handle timetable not found', async () => {
-      req.params.id = 'nonexistent';
-
-      dailyTimetableData.getDailyTimeTableById.mockResolvedValue(null);
-
-      await dailyTimetableController.details(req, res, next);
-
-      expect(req.session.failMessage).toBe(MESSAGES.ERROR.DAILY_TIMETABLE_NOT_FOUND);
-      expect(res.redirect).toHaveBeenCalledWith('/dailytimetable/dashboard');
-    });
-
-    test('should clear session messages after rendering', async () => {
-      req.params.id = 'table123';
-      req.session.failMessage = 'Error';
-
-      dailyTimetableData.getDailyTimeTableById.mockResolvedValue(mockDailyTimeTable);
-
-      await dailyTimetableController.details(req, res, next);
-
-      expect(req.session.failMessage).toBeNull();
-    });
-
-    test('should handle database error', async () => {
-      req.params.id = 'table123';
-      const error = new Error('Database error');
-
-      dailyTimetableData.getDailyTimeTableById.mockRejectedValue(error);
-
-      await expect(
-        dailyTimetableController.details(req, res, next)
-      ).rejects.toThrow('Database error');
-    });
-  });
-
   describe('editGet', () => {
     
     test('should render edit form with timetable data', async () => {
@@ -1004,15 +953,14 @@ describe('Daily Timetable Controller - Unit Tests', () => {
 
   describe('Session Management', () => {
     
-    test('should not clear session on redirect for not found', async () => {
+    test('should not clear session on redirect for not found in editGet', async () => {
       req.params.id = 'nonexistent';
       req.session.failMessage = 'Some error';
 
       dailyTimetableData.getDailyTimeTableById.mockResolvedValue(null);
 
-      await dailyTimetableController.details(req, res, next);
+      await dailyTimetableController.editGet(req, res, next);
 
-      // SessionM essage is set, not cleared on redirect
       expect(req.session.failMessage).toBe(MESSAGES.ERROR.DAILY_TIMETABLE_NOT_FOUND);
     });
 

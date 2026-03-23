@@ -61,22 +61,7 @@ class DailyTimeTableController {
     req.session.successMessage = null;
   })
 
-  details = asyncHandler(async (req, res) => {
-    const dailytimetable = await getDailyTimeTableById(req.params.id);
-    if (!dailytimetable) {
-      req.session.failMessage = MESSAGES.ERROR.DAILY_TIMETABLE_NOT_FOUND;
-      return res.redirect('/dailytimetable/dashboard');
-    }
-    res.render('dailytimetable/dailytimetableDetail', {
-      formData: dailytimetable,
-      rolePermissons: req.user?.role?.permissions,
-      failMessage: req.session.failMessage,
-      successMessage: req.session.successMessage,
-      user: req.user
-    });
-    req.session.failMessage = null;
-    req.session.successMessage = null;
-  })
+
 
   editGet = asyncHandler(async (req, res) => {
     const dailytimetable = await getDailyTimeTableById(req.params.id);

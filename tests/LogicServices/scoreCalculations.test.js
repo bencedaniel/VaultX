@@ -127,4 +127,44 @@ describe('LogicServices/scoreCalculations.calculateScore', () => {
 
     expect(result).toBe('0.000');
   });
+
+  describe('Number.EPSILON rounding behavior', () => {
+    test('rounds up correctly at 4th decimal 5 boundary', () => {
+      const roundingCategory = makeCategory({
+        Artistic: { CH: 1, C1: 0, C2: 0, C3: 0, C4: 0 }
+      });
+
+      const inputs = [
+        { id: 'coh', value: '7,1235' },
+        { id: 'c1', value: '0' },
+        { id: 'c2', value: '0' },
+        { id: 'c3', value: '0' },
+        { id: 'c4', value: '0' },
+        { id: 'deduction', value: '0' }
+      ];
+
+      const result = calculateScore(inputs, roundingCategory);
+
+      expect(result).toBe('7.124');
+    });
+
+    test('keeps floating point sum boundary stable when rounding to 3 decimals', () => {
+      const roundingCategory = makeCategory({
+        Artistic: { CH: 1, C1: 1, C2: 1, C3: 0, C4: 0 }
+      });
+
+      const inputs = [
+        { id: 'coh', value: '0,1' },
+        { id: 'c1', value: '0,2' },
+        { id: 'c2', value: '0,705' },
+        { id: 'c3', value: '0' },
+        { id: 'c4', value: '0' },
+        { id: 'deduction', value: '0' }
+      ];
+
+      const result = calculateScore(inputs, roundingCategory);
+
+      expect(result).toBe('1.005');
+    });
+  });
 });

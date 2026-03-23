@@ -12,7 +12,6 @@ dailytimetableRouter.post('/new', Verify, VerifyRole(), Validate, DailyTimeTable
 
 dailytimetableRouter.get('/dashboard', Verify, VerifyRole(), DailyTimeTableController.dashboard);
 
-dailytimetableRouter.get('/details/:id', Verify, VerifyRole(), DailyTimeTableController.details);
 
 dailytimetableRouter.get('/edit/:id', Verify, VerifyRole(), DailyTimeTableController.editGet);
 

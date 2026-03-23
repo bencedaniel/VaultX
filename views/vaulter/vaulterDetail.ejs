@@ -61,8 +61,8 @@
       <!-- Arm Number -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="ArmNr" name="ArmNr" placeholder="Arm Number" disabled
-                 value="<%= formData ? formData.ArmNr[0].armNumber ? formData.ArmNr[0].armNumber : 'No Arm Nr' : '' %>">
+             <input type="text" class="form-control shadow-none" id="ArmNr" name="ArmNr" placeholder="Arm Number" disabled
+               value="<%= formData && Array.isArray(formData.ArmNr) && formData.ArmNr.length > 0 && formData.ArmNr[0].armNumber ? formData.ArmNr[0].armNumber : (formData && Array.isArray(formData.ArmNr) && formData.ArmNr.length > 0 ? 'No Arm Nr' : '') %>">
           <label for="ArmNr">Arm Number</label>
         </div>
       </div>
@@ -85,7 +85,7 @@
 
       <!-- Edit button -->
       <div class="col-md-12 mt-3">
-        <a class="btn btn-primary w-100" href="/vaulter/edit/<%= formData._id %>">Edit Vaulter</a>
+        <a class="btn btn-primary w-100" href="/vaulter/edit/<%= formData && formData._id ? formData._id : '' %>">Edit Vaulter</a>
       </div>
 
     </div>
