@@ -1,0 +1,56 @@
+<div class="container my-4 border border-black border-1 border-opacity-10 rounded p-3  shadow bg-primary bg-opacity-10 " style="max-width: 80vh;">
+  <h1 class="text-center mb-3">New Help Message</h1>
+
+  <form action="/helpmessages/new" method="POST">
+    <div class="row justify-content-center g-3 m-auto">
+
+      <!-- HelpMessage text -->
+      <div class="col-md-12">
+        <div class="form-floating">
+          <textarea class="form-control shadow-none" id="HelpMessage" name="HelpMessage" required style="height: 100px;"><%= formData && formData.HelpMessage ? formData.HelpMessage : '' %></textarea>
+          <label for="HelpMessage">Help message</label>
+        </div>
+      </div>
+
+      <!-- URL field -->
+      <div class="col-md-12">
+        <div class="form-floating">
+          <input type="text" class="form-control shadow-none" id="url" name="url" placeholder="https://example.com" value="<%= formData && formData.url ? formData.url : '' %>" required>
+          <label for="url">URL</label>
+        </div>
+      </div>
+
+      <!-- Active status -->
+      <div class="col-md-12">
+        <div class="form-floating">
+          <select class="form-select shadow-none" id="active" name="active" required>
+            
+              <option value="true" <%= formData && formData.active === "true" ? 'selected' : '' %>>Active</option>
+              <option value="false" <%= formData && formData.active === "false" ? 'selected' : '' %>>Inactive</option>
+
+          </select>
+          <label for="active">Active</label>
+        </div>
+      </div>
+
+      <!-- Style selection -->
+      <div class="col-md-12">
+        <div class="form-floating">
+          <select class="form-select shadow-none" id="style" name="style" required>
+            <% const styles = ['danger','warning','info','success','primary','secondary','dark','light']; %>
+            <% styles.forEach(s => { %>
+              <option value="<%= s %>" <%= formData && formData.style === s ? 'selected' : '' %>><%= s.charAt(0).toUpperCase() + s.slice(1) %></option>
+            <% }); %>
+          </select>
+          <label for="style">Style</label>
+        </div>
+      </div>
+
+      <div class="col-md-12 mt-3">
+        <button type="submit" class="btn btn-primary w-100">Save</button>
+      </div>
+
+    </div>
+  </form>
+  </div>
+</div>

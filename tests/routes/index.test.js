@@ -14,6 +14,7 @@ const mockSSTempRouter = { name: 'SSTempRouter' };
 const mockScoringRouter = { name: 'scoringRouter' };
 const mockMappingRouter = { name: 'mappingRouter' };
 const mockResultRouter = { name: 'resultRouter' };
+const mockHelpMessageRouter = { name: 'helpMessageRouter' };
 
 jest.mock('../../routes/routes.js', () => ({
   __esModule: true,
@@ -69,6 +70,10 @@ jest.mock('../../routes/alertRouter.js', () => ({
   __esModule: true,
   default: mockAlertRouter
 }));
+jest.mock('../../routes/helpMessageRouter.js', () => ({
+  __esModule: true,
+  default: mockHelpMessageRouter
+}));
 
 jest.mock('../../routes/orderRouter.js', () => ({
   __esModule: true,
@@ -107,7 +112,7 @@ describe('routes/index setupRoutes', () => {
 
     setupRoutes(app);
 
-    expect(app.use).toHaveBeenCalledTimes(16);
+    expect(app.use).toHaveBeenCalledTimes(17);
     expect(app.use.mock.calls).toEqual([
       ['/', mockMainRouter],
       ['/admin', mockAdminRouter],
@@ -121,6 +126,7 @@ describe('routes/index setupRoutes', () => {
       ['/dailytimetable', mockDailyTimetableRouter],
       ['/alerts', mockAlertRouter],
       ['/order', mockOrderRouter],
+      ['/helpmessages', mockHelpMessageRouter],
       ['/scoresheets', mockSSTempRouter],
       ['/scoring', mockScoringRouter],
       ['/mapping', mockMappingRouter],

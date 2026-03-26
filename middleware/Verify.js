@@ -9,6 +9,8 @@ import {
   findUserByIdWithRole,
   getRoleWithPermissions 
 } from "../DataServices/authMiddlewareData.js";
+import { get } from "mongoose";
+import { getHelpMessagebyUri } from "../DataServices/helpMessageData.js";
 
 /**
  * Helper to detect if client wants HTML response (browser) vs JSON (API)
@@ -22,22 +24,10 @@ function wantsHtml(req) {
  * Send 401 Unauthorized response
  */
 function unauthorized(req, res, message = MESSAGES.AUTH.SESSION_EXPIRED) {
-  req.session.failMessage = message;
   
   if (wantsHtml(req)) {
-    // Browser request - send 401 with login page redirect via meta refresh
-    return res.status(HTTP_STATUS.UNAUTHORIZED).send(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta http-equiv="refresh" content="0;url=/login">
-        <title>Unauthorized</title>
-      </head>
-      <body>
-        <p>Unauthorized. Redirecting to login...</p>
-      </body>
-      </html>
-    `);
+    // Browser request - render 401 error page
+    return res.status(HTTP_STATUS.UNAUTHORIZED).render('errorpage', { errorCode: 401, message });
   } else {
     // API request - send JSON
     return res.status(HTTP_STATUS.UNAUTHORIZED).json({ 
@@ -51,23 +41,10 @@ function unauthorized(req, res, message = MESSAGES.AUTH.SESSION_EXPIRED) {
  * Send 403 Forbidden response
  */
 function forbidden(req, res, message = MESSAGES.AUTH.PERMISSION_DENIED, redirectPath = null) {
-  req.session.failMessage = message;
   
   if (wantsHtml(req)) {
-    const referer = redirectPath || req.get('Referer') || '/dashboard';
-    // Browser request - send 403 with redirect via meta refresh
-    return res.status(HTTP_STATUS.FORBIDDEN).send(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta http-equiv="refresh" content="0;url=${referer}">
-        <title>Forbidden</title>
-      </head>
-      <body>
-        <p>Access forbidden. Redirecting...</p>
-      </body>
-      </html>
-    `);
+    // Render the 403 error page from views/errors/403.ejs
+    return res.status(HTTP_STATUS.FORBIDDEN).render('errorpage', { errorCode: 403, message, redirectPath });
   } else {
     // API request - send JSON
     return res.status(HTTP_STATUS.FORBIDDEN).json({ 
@@ -151,6 +128,12 @@ export const Verify = asyncHandler(async (req, res, next) => {
   const { password, ...data } = user._doc;
   req.user = data;
 
+  // Get help message for this URL and attach to res.locals only if exists
+  res.locals.helpMessage = await getHelpMessagebyUri(req.originalUrl);
+ 
+
+
+
   next();
 });
 export const VerifyNoerror = asyncHandler(async (req, res, next) => {
@@ -193,7 +176,6 @@ export function VerifyRole() {
         const allAttachedURLs = permissionsDocs.flatMap(p => p.attachedURL);
 
         let hasPermission = false
-        
         const perm = allAttachedURLs.find(pattern => urlsMatch(pattern.url, req.originalUrl));
         if (!perm) {
           hasPermission = false;
@@ -208,6 +190,9 @@ export function VerifyRole() {
             logWarn('PERMISSION_DENIED', `User ${user.username} with role ${roleFromDB ? roleFromDB.roleName : 'unknown'} tried to access ${req.originalUrl} without permission.`);
             return forbidden(req, res, MESSAGES.AUTH.PERMISSION_DENIED, '/dashboard');
           }
+
+
+
         next();
     });
 }

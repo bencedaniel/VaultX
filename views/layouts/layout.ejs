@@ -41,14 +41,14 @@
 
         <% if (Array.isArray(permissons) && permissons.includes("admin_dashboard")) { %>
            <li class="nav-item">
-            <a href="/admin/dashboard" class="nav-link btn btn-primary m-1 px-3 d-flex align-items-center">
+            <a href="/admin/dashboard" class="nav-link btn btn-primary m-1 px-2 d-flex align-items-center">
                 <i class="bi bi-menu-button-wide fs-5 pe-2"></i>Admin Dashboard</a>
           </li>
         <% } %>
         <% if (Array.isArray(permissons) && permissons.length !== 0) { %>
 
            <li class="nav-item">
-            <a href="/dashboard" class="nav-link btn btn-primary m-1 px-3 d-flex align-items-center">
+            <a href="/dashboard" class="nav-link btn btn-primary m-1 px-2 d-flex align-items-center">
                 <i class="bi bi-menu-button-wide fs-5 pe-2"></i>Dashboard</a>
           </li>
         <% } %>
@@ -57,21 +57,27 @@
 
           <li class="nav-item">
           <a href="/profile/<%= typeof user !== 'undefined' ? user._id : '' %>"
-            class="nav-link btn btn-secondary m-1 px-3 d-flex align-items-center">
+            class="nav-link btn btn-secondary m-1 px-2 d-flex align-items-center">
             <i class="bi bi-person fs-5 pe-2"></i>
             <%= typeof user !== 'undefined' ? user.username : '' %>
           </a>
           </li>
                     <li class="nav-item">
-            <a href="/logout" class="nav-link btn btn-danger m-1 px-3 d-flex align-items-center">
+            <a href="/logout" class="nav-link btn btn-danger m-1 px-2 d-flex align-items-center">
                 <i class="bi bi-box-arrow-right fs-5"></i></a>
           </li>
 
           </li>
                     <li class="nav-item">
-            <a id="alertButton" onclick="openAlertBox()" class="nav-link btn btn-warning m-1 px-3 d-flex align-items-center has-badge" role="button" aria-label="Alerts">
+            <a id="alertButton" onclick="openAlertBox()" class="nav-link btn btn-warning m-1 px-2 d-flex align-items-center has-badge" role="button" aria-label="Alerts">
             <i class="bi bi-bell-fill fs-5" aria-hidden="true"></i>
                     <span class="icon-badge bg-danger text-white rounded-circle d-none" id="alertCounter" aria-hidden="true"></span>
+               </a>
+          </li>
+          </li>
+                    <li class="nav-item">
+            <a id="alertButton" onclick="openHint()" class="nav-link btn btn-info m-1 px-2 d-flex align-items-center has-badge" role="button" aria-label="Alerts">
+            <i class="bi bi-question-circle-fill fs-5" aria-hidden="true"></i>
                </a>
           </li>
         <% } %>
@@ -82,18 +88,18 @@
         %>
         <% if (parent && parent.includes(':did')) { %>
             <li class="nav-item">
-            <a href="<%= parent.split(':did')[0] + dtId %>" class="nav-link btn btn-primary m-1 px-3 d-flex align-items-center">
+            <a href="<%= parent.split(':did')[0] + dtId %>" class="nav-link btn btn-primary m-1 px-2 d-flex align-items-center">
                 <i class="bi bi-arrow-return-left fs-5 pe-2"></i> Back</a>
           </li>
           <% } else if (parent && parent.includes(':pid')) { %>
             <li class="nav-item">
-            <a href="<%= parent.split(':pid')[0] + pid %>" class="nav-link btn btn-primary m-1 px-3 d-flex align-items-center">
+            <a href="<%= parent.split(':pid')[0] + pid %>" class="nav-link btn btn-primary m-1 px-2 d-flex align-items-center">
                 <i class="bi bi-arrow-return-left fs-5 pe-2"></i> Back</a>
 
           </li>
         <% } else { %>
           <li class="nav-item">
-            <a href="<%= parent %>" class="nav-link btn btn-primary m-1 px-3 d-flex align-items-center">
+            <a href="<%= parent %>" class="nav-link btn btn-primary m-1 px-2 d-flex align-items-center">
                 <i class="bi bi-arrow-return-left fs-5 pe-2"></i> Back</a>
           </li>
         <% } %>
@@ -106,7 +112,7 @@
 <main class="container mb-5 my-5"  style="padding-bottom: 80px;">
   <div id="toastContainer"></div>
 
-<% if (successMessage) { %>
+<% if (typeof successMessage !== 'undefined' && successMessage) { %>
   <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 9999;">
     <div id="formSuccessToast" class="toast align-items-center text-white bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="d-flex">
@@ -118,7 +124,7 @@
     </div>
   </div>
 <% } %>
-<% if (failMessage) { %>
+<% if (typeof failMessage !== 'undefined' && failMessage) { %>
   <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 9999;">
     <div id="formFailToast" class="toast align-items-center text-white bg-danger border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="d-flex">
@@ -133,7 +139,37 @@
 
     <%- body %>
 
-<!-- Alert modal (KÜLÖN, nem beágyazva) -->
+<% if (typeof helpMessage === 'undefined') { var helpMessage = null; } %>
+<!-- Hint modal -->
+<div class="modal fade" id="HintViewModal" tabindex="-1" aria-labelledby="HintViewModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header">
+        <h5 class="modal-title text-center" id="HintViewModalLabel">Hint for this page</h5>
+        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+
+        <% if (helpMessage && helpMessage.HelpMessage) { %>
+          <div class="w-100 bg-<%=helpMessage.style%> bg-opacity-25 border border-<%=helpMessage.style%> rounded p-3 mt-2 mb-2">
+            <p><%= helpMessage.HelpMessage %></p>
+          </div>
+        <% } else { %>
+          <div class="w-100 bg-secondary bg-opacity-25 border border-info rounded p-3 mt-2 mb-2">
+            <p>No hint available for this page.</p>
+          </div>
+        <% } %>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Alert modal -->
 <div class="modal fade" id="AlertViewModal" tabindex="-1" aria-labelledby="AlertViewModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content border-0 shadow">
@@ -228,6 +264,7 @@
                  <a href="https://ticket.bencedaniel.hu/open.php" class="text-light" target="_blank">Support</a>
                   <a href="#" class="text-decoration-none text-light ps-4 "><i class="bi bi-arrow-up border border-1 border-light rounded"></i></a>
 
+
                 </div>
                 <% if (test) { %>
 
@@ -268,7 +305,7 @@
     modal.show();
   }
     const alertmodal = new bootstrap.Modal(document.getElementById('AlertViewModal'));
-
+    const hintmodal = new bootstrap.Modal(document.getElementById('HintViewModal'));
     function getCookie(name) {
     const cookie = document.cookie
         .split("; ")
@@ -319,6 +356,9 @@
 
     function openAlertBox(){
       alertmodal.show()
+    }
+    function openHint(){
+      hintmodal.show()
     }
 </script>
 

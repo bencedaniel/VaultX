@@ -11,17 +11,9 @@ const mappingRouter = express.Router();
 mappingRouter.get('/new', Verify, VerifyRole(), mappingController.renderNew);
 mappingRouter.post('/new', Verify, VerifyRole(), mappingController.createNew);
 mappingRouter.get('/dashboard', Verify, VerifyRole(), mappingController.dashboard);
-
-
 mappingRouter.get('/edit/:id', Verify, VerifyRole(), mappingController.editGet);
 mappingRouter.post('/edit/:id', Verify, VerifyRole(), Validate, mappingController.editPost);
-      
 mappingRouter.delete('/delete/:id', Verify, VerifyRole(), mappingController.delete);
-
-     
-      
-
-
 
 
 

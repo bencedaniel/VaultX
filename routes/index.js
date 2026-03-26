@@ -15,6 +15,7 @@ import SSTempRouter from './SSTempRouter.js';
 import scoringRouter from './scoringRouter.js';
 import mappingRouter from './mappingRouter.js';
 import resultRouter from './resultRouter.js';
+import helpMessageRouter from './helpMessageRouter.js';
 
 
 const setupRoutes = (app) => {
@@ -45,6 +46,7 @@ const setupRoutes = (app) => {
   app.use('/dailytimetable', dailytimetableRouter);
   app.use('/alerts', alertRouter);
   app.use('/order', orderRouter);
+  app.use('/helpmessages', helpMessageRouter);
 
   // ============================================
   // SCORING & RESULTS ROUTES

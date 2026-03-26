@@ -139,4 +139,26 @@ describe('views/layouts/layout.ejs', () => {
     expect(htmlWithFlag).toContain('TEST DB ACTIVE!');
     expect(htmlWithoutFlag).not.toContain('TEST DB ACTIVE!');
   });
+
+  test('renders helpMessage in Hint modal when provided', async () => {
+    const helpMessage = {
+      HelpMessage: 'Ez egy súgó üzenet',
+      style: 'info',
+      url: '/test',
+      active: true
+    };
+    const html = await renderLayout({ helpMessage });
+    // Modal should contain the help message text and correct style
+    expect(html).toContain('id="HintViewModal"');
+    expect(html).toContain('Ez egy súgó üzenet');
+    expect(html).toContain('bg-info');
+    expect(html).toContain('border-info');
+  });
+
+  test('renders fallback Hint modal when no helpMessage is provided', async () => {
+    const html = await renderLayout({ helpMessage: null });
+    expect(html).toContain('id="HintViewModal"');
+    // Should show the default/fallback text for missing helpMessage
+    expect(html).toContain('No hint available for this page.');
+  });
 });

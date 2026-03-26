@@ -14,6 +14,7 @@ import {
   findUserByIdWithRole,
   getRoleWithPermissions
 } from '../../DataServices/authMiddlewareData.js';
+import { getHelpMessagebyUri } from '../../DataServices/helpMessageData.js';
 import { logAuth, logError, logWarn } from '../../logger.js';
 
 jest.mock('jsonwebtoken', () => ({
@@ -34,6 +35,7 @@ jest.mock('../../DataServices/authMiddlewareData.js', () => ({
   getRoleWithPermissions: jest.fn()
 }));
 
+
 jest.mock('../../logger.js', () => ({
   logAuth: jest.fn(),
   logError: jest.fn(),
@@ -41,7 +43,17 @@ jest.mock('../../logger.js', () => ({
   logDebug: jest.fn()
 }));
 
+jest.mock('../../DataServices/helpMessageData.js', () => ({
+  getHelpMessagebyUri: jest.fn()
+}));
+
+
 describe('middleware/Verify', () => {
+    // Mock getHelpMessagebyUri for helpMessage population test
+    jest.mock('../../DataServices/helpMessageData.js', () => ({
+      ...jest.requireActual('../../DataServices/helpMessageData.js'),
+      getHelpMessagebyUri: jest.fn()
+    }));
   const createReqRes = ({
     accept = 'application/json',
     tokenInCookie,
@@ -86,7 +98,12 @@ describe('middleware/Verify', () => {
       }),
       cookie: jest.fn(),
       clearCookie: jest.fn(),
-      locals: {}
+      locals: {},
+      render: jest.fn(function render(view, options) {
+        // Csak azt ellenőrizzük, hogy a megfelelő template renderelődik
+        expect(view).toBe('errorpage');
+        expect(options).toEqual(expect.objectContaining({ errorCode: 401, message: MESSAGES.AUTH.SESSION_EXPIRED }));
+      })
     };
 
     return { req, res, next: jest.fn() };
@@ -113,6 +130,17 @@ describe('middleware/Verify', () => {
   });
 
   describe('Verify', () => {
+        test('sets res.locals.helpMessage from getHelpMessagebyUri', async () => {
+          const { req, res, next } = createReqRes({ tokenInCookie: 'ok-token', originalUrl: '/test-url' });
+          const fakeHelp = { HelpMessage: 'Teszt súgó', style: 'info', url: '/test-url', active: true };
+          getHelpMessagebyUri.mockResolvedValueOnce(fakeHelp);
+
+          await Verify(req, res, next);
+
+          expect(getHelpMessagebyUri).toHaveBeenCalledWith('/test-url');
+          expect(res.locals.helpMessage).toEqual(fakeHelp);
+          expect(next).toHaveBeenCalledTimes(1);
+        });
     test('returns unauthorized JSON when token is missing', async () => {
       const { req, res, next } = createReqRes();
 
@@ -124,7 +152,6 @@ describe('middleware/Verify', () => {
         error: 'Unauthorized',
         message: MESSAGES.AUTH.SESSION_EXPIRED
       });
-      expect(req.session.failMessage).toBe(MESSAGES.AUTH.SESSION_EXPIRED);
       expect(next).not.toHaveBeenCalled();
     });
 
@@ -134,8 +161,7 @@ describe('middleware/Verify', () => {
       await Verify(req, res, next);
 
       expect(res.status).toHaveBeenCalledWith(HTTP_STATUS.UNAUTHORIZED);
-      const html = res.send.mock.calls[0][0];
-      expect(html).toContain('url=/login');
+      expect(res.render).toHaveBeenCalledWith('errorpage', { errorCode: 401, message: MESSAGES.AUTH.SESSION_EXPIRED });
       expect(next).not.toHaveBeenCalled();
     });
 

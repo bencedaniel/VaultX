@@ -16,17 +16,16 @@ describe('views/errorpage.ejs', () => {
   test('renders dynamic error code and base error message', async () => {
     const html = await renderErrorPage();
 
-    expect(html).toContain('class="fw-bold text-primary"');
+    expect(html).toContain('class="display-3 fw-bold text-danger mb-2"');
     expect(html).toContain('>500<');
-    expect(html).toContain('Sorry, something went wrong');
   });
 
   test('renders back to home link with dashboard target', async () => {
     const html = await renderErrorPage();
 
     expect(html).toContain('href="/dashboard"');
-    expect(html).toContain('class="btn btn-primary btn-lg"');
-    expect(html).toContain('Back to Home');
+    expect(html).toContain('class="btn btn-outline-dark"');
+    expect(html).toContain('Go to Dashboard');
   });
 
   test('renders custom error code values', async () => {

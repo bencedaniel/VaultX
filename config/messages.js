@@ -50,6 +50,10 @@ export const MESSAGES = {
     ALERT_DELETED: "Alert deleted successfully",
     ALERTS_CREATED: "Alerts created successfully!",
     
+    // Help Messages
+    HELP_MESSAGE_CREATED: "Help message created successfully!",
+    HELP_MESSAGE_UPDATED: "Help message updated successfully!",
+    HELP_MESSAGE_DELETED: "Help message deleted successfully",
     // Categories
     CATEGORY_CREATED: "Category created successfully!",
     CATEGORY_UPDATED: "Category updated successfully!",
@@ -192,5 +196,11 @@ export const MESSAGES = {
     REQUIRED_FIELD: "This field is required",
     INVALID_FORMAT: "Invalid format",
     PERCENTAGE_SUM_ERROR: "The sum of the percentages must be 100%."
+  },
+  HELP: {
+    NO_HELP_AVAILABLE: "No help message available for this page."
   }
+
+
+  
 };

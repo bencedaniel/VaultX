@@ -24,7 +24,7 @@ import { log } from 'console';
 // ============================================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const version = '1.0.11';
+const version = '1.1.0';
 
 const app = express();
 
@@ -151,6 +151,7 @@ app.use((req, res, next) => {
     rolePermissons: req.user?.role?.permissions,
     errorCode: HTTP_STATUS.NOT_FOUND,
     failMessage: req.session?.failMessage || MESSAGES.ERROR.PAGE_NOT_FOUND,
+    message: MESSAGES.ERROR.PAGE_NOT_FOUND,
     user: req.user,
     successMessage: req.session?.successMessage
   });
@@ -163,6 +164,7 @@ app.use((req, res, next) => {
     rolePermissons: req.user?.role?.permissions,
     errorCode: HTTP_STATUS.NOT_FOUND,
     failMessage: req.session.failMessage,
+    message: MESSAGES.ERROR.PAGE_NOT_FOUND,
     user: req.user,
     successMessage: null
   });

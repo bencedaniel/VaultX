@@ -10,7 +10,8 @@
         "test:integration": "jest --testPathPattern='(controllers|routes|middleware|DataServices)' --no-coverage",
         "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
         "lint": "eslint . --ext .js",
-        "dev": "nodemon app.js"
+        "docker:build:push": "docker buildx build --platform linux/amd64,linux/arm64 -t bencedaniel/vaultx:latest --push .",
+        "docker:build": "docker buildx build --platform linux/amd64,linux/arm64 -t bencedaniel/vaultx:latest ."
     },
     "dependencies": {
         "axios": "^1.9.0",

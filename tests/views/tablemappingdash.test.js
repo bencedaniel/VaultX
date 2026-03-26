@@ -76,7 +76,7 @@ describe('tablemappingdash.ejs', () => {
   it('renders the delete modal', async () => {
     const html = await render();
     expect(html).toContain('id="deleteModal"');
-    expect(html).toContain('Delete horse');
+    expect(html).toContain('Delete Mapping');
     expect(html).toContain('Are you sure you want to delete this mapping?');
     expect(html).toContain('id="confirmDeleteButton"');
   });
