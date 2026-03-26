@@ -1,5 +1,6 @@
 import path from 'path';
 import ejs from 'ejs';
+import { BACKUP_CONTAINER } from '../../config/env';
 
 const layoutPath = path.resolve(process.cwd(), 'views/layouts/layout.ejs');
 
@@ -14,6 +15,7 @@ function renderLayout(overrides = {}) {
     failMessage: null,
     body: '<div>Inner content</div>',
     alerts: [],
+
     selectedEvent: {
       EventName: 'Test Event',
       EventLocation: 'Budapest',
@@ -21,6 +23,7 @@ function renderLayout(overrides = {}) {
       EventDirectorContact: 'director@example.com',
       AssignedOfficials: []
     },
+    backup_container: false,
     test: false,
     timeout: 10,
     version: '1.0.0',
@@ -160,5 +163,9 @@ describe('views/layouts/layout.ejs', () => {
     expect(html).toContain('id="HintViewModal"');
     // Should show the default/fallback text for missing helpMessage
     expect(html).toContain('No hint available for this page.');
+  });
+    test('renders backup container indicator when enabled', async () => {
+    const html = await renderLayout({ backup_container: true });
+    expect(html).toContain('text-success');
   });
 });

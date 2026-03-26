@@ -11,7 +11,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import { JWT_CONFIG, COOKIE_CONFIG } from './config/index.js';
-import { MONGODB_URI, PORT, SECRET_ACCESS_TOKEN, SECURE_MODE, SECRET_API_KEY, TESTDB, TRUST_PROXY, DOMAIN, TIMEOUT } from './config/env.js';
+import { MONGODB_URI, PORT, SECRET_ACCESS_TOKEN, SECURE_MODE, SECRET_API_KEY, TESTDB, TRUST_PROXY, DOMAIN, TIMEOUT,BACKUP_CONTAINER} from './config/env.js';
 import Event from './models/Event.js';
 import Alert from './models/Alert.js';
 import { StoreUserWithoutValidation } from './middleware/Verify.js';
@@ -24,12 +24,12 @@ import { log } from 'console';
 // ============================================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const version = '1.1.0';
+const version = '1.1.0a';
 
 const app = express();
 
 // Validate environment variables
-if (!MONGODB_URI || !PORT || !SECRET_ACCESS_TOKEN || !SECRET_API_KEY || !TRUST_PROXY || !DOMAIN || !TIMEOUT) {
+if (!MONGODB_URI || !PORT || !SECRET_ACCESS_TOKEN || !SECRET_API_KEY || !TRUST_PROXY || !DOMAIN || !TIMEOUT || !BACKUP_CONTAINER) {
   logError('ENV_VALIDATION', 'Missing required environment variables ');
   process.exit(1);
 } else {
@@ -122,6 +122,7 @@ app.use(async (req, res, next) => {
     res.locals.selectedEvent = await Event.findOne({ selected: true });
     res.locals.version = version;
     res.locals.timeout = parseInt(TIMEOUT, 10);
+    res.locals.backup_container = BACKUP_CONTAINER === 'true';
     next();
   } catch (err) {
     logError('GLOBAL_MIDDLEWARE', `Error in global middleware: ${err}`);
@@ -131,6 +132,7 @@ app.use(async (req, res, next) => {
     res.locals.selectedEvent = null;
     res.locals.version = version;
     res.locals.timeout = parseInt(TIMEOUT, 10);
+    res.locals.backup_container = BACKUP_CONTAINER === 'true';
     next();
   }
 });
@@ -191,6 +193,7 @@ app.listen(PORT, () => {
   logInfo(`Trust Proxy: ${TRUST_PROXY}`);
   logInfo(`Domain: ${DOMAIN}`);
   logInfo(`Timeout: ${TIMEOUT} minutes`);
+  logWarn('BACKUP_CONTAINER', `Backup Container: ${BACKUP_CONTAINER ? 'ENABLED' : 'disabled'}`);
   logInfo('---------------------------------------------');
   logInfo(
     `Server running at ${process.env.NODE_ENV === 'development'

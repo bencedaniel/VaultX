@@ -256,7 +256,7 @@
                           <p class="mb-0 position-absolute opacity-50 small bottom-0">Logout time: <span id="logouttime"></span> m</p>
                   <% } %>
             <div class="container d-flex justify-content-between align-items-center flex-wrap p-0">
-                <p class="mb-0"><button <% if (test) { %> onclick="showTestDbIndicator()" <% } %> class="bg-dark border-0 text-white text-decoration-none">VaultX</button>&copy; 2026 | v<%= version %></p>
+                <p class="mb-0"><button <% if (test) { %> onclick="showTestDbIndicator()" <% } %> class="bg-dark border-0 <%= backup_container ? "text-success": "text-white" %> text-decoration-none">VaultX</button>&copy; 2026 | v<%= version %></p>
                 <p class="mb-0"> Event: <button onclick="showEventPopup()" class="bg-dark border-0 text-white text-decoration-underline" ><%= selectedEvent?.EventName || 'N/A' %></button></p>
 
                 <div>

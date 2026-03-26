@@ -8,6 +8,7 @@ import {
   TRUST_PROXY,
   DOMAIN,
   TIMEOUT,
+  BACKUP_CONTAINER,
 } from '../../config/env.js';
 
 describe('config/env', () => {
@@ -21,6 +22,7 @@ describe('config/env', () => {
     expect(TRUST_PROXY).toBe(process.env.TRUST_PROXY);
     expect(DOMAIN).toBe(process.env.DOMAIN);
     expect(TIMEOUT).toBe(process.env.TIMEOUT);
+    expect(BACKUP_CONTAINER).toBe(process.env.BACKUP_CONTAINER);
   });
 
   test('exports values as strings or undefined', () => {
@@ -34,6 +36,7 @@ describe('config/env', () => {
       TRUST_PROXY,
       DOMAIN,
       TIMEOUT,
+      BACKUP_CONTAINER
     ];
 
     for (const value of values) {

@@ -13,3 +13,4 @@ export const TESTDB = process.env.TESTDB;
 export const TRUST_PROXY = process.env.TRUST_PROXY;
 export const DOMAIN = process.env.DOMAIN;
 export const TIMEOUT = process.env.TIMEOUT;
+export const BACKUP_CONTAINER = process.env.BACKUP_CONTAINER;

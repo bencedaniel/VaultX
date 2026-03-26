@@ -38,7 +38,7 @@ describe('app.js source wiring', () => {
   });
 
   test('validates critical env variables before startup', () => {
-    expect(source).toContain('if (!MONGODB_URI || !PORT || !SECRET_ACCESS_TOKEN || !SECRET_API_KEY || !TRUST_PROXY || !DOMAIN || !TIMEOUT)');
+    expect(source).toContain('if (!MONGODB_URI || !PORT || !SECRET_ACCESS_TOKEN || !SECRET_API_KEY || !TRUST_PROXY || !DOMAIN || !TIMEOUT || !BACKUP_CONTAINER) {');
     expect(source).toContain('process.exit(1);');
   });
 });
