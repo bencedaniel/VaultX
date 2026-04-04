@@ -16,7 +16,7 @@ describe('newResultCalc.ejs', () => {
 
   it('renders the New result calc template header and form action', async () => {
     const html = await render();
-    expect(html).toContain('New result calc template');
+    expect(html).toContain('New result calculation template');
     expect(html).toContain('form action="/result/calcTemp/new" method="POST"');
   });
 
@@ -45,9 +45,9 @@ describe('newResultCalc.ejs', () => {
     expect(html).toContain('label for="round1FirstP"');
     expect(html).toContain('label for="round1SecondP"');
     expect(html).toContain('label for="round2FirstP"');
-    expect(html).toContain('placeholder="Round 1 first Percentage"');
-    expect(html).toContain('placeholder="Round 1 second Percentage"');
-    expect(html).toContain('placeholder="Round 2 first Percentage"');
+    expect(html).toContain('placeholder="Test 1 Percentage"');
+    expect(html).toContain('placeholder="Test 2 Percentage"');
+    expect(html).toContain('placeholder="Final Percentage"');
   });
 
   it('renders the submit button', async () => {

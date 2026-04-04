@@ -1,5 +1,5 @@
 <div class="container my-4 border border-black border-1 border-opacity-10 rounded p-3 shadow bg-primary bg-opacity-10 " style="max-width: 80vh;">
-  <h1 class="text-center mb-3">Lunger Details</h1>
+  <h1 class="text-center mb-3">Lunger details</h1>
 
   <form action="" method="POST">
     <div class="row justify-content-center g-3 m-auto">
@@ -7,9 +7,9 @@
       <!-- Lunger Name -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="Name" name="Name" placeholder="Lunger Name" disabled
-                 value="<%= formData ? formData.Name : '' %>" autocomplete="off">
-          <label for="Name">Lunger Name</label>
+             <input type="text" class="form-control shadow-none" id="Name" name="Name" placeholder="Lunger name" disabled
+               value="<%= formData ? formData.Name : '' %>" autocomplete="off">
+             <label for="Name">Lunger name</label>
         </div>
       </div>
 
@@ -46,7 +46,7 @@
         <label class="form-label mb-2">Incidents</label>
         <div class="p-1 px-2 border border-1 border-black border-opacity-25 rounded">
         <input type="checkbox" class="form-check-input me-2" id="filterCheck" onchange="loadFilteredData()" checked>
-        <label for="filterCheck"> Filter to the selected event</label>
+        <label for="filterCheck"> Filter for selected event</label>
         </div>
         </div>
 
@@ -82,7 +82,7 @@
                     <select class="form-select" id="incidentType" name="incidentType" required>
                       <option value="">Select Incident Type</option>
                       <option value="Injury">Injury</option>
-                      <option value="Withdraw">Withdraw</option>
+                      <option value="Withdraw">Withdrawal</option>
                       <option value="Yellow card">Yellow Card</option>
                       <option value="Warning">Warning</option>
                       <option value="Elimination">Elimination</option>

@@ -16,7 +16,7 @@ describe('tablemappingdash.ejs', () => {
 
   it('renders the Mapping Management header', async () => {
     const html = await render();
-    expect(html).toContain('Mapping Management');
+    expect(html).toContain('Mapping manager');
   });
 
   it('renders the search input and dropdown', async () => {
@@ -30,14 +30,14 @@ describe('tablemappingdash.ejs', () => {
   it('renders the Create New Mapping button', async () => {
     const html = await render();
     expect(html).toContain('href="/mapping/new"');
-    expect(html).toContain('Create New Mapping');
+    expect(html).toContain('Create new mapping');
   });
 
   it('renders the table headers', async () => {
     const html = await render();
     expect(html).toContain('Table');
-    expect(html).toContain('TestType');
-    expect(html).toContain('Role');
+    expect(html).toContain('Test type');
+    expect(html).toContain('Scoresheet type');
   });
 
   it('renders mapping rows with correct data', async () => {
@@ -76,7 +76,7 @@ describe('tablemappingdash.ejs', () => {
   it('renders the delete modal', async () => {
     const html = await render();
     expect(html).toContain('id="deleteModal"');
-    expect(html).toContain('Delete Mapping');
+    expect(html).toContain('Delete mapping');
     expect(html).toContain('Are you sure you want to delete this mapping?');
     expect(html).toContain('id="confirmDeleteButton"');
   });

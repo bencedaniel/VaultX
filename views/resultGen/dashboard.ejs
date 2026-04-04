@@ -2,7 +2,7 @@
   <ul class="list-group">
 
     <li class="list-group-item border-0">
-        <h3 class="text-center">Result generator Management</h3>
+        <h3 class="text-center">Result generator manager</h3>
     </li>
 
   </ul>
@@ -21,7 +21,7 @@
 
         </div>
   </div>
-        <a href="/result/generator/new" class="btn btn-outline-primary w-50">Create New Result Calc</a>
+        <a href="/result/generator/new" class="btn btn-outline-primary w-50">Create new result generator</a>
 
   </div>
 
@@ -30,7 +30,6 @@
             <th scope="col">Category</th>
             <th scope="col">Calc template</th>
             <th scope="col">Status</th>
-
             <th scope="col"  width="10%">&nbsp;</th>
 
         </thead>
@@ -38,7 +37,7 @@
             <% generators.forEach(generator => { %>
       <tr>
         <td><%= generator.category.CategoryDispName %></td>
-        <td>R1F: <%= generator.calcSchemaTemplate.round1FirstP %>%, R1S: <%= generator.calcSchemaTemplate.round1SecondP %>%, R2F: <%= generator.calcSchemaTemplate.round2FirstP %>%</td>
+        <td>T1: <%= generator.calcSchemaTemplate.round1FirstP %>%, T2: <%= generator.calcSchemaTemplate.round1SecondP %>%, F: <%= generator.calcSchemaTemplate.round2FirstP %>%</td>
 
         <td><select name="" id="status-<%= generator._id %>" class="form-select shadow-none" onchange="updateGenerator('<%= generator._id %>', this.value)">
             <option value="true" <%= generator.active == true ? 'selected' : '' %>>Active</option>

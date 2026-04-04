@@ -25,7 +25,7 @@ describe('perprogram.ejs – Scoring Judge (Scoring view per program)', () => {
     expect(html).toContain('Start time:');
     expect(html).toContain('Round: R1');
     expect(html).toContain('Test type: TypeA');
-    expect(html).toContain('Nr of starters: 0');
+    expect(html).toContain('Number of starters: 0');
     expect(html).toContain('Table: A');
     expect(html).toContain('Judge name: Judge Dredd');
   });
@@ -39,7 +39,7 @@ describe('perprogram.ejs – Scoring Judge (Scoring view per program)', () => {
 
   it('renders table headers correctly', async () => {
     const html = await render();
-    expect(html).toContain('Order Nr.');
+    expect(html).toContain('Order nr.');
     expect(html).toContain('Vaulter(s)');
     expect(html).toContain('Lunger');
     expect(html).toContain('Horse');
@@ -93,7 +93,7 @@ describe('perprogram.ejs – Scoring Judge (Scoring view per program)', () => {
     expect(html).toContain('Cat2');
     expect(html).toContain("location.href='/scoring/newscoresheet/e2/tp1'");
     // Button for e2 should be disabled
-    expect(html).toMatch(/<button[^>]*disabled[^>]*>Add Score sheet<\/button>/);
+    expect(html).toMatch(/<button[^>]*disabled[^>]*>Add scoresheet<\/button>/);
   });
 
   it('disables Add Score sheet button for Not authorized judge', async () => {
@@ -117,7 +117,7 @@ describe('perprogram.ejs – Scoring Judge (Scoring view per program)', () => {
       ]
     };
     const html = await render(timetablePart, 'A', 'Not authorized judge', []);
-    expect(html).toMatch(/<button[^>]*disabled[^>]*>Add Score sheet<\/button>/);
+    expect(html).toMatch(/<button[^>]*disabled[^>]*>Add scoresheet<\/button>/);
   });
 
   it('renders correct classes for layout and styling', async () => {

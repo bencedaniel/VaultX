@@ -33,12 +33,12 @@ describe('views/category/categorydash.ejs', () => {
   test('renders header, search controls and create button', async () => {
     const html = await renderCategoryDash();
 
-    expect(html).toContain('Category Management');
+    expect(html).toContain('Category manager');
     expect(html).toContain('id="search"');
     expect(html).toContain('id="dropdownMenuButton"');
     expect(html).toContain('id="dropdownMenu"');
     expect(html).toContain('href="/category/new"');
-    expect(html).toContain('Create New Category');
+    expect(html).toContain('Create new category');
   });
 
   test('renders table headers and category rows', async () => {
@@ -47,9 +47,9 @@ describe('views/category/categorydash.ejs', () => {
     expect(html).toContain('id="TableBody"');
     expect(html).toContain('<th scope="col">Name</th>');
     expect(html).toContain('<th scope="col">Type</th>');
-    expect(html).toContain('<th scope="col">Sex</th>');
-    expect(html).toContain('<th scope="col">Agegroup</th>');
-    expect(html).toContain('<th scope="col">Star </th>');
+    expect(html).toContain('<th scope="col">Gender</th>');
+    expect(html).toContain('<th scope="col">Age group</th>');
+    expect(html).toContain('<th scope="col">Star</th>');
 
     expect(html).toContain('>Junior Female<');
     expect(html).toContain('>Compulsory<');

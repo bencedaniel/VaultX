@@ -42,12 +42,12 @@ describe('views/admin/permdash.ejs', () => {
   test('renders header, search controls and create button', async () => {
     const html = await renderPermDash();
 
-    expect(html).toContain('Permission Management');
+    expect(html).toContain('Permission manager');
     expect(html).toContain('id="search"');
     expect(html).toContain('id="dropdownMenuButton"');
     expect(html).toContain('id="dropdownMenu"');
     expect(html).toContain('href="/admin/newPermission"');
-    expect(html).toContain('Create New Permission');
+    expect(html).toContain('Create new permission');
   });
 
   test('renders table headers and permission rows', async () => {
@@ -57,11 +57,11 @@ describe('views/admin/permdash.ejs', () => {
     expect(html).toContain('id="userTableBody"');
 
     expect(html).toContain('<th scope="col">Name</th>');
-    expect(html).toContain('<th scope="col">Display Name</th>');
-    expect(html).toContain('<th scope="col">Attached URL</th>');
-    expect(html).toContain('<th scope="col">Attached Roles</th>');
-    expect(html).toContain('<th scope="col">Attached Cards</th>');
-    expect(html).toContain('<th scope="col">Attached Alerts</th>');
+    expect(html).toContain('<th scope="col">Display name</th>');
+    expect(html).toContain('<th scope="col">URL attached</th>');
+    expect(html).toContain('<th scope="col">Roles attached</th>');
+    expect(html).toContain('<th scope="col">Cards attached</th>');
+    expect(html).toContain('<th scope="col">Alerts attached</th>');
 
     expect(html).toContain('>admin.users<');
     expect(html).toContain('>Admin Users<');

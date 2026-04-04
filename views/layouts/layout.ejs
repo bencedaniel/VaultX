@@ -35,14 +35,14 @@
   <ul class="navbar-nav ms-auto bg-secondary rounded bg-opacity-25  mt-2">
 
         <%
-          // Ha nincs definiálva, legyen üres tömb
+          // If not defined, use an empty array
           const permissons = typeof rolePermissons !== "undefined" ? rolePermissons : [];
         %>
 
         <% if (Array.isArray(permissons) && permissons.includes("admin_dashboard")) { %>
            <li class="nav-item">
             <a href="/admin/dashboard" class="nav-link btn btn-primary m-1 px-2 d-flex align-items-center">
-                <i class="bi bi-menu-button-wide fs-5 pe-2"></i>Admin Dashboard</a>
+                <i class="bi bi-menu-button-wide fs-5 pe-2"></i>Admin dashboard</a>
           </li>
         <% } %>
         <% if (Array.isArray(permissons) && permissons.length !== 0) { %>
@@ -76,7 +76,7 @@
           </li>
           </li>
                     <li class="nav-item">
-            <a id="alertButton" onclick="openHint()" class="nav-link btn btn-info m-1 px-2 d-flex align-items-center has-badge" role="button" aria-label="Alerts">
+            <a id="hintButton" onclick="openHint()" class="nav-link btn btn-info m-1 px-2 d-flex align-items-center has-badge" role="button" aria-label="Alerts">
             <i class="bi bi-question-circle-fill fs-5" aria-hidden="true"></i>
                </a>
           </li>
@@ -217,10 +217,10 @@
       <div class="modal-body">
 
         <div class="mb-4 border rounded p-3 bg-primary bg-opacity-10 border-primary">
-          <h5 class="h5 text-center border-bottom pb-2 border-primary">Basic informations</h5>
-        <p class="mt-3"><strong>Event Name:</strong> <%= selectedEvent?.EventName || 'N/A' %> </p>
+          <h5 class="h5 text-center border-bottom pb-2 border-primary">Basic information</h5>
+        <p class="mt-3"><strong>Event name:</strong> <%= selectedEvent?.EventName || 'N/A' %> </p>
         <p class="mt-3"><strong>Location:</strong> <%= selectedEvent?.EventLocation || 'N/A' %> </p>
-        <p class="mt-3"><strong>Director Name:</strong> <%= selectedEvent?.EventDirectorName || 'N/A' %> </p>
+        <p class="mt-3"><strong>Director name:</strong> <%= selectedEvent?.EventDirectorName || 'N/A' %> </p>
         <p class="mt-3 ms-4"><strong>Contact:</strong> <%= selectedEvent?.EventDirectorContact || 'N/A' %> </p>
         </div>
         <div class="mb-4 border rounded p-3 bg-danger bg-opacity-10 border-danger " style="max-height: 40vh; overflow: auto;">
@@ -378,7 +378,7 @@ window.addEventListener("popstate", function () {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    const timeoutMinutes = parseInt("<%= timeout %>"); // EJS-ből kapott érték
+    const timeoutMinutes = parseInt("<%= timeout %>"); // Value received from EJS
     var remaining = timeoutMinutes * 60 * 1000; // Convert minutes to milliseconds
     document.getElementById("logouttime").innerHTML = timeoutMinutes;
     setTimeout(() => {

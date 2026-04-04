@@ -14,9 +14,9 @@ describe('editResultCalc.ejs', () => {
     return await ejs.render(template, { formData: {}, ...data }, {async: true});
   };
 
-  it('renders the Edit result calc template header and form action', async () => {
+  it('renders the Edit result calculation template header and form action', async () => {
     const html = await render({formData: {_id: 'calc1'}});
-    expect(html).toContain('Edit result calc template');
+    expect(html).toContain('Edit result calculation template');
     expect(html).toContain('form action="/result/calcTemp/edit/calc1" method="POST"');
   });
 
@@ -46,15 +46,15 @@ describe('editResultCalc.ejs', () => {
     expect(html).toContain('label for="round1FirstP"');
     expect(html).toContain('label for="round1SecondP"');
     expect(html).toContain('label for="round2FirstP"');
-    expect(html).toContain('placeholder="Round 1 first Percentage"');
-    expect(html).toContain('placeholder="Round 1 second Percentage"');
-    expect(html).toContain('placeholder="Round 2 first Percentage"');
+    expect(html).toContain('placeholder="Test 1 Percentage"');
+    expect(html).toContain('placeholder="Test 2 Percentage"');
+    expect(html).toContain('placeholder="Final Percentage"');
   });
 
   it('renders the submit button', async () => {
     const html = await render();
     expect(html).toContain('button type="submit"');
-    expect(html).toContain('Edit');
+    expect(html).toContain('Save changes');
   });
 
   it('renders the container with correct classes', async () => {

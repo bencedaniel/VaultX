@@ -9,7 +9,7 @@ describe('dashboard.ejs – SS Template Management', () => {
 
   it('renders the main header and container', async () => {
     const html = await render();
-    expect(html).toContain('SS Template Management');
+    expect(html).toContain('Scoresheet template manager');
     expect(html).toContain('container my-4');
   });
 
@@ -19,15 +19,15 @@ describe('dashboard.ejs – SS Template Management', () => {
     expect(html).toContain('dropdown-menu');
     expect(html).toContain('Select column');
     expect(html).toContain('href="/scoresheets/create"');
-    expect(html).toContain('Create New ScoreSheet Template');
+    expect(html).toContain('Create new scoresheet template');
   });
 
   it('renders table headers correctly', async () => {
     const html = await render();
-    expect(html).toContain('Categorys');
-    expect(html).toContain('Number of Judges');
-    expect(html).toContain('Type of Scores');
-    expect(html).toContain('Test Type');
+    expect(html).toContain('Categories');
+    expect(html).toContain('Number of judges');
+    expect(html).toContain('Type of scores');
+    expect(html).toContain('Test type');
   });
 
   it('renders scoresheet rows with correct data and edit/delete buttons', async () => {

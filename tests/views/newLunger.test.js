@@ -18,7 +18,7 @@ describe('newLunger.ejs', () => {
 
   it('renders the Add New Lunger header and form action', async () => {
     const html = await render();
-    expect(html).toContain('Add New Lunger');
+    expect(html).toContain('Add new lunger');
     expect(html).toContain('form action="/lunger/new" method="POST"');
   });
 

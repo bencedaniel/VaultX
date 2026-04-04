@@ -1,5 +1,5 @@
 <div class="container my-4 border border-black border-1 border-opacity-10 rounded p-3 shadow bg-primary bg-opacity-10" style="max-width: 80vh;">
-  <h1 class="text-center mb-3">Edit Entry</h1>
+  <h1 class="text-center mb-3">Edit entry</h1>
 
   <form action="/entry/edit/<%= formData._id %>" method="POST">
     <div class="row justify-content-center g-3 m-auto">
@@ -147,7 +147,7 @@
         </div>
       </div>
 
-      <!-- Vaulters felirat mindig látszik -->
+      <!-- Vaulters label always visible -->
       <div class="col-md-12 mt-5">
         <div class="position-relative border border-1 border-secondary rounded border-opacity-25 pt-3">
           <div
@@ -257,7 +257,7 @@
       }
     }
     categorySelect.addEventListener('change', function() {
-      // Ha a kategória változik, ne legyenek előre kiválasztott vaulterek
+      // If the category changes, do not preselect vaulters
       const selectedCategoryId = categorySelect.value;
       const type = categoryTypeMap[selectedCategoryId];
       if (type === 'Squad') {

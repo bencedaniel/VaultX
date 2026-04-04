@@ -72,7 +72,7 @@ describe('views/alert/editAlert.ejs', () => {
     });
 
     expect(html).toContain('placeholder="Search Style"');
-    expect(html).toContain('value="Primary (Save with this option not allowed)"');
+    expect(html).toContain('Primary (save with this option not allowed)');
     expect(html).toMatch(/type="hidden"\s+class="searchable-hidden"\s+name="style"\s+id="style"\s*value="primary"/);
   });
 

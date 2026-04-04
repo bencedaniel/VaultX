@@ -11,7 +11,7 @@ describe('views/creators.ejs', () => {
   test('renders main section title and container classes', async () => {
     const html = await renderCreators();
 
-    expect(html).toContain('Core and Support Team');
+    expect(html).toContain('Core and support team');
     expect(html).toContain('container py-5');
     expect(html).toContain('bg-primary bg-opacity-10');
     expect(html).toContain('rounded border-2 border-black border');
@@ -29,24 +29,24 @@ describe('views/creators.ejs', () => {
   test('renders all three team member names and role descriptions', async () => {
     const html = await renderCreators();
 
-    expect(html).toContain('Dániel Bence');
+    expect(html).toContain('Daniel Bence');
     expect(html).toContain('Developer, with 5 years scoring office and vaulting event experience');
 
-    expect(html).toContain('András Bence-Kiss');
-    expect(html).toContain('Lvl 4 Steward');
+    expect(html).toContain('Andras Bence-Kiss');
+    expect(html).toContain('Level 4 steward');
 
     expect(html).toContain('Krisztina Bence-Kiss');
-    expect(html).toContain('Lvl 3 Judge');
+    expect(html).toContain('Level 3 judge');
   });
 
   test('renders team member images and alt attributes', async () => {
     const html = await renderCreators();
 
     expect(html).toContain('src="/static/daniel.jpg"');
-    expect(html).toContain('alt="Dániel Bence"');
+    expect(html).toContain('alt="Daniel Bence"');
 
     expect(html).toContain('src="/static/andras.jpg"');
-    expect(html).toContain('alt="András Bence-Kiss"');
+    expect(html).toContain('alt="Andras Bence-Kiss"');
 
     expect(html).toContain('src="/static/krisztina.jpg"');
     expect(html).toContain('alt="Krisztina Bence-Kiss"');

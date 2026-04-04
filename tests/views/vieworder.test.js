@@ -63,8 +63,7 @@ describe('views/order/vieworder.ejs', () => {
   test('renders header, search controls and table headers', async () => {
     const html = await renderViewOrder();
 
-    expect(html).toContain('Order editor : Friday');
-    expect(html).toContain('Morning Session');
+    expect(html).toContain('Order editor: Friday » Morning Session');
     expect(html).toContain('id="search"');
     expect(html).toContain('id="dropdownMenuButton"');
     expect(html).toContain('id="dropdownMenu"');
@@ -73,7 +72,7 @@ describe('views/order/vieworder.ejs', () => {
     expect(html).toContain('<th scope="col">Horse</th>');
     expect(html).toContain('<th scope="col">Lunger</th>');
     expect(html).toContain('<th scope="col">Status</th>');
-    expect(html).toContain('Order Nr.');
+    expect(html).toContain('Order nr.');
   });
 
   test('resolves vaulter display by priority: teamName, object, array, N/A', async () => {

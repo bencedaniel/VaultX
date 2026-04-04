@@ -37,7 +37,7 @@ describe('views/ssTemp/newScoreSheet.ejs', () => {
     expect(html).toContain('id="confirmModal"');
     expect(html).toContain('id="promptModal"');
     expect(html).toContain('>New template<');
-    expect(html).toContain('New Template');
+    expect(html).toContain('New template');
   });
 
   test('checks TestType values when formData.TestType is an array', async () => {

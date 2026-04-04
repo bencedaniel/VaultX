@@ -1,5 +1,5 @@
 <div class="container my-4 border border-black border-1 border-opacity-10 rounded p-3  shadow bg-primary bg-opacity-10 " style="max-width: 80vh;">
-  <h1 class="text-center mb-3">Edit result calc template</h1>
+  <h1 class="text-center mb-3">New result group template</h1>
 
   <form action="/result/groups/new" method="POST">
     <div class="row justify-content-center g-3 m-auto">
@@ -69,7 +69,7 @@
         <div class="form-floating position-relative searchable-dropdown">
           <i class="bi bi-chevron-down position-absolute top-50 end-0 pe-3 translate-middle-y"></i>
           <input type="text" class="form-control shadow-none searchable-input"
-                 placeholder="Search round 1 first part program"
+                 placeholder="Search round 1 first part competition"
                  autocomplete="off"
                  <% if (formData) { %>
                  <% timetablePartsRound1.forEach(element => { %>
@@ -80,7 +80,7 @@
                   <% }%>
 
                   >
-          <label class="form-label">Round 1 First Part program</label>
+          <label class="form-label">Test 1 competition</label>
           <input type="hidden" class="searchable-hidden" name="round1First"
                  value="<%= formData ? (formData?.round1First?._id || formData?.round1First || '') : '' %>">
           <!-- Dropdown list -->
@@ -99,7 +99,7 @@
         <div class="form-floating position-relative searchable-dropdown">
           <i class="bi bi-chevron-down position-absolute top-50 end-0 pe-3 translate-middle-y"></i>
           <input type="text" class="form-control shadow-none searchable-input"
-                 placeholder="Search round 1 second part program"
+                 placeholder="Search round 1 second part competition"
                  autocomplete="off"
                  <% if (formData) { %>
                  <% timetablePartsRound1.forEach(element => { %>
@@ -110,7 +110,7 @@
                   <% }%>
 
                   >
-          <label class="form-label">Round 1 Second Part program</label>
+          <label class="form-label">Test 2 competition</label>
           <input type="hidden" class="searchable-hidden" name="round1Second"
                  value="<%= formData ? (formData?.round1Second?._id || formData?.round1Second || '') : '' %>">
           <!-- Dropdown list -->
@@ -130,7 +130,7 @@
         <div class="form-floating position-relative searchable-dropdown">
           <i class="bi bi-chevron-down position-absolute top-50 end-0 pe-3 translate-middle-y"></i>
           <input type="text" class="form-control shadow-none searchable-input"
-                 placeholder="Search round 2 First part program"
+                 placeholder="Search round 2 First part competition"
                  autocomplete="off"
                  <% if (formData) { %>
                  <% timetablePartsRound2.forEach(element => { %>
@@ -141,7 +141,7 @@
                   <% }%>
 
                   >
-          <label class="form-label">Round 2 First Part program</label>
+          <label class="form-label">Final competition</label>
           <input type="hidden" class="searchable-hidden" name="round2First"
                  value="<%= formData ? (formData?.round2First?._id || formData?.round2First || '') : '' %>">
           <!-- Dropdown list -->

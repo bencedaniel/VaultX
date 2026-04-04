@@ -1,14 +1,14 @@
 <div class="container my-4">
   <div class="p-3 mb-4 bg-primary bg-opacity-10 border border-1 border-black border-opacity-10 rounded text-center">
-    <h2 class="m-0">VaultX Dashboard</h2>
+    <h2 class="m-0">VaultX dashboard</h2>
   </div>
 
   <div class="row g-4 text-center justify-content-center">
     <%
-      // Például itt definiálod a kártya "adatbázist"
-      const allCards = cardsFromDB; // Feltételezve, hogy ez egy tömb objektumokkal
+      // For example, define the card "database" here
+      const allCards = cardsFromDB; // Assuming this is an array of objects
 
-      // Ha nincs rolePermissons, legyen üres tömb
+      // If there are no rolePermissions, use an empty array
       const permissons = typeof rolePermissons !== "undefined" ? rolePermissons : [];
     %>
 

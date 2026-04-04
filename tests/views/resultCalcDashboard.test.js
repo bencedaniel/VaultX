@@ -14,9 +14,9 @@ describe('resultCalcDashboard.ejs', () => {
     return await ejs.render(template, { resultCalcs: [], ...data }, {async: true});
   };
 
-  it('renders the Result Calculation Management header', async () => {
+  it('renders the Result calculation manager header', async () => {
     const html = await render();
-    expect(html).toContain('Result Calculation Management');
+    expect(html).toContain('Result calculation manager');
   });
 
   it('renders the search input and dropdown', async () => {
@@ -27,17 +27,17 @@ describe('resultCalcDashboard.ejs', () => {
     expect(html).toContain('Select column');
   });
 
-  it('renders the Create New Result Calc button', async () => {
+  it('renders the Create new result calculation button', async () => {
     const html = await render();
     expect(html).toContain('href="/result/calcTemp/new"');
-    expect(html).toContain('Create New Result Calc');
+    expect(html).toContain('Create new result calculation');
   });
 
   it('renders the table headers', async () => {
     const html = await render();
-    expect(html).toContain('Round 1 First');
-    expect(html).toContain('Round 1 Second');
-    expect(html).toContain('Round 2 First');
+    expect(html).toContain('Test 1');
+    expect(html).toContain('Test 2');
+    expect(html).toContain('Final');
   });
 
   it('renders resultCalc rows with correct data and percent sign', async () => {
@@ -76,7 +76,7 @@ describe('resultCalcDashboard.ejs', () => {
   it('renders the delete modal', async () => {
     const html = await render();
     expect(html).toContain('id="deleteModal"');
-    expect(html).toContain('Delete horse');
+    expect(html).toContain('Delete calculation');
     expect(html).toContain('Are you sure you want to delete this mapping?');
     expect(html).toContain('id="confirmDeleteButton"');
   });

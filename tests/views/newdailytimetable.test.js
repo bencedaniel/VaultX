@@ -21,7 +21,7 @@ describe('views/dailytimetable/newdailytimetable.ejs', () => {
   test('renders title, form action and submit button', async () => {
     const html = await renderNewDailyTimetable();
 
-    expect(html).toContain('Add new Day');
+    expect(html).toContain('Add new day');
     expect(html).toContain('action="/dailytimetable/new/"');
     expect(html).toContain('method="POST"');
     expect(html).toContain('>New Day<');
@@ -42,7 +42,6 @@ describe('views/dailytimetable/newdailytimetable.ejs', () => {
     expect(html).toContain('id="DayName"');
     expect(html).toContain('name="DayName"');
     expect(html).toContain('value="Sunday"');
-
     expect(html).toContain('id="DisplayName"');
     expect(html).toContain('name="DisplayName"');
     expect(html).toContain('value="Closing Day"');
@@ -71,8 +70,8 @@ describe('views/dailytimetable/newdailytimetable.ejs', () => {
   test('renders empty fallback values when formData is missing', async () => {
     const html = await renderNewDailyTimetable({ formData: undefined });
 
-    expect(html).toMatch(/id="DayName"[^>]*name="DayName"[^>]*placeholder="Day Name"[^>]*value=""/);
-    expect(html).toMatch(/id="DisplayName"[^>]*name="DisplayName"[^>]*placeholder="Display Name"[^>]*value=""/);
+    expect(html).toMatch(/id="DayName"[^>]*name="DayName"[^>]*placeholder="Day name"[^>]*value=""/);
+    expect(html).toMatch(/id="DisplayName"[^>]*name="DisplayName"[^>]*placeholder="Display name"[^>]*value=""/);
     expect(html).toMatch(/id="Date"[^>]*name="Date"[^>]*value=""/);
   });
 

@@ -17,8 +17,6 @@ const resultGeneratorSchema = new mongoose.Schema({
         default: true,
         required: [true, 'Active status required!'],
     }
-    
-
 },{ timestamps: true });
 
 export default mongoose.model('resultgenerator', resultGeneratorSchema);

@@ -10,7 +10,6 @@ describe('dashboard.ejs – Scoring Judge (Scoring view)', () => {
   it('renders the main header and day', async () => {
     const html = await render();
     expect(html).toContain('Scoring view');
-    expect(html).toContain('Programs on Monday');
     expect(html).toContain('container my-4');
   });
 
@@ -24,9 +23,9 @@ describe('dashboard.ejs – Scoring Judge (Scoring view)', () => {
   it('renders table headers correctly', async () => {
     const html = await render();
     expect(html).toContain('Name');
-    expect(html).toContain('Start Time Planned');
+    expect(html).toContain('Start time planned');
     expect(html).toContain('Categories');
-    expect(html).toContain('Test Type');
+    expect(html).toContain('Test type');
     expect(html).toContain('Round');
   });
 

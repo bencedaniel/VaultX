@@ -44,14 +44,14 @@ describe('views/dailytimetable/editttelement.ejs', () => {
 
     expect(html).toContain('action="/dailytimetable/editTTelement/part-1"');
     expect(html).toContain('method="POST"');
-    expect(html).toContain('Edit program element');
+    expect(html).toContain('Edit competition element');
 
     expect(html).toContain('id="Name"');
     expect(html).toContain('value="Compulsory Program"');
     expect(html).toContain('id="dailytimetable"');
     expect(html).toContain('id="StartTimePlanned"');
     expect(html).toContain('type="time"');
-    expect(html).toContain('>Edit program<');
+    expect(html).toContain('>Edit competition<');
   });
 
   test('renders day options and selects the current parent day', async () => {

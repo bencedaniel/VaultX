@@ -45,8 +45,8 @@ describe('views/resultGroup/newResultGroup.ejs', () => {
 
     expect(html).toContain('action="/result/groups/new"');
     expect(html).toContain('method="POST"');
-    expect(html).toContain('Edit result calc template');
-    expect(html).toContain('>Create<');
+    expect(html).toContain('New result group template');
+    expect(html).toContain('>Create</button>');
   });
 
   test('renders category and calculation dropdown options from source arrays', async () => {

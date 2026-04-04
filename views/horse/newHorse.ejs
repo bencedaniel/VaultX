@@ -1,15 +1,15 @@
 <div class="container my-4 border border-black border-1 border-opacity-10 rounded p-3  shadow bg-primary bg-opacity-10 " style="max-width: 80vh;">
-  <h1 class="text-center mb-3">Add New Horse</h1>
+  <h1 class="text-center mb-3">New horse</h1>
 
   <form action="/horse/new" method="POST">
     <div class="row justify-content-center g-3 m-auto">
 
-      <!-- Horse Name -->
+      <!-- Horse name -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="Horsename" name="Horsename" placeholder="Horse Name"
+          <input type="text" class="form-control shadow-none" id="Horsename" name="Horsename" placeholder="Horse name"
                  value="<%= formData ? formData.Horsename : '' %>" autocomplete="off">
-          <label for="Horsename">Horse Name</label>
+          <label for="Horsename">Horse name</label>
         </div>
       </div>
 
@@ -26,25 +26,24 @@
       <div class="col-md-12">
         <div class="form-floating">
           <select class="form-select shadow-none" id="sex" name="sex">
-            <option value="">Select Sex</option>
+            <option value="">Select sex</option>
             <option value="Mare" <%= formData && formData.sex === 'Mare' ? 'selected' : '' %>>Mare</option>
             <option value="Gelding" <%= formData && formData.sex === 'Gelding' ? 'selected' : '' %>>Gelding</option>
             <option value="Stallion" <%= formData && formData.sex === 'Stallion' ? 'selected' : '' %>>Stallion</option>
-
           </select>
           <label for="sex">Sex</label>
         </div>
       </div>
 
-      <!-- Birthdate -->
+      <!-- Birth date -->
       <div class="col-md-12">
         <div class="form-floating">
           <input type="date" class="form-control shadow-none" id="Bdate" name="Bdate"
             value="<%= formData && formData.Bdate ? new Date(formData.Bdate).toISOString().split('T')[0] : '' %>">
-          <label for="Bdate">Birthdate</label>
+          <label for="Bdate">Birth date</label>
         </div>
       </div>
-      <!-- Nationality (Searchable Dropdown with arrow) -->
+      <!-- Nationality (searchable dropdown with arrow) -->
       <div class="col-md-12">
         <div class="form-floating position-relative searchable-dropdown">
           <i class="bi bi-chevron-down position-absolute top-50 end-0 pe-3 translate-middle-y"></i>
@@ -73,7 +72,7 @@
         <div class="form-floating position-relative searchable-dropdown">
           <i class="bi bi-chevron-down position-absolute top-50 end-0 pe-3 translate-middle-y"></i>
           <input type="text" class="form-control shadow-none searchable-input"
-                 placeholder="Search Status"
+                 placeholder="Search status"
                  autocomplete="off"
                  value="<%= formData ? (formData.HorseStatus === 'active' ? 'Active':'Inactive'): '' %>">
           <label class="form-label">Status</label>
@@ -91,10 +90,10 @@
         </div>
       </div>
 
-      <!-- Box Number -->
+      <!-- Box number -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="BoxNr" name="BoxNr" placeholder="Box Number"
+          <input type="text" class="form-control shadow-none" id="BoxNr" name="BoxNr" placeholder="Box number"
                                value="<%
                   let boxValue = '';
 
@@ -107,14 +106,14 @@
 
                   }}
                  %><%= boxValue %>">
-          <label for="BoxNr">Box Number</label>
+          <label for="BoxNr">Box number</label>
         </div>
       </div>
 
-      <!-- Head Number -->
+      <!-- Head number -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="HeadNr" name="HeadNr" placeholder="Head Number"
+          <input type="text" class="form-control shadow-none" id="HeadNr" name="HeadNr" placeholder="Head number"
                                  value="<%
                                                    let headValue = '';
 
@@ -127,30 +126,30 @@
 
                   }}
                  %><%= headValue %>">
-          <label for="HeadNr">Head Number</label>
+          <label for="HeadNr">Head number</label>
         </div>
       </div>
 
-      <!-- Responsible Person Name -->
+      <!-- Person responsible name -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="ResponsiblePersonName" name="ResponsiblePersonName" placeholder="Responsible Person Name"
+          <input type="text" class="form-control shadow-none" id="ResponsiblePersonName" name="ResponsiblePersonName" placeholder="Person responsible name"
                  value="<%= formData ? formData.ResponsiblePersonName : '' %>">
-          <label for="ResponsiblePersonName">Responsible Person Name</label>
+          <label for="ResponsiblePersonName">Person responsible name</label>
         </div>
       </div>
 
-      <!-- Responsible Person Contact -->
+      <!-- Person responsible contact -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="ResponsiblePersonContact" name="ResponsiblePersonContact" placeholder="Responsible Person Contact"
+          <input type="text" class="form-control shadow-none" id="ResponsiblePersonContact" name="ResponsiblePersonContact" placeholder="Person responsible contact"
                  value="<%= formData ? formData.ResponsiblePersonContact : '' %>">
-          <label for="ResponsiblePersonContact">Responsible Person Contact</label>
+          <label for="ResponsiblePersonContact">Person responsible contact</label>
         </div>
       </div>
 
       <div class="col-md-12 mt-3">
-        <button type="submit" class="btn btn-primary w-100">Add Horse</button>
+        <button type="submit" class="btn btn-primary w-100">Create horse</button>
       </div>
 
     </div>

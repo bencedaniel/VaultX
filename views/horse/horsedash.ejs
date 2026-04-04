@@ -2,7 +2,7 @@
   <ul class="list-group">
 
     <li class="list-group-item border-0">
-        <h3 class="text-center">Horse Management</h3>
+        <h3 class="text-center">Horse manager</h3>
     </li>
 
   </ul>
@@ -21,7 +21,7 @@
 
         </div>
   </div>
-        <a href="/horse/new" class="btn btn-outline-primary w-50">Create New Horse</a>
+        <a href="/horse/new" class="btn btn-outline-primary w-50">Create new horse</a>
 
   </div>
 
@@ -29,10 +29,10 @@
         <thead class="table-primary">
             <th scope="col">Name</th>
             <th scope="col">FEI ID</th>
-            <th scope="col">Head Nr</th>
-            <th scope="col">Box Nr</th>
+            <th scope="col">Head nr</th>
+            <th scope="col">Box nr</th>
             <th scope="col">Status</th>
-            <th scope="col">Responsible Person</th>
+            <th scope="col">Person responsible</th>
             <th scope="col"  width="10%">&nbsp;</th>
 
         </thead>
@@ -41,8 +41,8 @@
       <tr>
         <td><%= horse.Horsename %></td>
         <td><%= horse.feiid %></td>
-        <td><%= horse.HeadNr[0]?.armNumber ? horse.HeadNr[0]?.armNumber : 'No head Nr' %></td>
-        <td><%= horse.BoxNr[0]?.boxNumber ? horse.BoxNr[0]?.boxNumber : 'No box Nr' %></td>
+        <td><%= horse.HeadNr[0]?.armNumber ? horse.HeadNr[0]?.armNumber : 'No head nr' %></td>
+        <td><%= horse.BoxNr[0]?.boxNumber ? horse.BoxNr[0]?.boxNumber : 'No box nr' %></td>
         <td><%= horse.HorseStatus %></td>
         <td><%= horse.ResponsiblePersonName %></td>
         <td class="text-center" style="width: 15%;">

@@ -32,9 +32,8 @@ describe('views/resultGen/editResultGen.ejs', () => {
 
     expect(html).toContain('action="/result/generator/edit/rg-42"');
     expect(html).toContain('method="POST"');
-    expect(html).toContain('Edit result calc template');
-    // Button label is asserted as currently implemented in template.
-    expect(html).toContain('>Edite<');
+    expect(html).toContain('Edit result generator template');
+    expect(html).toContain('>Save changes<');
   });
 
   test('renders category and calculation template dropdown options', async () => {

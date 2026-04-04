@@ -9,7 +9,7 @@ describe('dashboard.ejs – Results (Result Group Management)', () => {
 
   it('renders the main header and container', async () => {
     const html = await render();
-    expect(html).toContain('Result Group Management');
+      expect(html).toContain('Result group manager');
     expect(html).toContain('container my-4');
   });
 
@@ -34,9 +34,9 @@ describe('dashboard.ejs – Results (Result Group Management)', () => {
     expect(html).toContain('Category: Vaulting');
     // Round 1 and 2 links
     expect(html).toContain('href="/result/detailed/g1/R1"');
-    expect(html).toContain('Round 1 -- 80%');
+    expect(html).toContain('Test 1-2 -- 80%');
     expect(html).toContain('href="/result/detailed/g1/R2"');
-    expect(html).toContain('Round 2 -- 20%');
+    expect(html).toContain('Final -- 20%');
     // Program links
     expect(html).toContain('Monday - R1F-Name');
     expect(html).toContain('Tuesday - R1S-Name');
@@ -82,6 +82,7 @@ describe('dashboard.ejs – Results (Result Group Management)', () => {
     expect(html).toContain('btn"'); // fallback class
     expect(html).not.toContain('href=/result/detailed/g2/R1F');
     expect(html).not.toContain('href=/result/detailed/g2/R1S');
-    expect(html).not.toContain('href=/result/detailed/g2/R2F');
+    expect(html).toContain('Test 1-2 -- 85%');
+    expect(html).toContain('Final -- 15%');
   });
 });

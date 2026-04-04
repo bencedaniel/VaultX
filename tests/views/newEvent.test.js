@@ -17,7 +17,7 @@ describe('newEvent.ejs', () => {
 
   it('renders the New Event header', async () => {
     const html = await render();
-    expect(html).toContain('New Event');
+    expect(html).toContain('New event');
     expect(html).toContain('form action="/admin/event/new" method="POST"');
   });
 
@@ -50,16 +50,16 @@ describe('newEvent.ejs', () => {
     expect(html).toContain('label for="EventLocation"');
     expect(html).toContain('label for="EventDirectorName"');
     expect(html).toContain('label for="EventDirectorContact"');
-    expect(html).toContain('placeholder="Event Name"');
-    expect(html).toContain('placeholder="Event Location"');
-    expect(html).toContain('placeholder="Director Name"');
-    expect(html).toContain('placeholder="Director Contact"');
+    expect(html).toContain('placeholder="Event name"');
+    expect(html).toContain('placeholder="Event location"');
+    expect(html).toContain('placeholder="Director name"');
+    expect(html).toContain('placeholder="Director contact"');
   });
 
   it('renders the submit button', async () => {
     const html = await render();
     expect(html).toContain('button type="submit"');
-    expect(html).toContain('New Event');
+    expect(html).toContain('Create event');
   });
 
   it('renders the container with correct classes', async () => {

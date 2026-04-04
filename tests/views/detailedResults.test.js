@@ -78,7 +78,7 @@ describe('views/results/detailedResults.ejs', () => {
     const html = await renderDetailedResults({ pointDetailsLevel: 3 });
 
     expect(html).toContain('href="/result"');
-    expect(html).toContain('Get back to results');
+    expect(html).toContain('btn btn-outline-primary');
   });
 
   test('resolves name field by priority: teamName, then vaulter object, then vaulter array, then N/A', async () => {

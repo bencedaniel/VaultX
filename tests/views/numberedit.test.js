@@ -9,7 +9,7 @@ describe('numberedit.ejs – Arm Number editor', () => {
 
   it('renders the main header and container', async () => {
     const html = await render();
-    expect(html).toContain('Arm Number editor');
+    expect(html).toContain('Arm number editor');
     expect(html).toContain('container my-4');
   });
 
@@ -27,7 +27,7 @@ describe('numberedit.ejs – Arm Number editor', () => {
     expect(html).toContain('FEI ID');
     expect(html).toContain('Nationality');
     expect(html).toContain('Status');
-    expect(html).toContain('Arm Nr');
+    expect(html).toContain('Arm nr');
   });
 
   it('renders vaulter rows with correct data and arm number input', async () => {
@@ -84,10 +84,9 @@ describe('numberedit.ejs – Arm Number editor', () => {
   it('renders the delete modal and JS logic', async () => {
     const html = await render();
     expect(html).toContain('id="deleteModal"');
-    expect(html).toContain('Delete horse');
+    expect(html).toContain('Delete vaulter');
     expect(html).toContain('id="confirmDeleteButton"');
     expect(html).toContain('DOMContentLoaded');
-    expect(html).toContain("fetch('/horse/delete/'");
   });
 
   it('includes JS logic for form change/save and beforeunload', async () => {

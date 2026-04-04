@@ -33,13 +33,13 @@ describe('views/admin/userdash.ejs', () => {
   test('renders header, search controls and create user button', async () => {
     const html = await renderUserDash();
 
-    expect(html).toContain('User Management');
+    expect(html).toContain('User manager');
     expect(html).toContain('id="TableBody"');
     expect(html).toContain('id="search"');
     expect(html).toContain('id="dropdownMenuButton"');
     expect(html).toContain('id="dropdownMenu"');
     expect(html).toContain('href="/admin/newUser"');
-    expect(html).toContain('Create New User');
+    expect(html).toContain('Create new user');
   });
 
   test('renders table headers and user rows', async () => {
@@ -47,7 +47,7 @@ describe('views/admin/userdash.ejs', () => {
 
     expect(html).toContain('id="userTableBody"');
     expect(html).toContain('<th scope="col">Username</th>');
-    expect(html).toContain('<th scope="col">Fullname</th>');
+    expect(html).toContain('<th scope="col">Full name</th>');
     expect(html).toContain('<th scope="col">FEI ID</th>');
     expect(html).toContain('<th scope="col">Status</th>');
     expect(html).toContain('<th scope="col">Role</th>');
@@ -89,7 +89,7 @@ describe('views/admin/userdash.ejs', () => {
 
     expect(html).toContain('id="deleteModal"');
     expect(html).toContain('id="deleteModalLabel"');
-    expect(html).toContain('Inactivate user');
+    expect(html).toContain('Deactivate user');
     expect(html).toContain('id="deleteConfirmationText"');
     expect(html).toContain('id="confirmDeleteButton"');
     expect(html).toContain('data-deleteslug="User"');

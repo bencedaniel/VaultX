@@ -33,7 +33,7 @@ describe('views/admin/carddash.ejs', () => {
   test('renders page header, search controls and create button', async () => {
     const html = await renderCardDash();
 
-    expect(html).toContain('Card Management');
+      expect(html).toContain('Card manager');
     expect(html).toContain('id="search"');
     expect(html).toContain('id="dropdownMenuButton"');
     expect(html).toContain('id="dropdownMenu"');
@@ -49,7 +49,7 @@ describe('views/admin/carddash.ejs', () => {
 
     expect(html).toContain('<th scope="col">Type</th>');
     expect(html).toContain('<th scope="col">Title</th>');
-    expect(html).toContain('<th scope="col">Text</th>');
+      expect(html).toContain('<th scope="col">Description</th>');
     expect(html).toContain('<th scope="col">Permission</th>');
     expect(html).toContain('<th scope="col">Priority</th>');
 

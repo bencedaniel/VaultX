@@ -23,7 +23,7 @@ const LungerSchema = new mongoose.Schema({
         },
         LungerIncident:{
                     type: [{
-                        incidentType: { type: String, required: true, enum :['Injury', 'Withdraw', 'Yellow card','Warning', 'Elimination', 'Disqualification', 'Other'] },
+                        incidentType: { type: String, required: true, enum :['Injury', 'Withdrawal', 'Yellow card','Warning', 'Elimination', 'Disqualification', 'Other'] },
                         description: { type: String, required: true },
                         User: { type: mongoose.Schema.Types.ObjectId, ref:'users' ,required: true }, // User who reported the incident
                         date: { type: Date, default: Date.now },

@@ -14,9 +14,9 @@ describe('lungerdash.ejs', () => {
     return await ejs.render(template, { lungers: [], ...data }, {async: true});
   };
 
-  it('renders the Lunger Management header', async () => {
+  it('renders the Lunger manager header', async () => {
     const html = await render();
-    expect(html).toContain('Lunger Management');
+    expect(html).toContain('Lunger manager');
   });
 
   it('renders the search input and dropdown', async () => {
@@ -27,10 +27,10 @@ describe('lungerdash.ejs', () => {
     expect(html).toContain('Select column');
   });
 
-  it('renders the Create New Lunger button', async () => {
+  it('renders the Create new lunger button', async () => {
     const html = await render();
     expect(html).toContain('href="/lunger/new"');
-    expect(html).toContain('Create New Lunger');
+    expect(html).toContain('Create new lunger');
   });
 
   it('renders the table headers', async () => {

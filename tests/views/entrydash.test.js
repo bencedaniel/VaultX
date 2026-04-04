@@ -63,12 +63,12 @@ describe('views/entry/entrydash.ejs', () => {
   test('renders page header, search controls and create entry link', async () => {
     const html = await renderEntryDash();
 
-    expect(html).toContain('Entry Management');
+    expect(html).toContain('Entry manager');
     expect(html).toContain('id="search"');
     expect(html).toContain('id="dropdownMenuButton"');
     expect(html).toContain('id="dropdownMenu"');
     expect(html).toContain('href="/entry/new"');
-    expect(html).toContain('Create New Entry');
+    expect(html).toContain('Create new entry');
   });
 
   test('renders table headers', async () => {
@@ -78,7 +78,7 @@ describe('views/entry/entrydash.ejs', () => {
     expect(html).toContain('<th scope="col">Horse</th>');
     expect(html).toContain('<th scope="col">Lunger</th>');
     expect(html).toContain('<th scope="col">Category</th>');
-    expect(html).toContain('<th scope="col">Status </th>');
+    expect(html).toContain('<th scope="col">Status</th>');
   });
 
   test('resolves vaulter display by priority: teamName, object, array, N/A', async () => {

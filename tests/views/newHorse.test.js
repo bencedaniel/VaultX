@@ -18,7 +18,7 @@ describe('newHorse.ejs', () => {
 
   it('renders the Add New Horse header and form action', async () => {
     const html = await render();
-    expect(html).toContain('Add New Horse');
+    expect(html).toContain('New horse');
     expect(html).toContain('form action="/horse/new" method="POST"');
   });
 
@@ -94,7 +94,7 @@ describe('newHorse.ejs', () => {
   it('renders the submit button', async () => {
     const html = await render();
     expect(html).toContain('button type="submit"');
-    expect(html).toContain('Add Horse');
+    expect(html).toContain('Create horse');
   });
 
   it('renders the container with correct classes', async () => {

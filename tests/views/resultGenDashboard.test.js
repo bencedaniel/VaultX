@@ -10,7 +10,7 @@ describe('dashboard.ejs – Result generator Management', () => {
 
   it('renders the main header and container', async () => {
     const html = await render();
-    expect(html).toContain('Result generator Management');
+    expect(html).toContain('Result generator manager');
     expect(html).toContain('container my-4');
   });
 
@@ -24,7 +24,7 @@ describe('dashboard.ejs – Result generator Management', () => {
   it('renders the Create New Result Calc button', async () => {
     const html = await render();
     expect(html).toContain('href="/result/generator/new"');
-    expect(html).toContain('Create New Result Calc');
+    expect(html).toContain('Create new result generator');
   });
 
   it('renders table headers correctly', async () => {
@@ -59,13 +59,9 @@ describe('dashboard.ejs – Result generator Management', () => {
     ];
     const html = await render(generators);
     expect(html).toContain('Vaulting');
-    expect(html).toContain('R1F: 50%');
-    expect(html).toContain('R1S: 30%');
-    expect(html).toContain('R2F: 20%');
+    expect(html).toContain('T1: 50%, T2: 30%, F: 20%');
     expect(html).toContain('Dressage');
-    expect(html).toContain('R1F: 60%');
-    expect(html).toContain('R1S: 25%');
-    expect(html).toContain('R2F: 15%');
+    expect(html).toContain('T1: 60%, T2: 25%, F: 15%');
     // Status select
     expect(html).toContain('status-abc123');
     expect(html).toContain('status-def456');

@@ -1,5 +1,5 @@
 <div class="container my-4 border border-black border-1 border-opacity-10 rounded p-3 shadow bg-primary bg-opacity-10" style="max-width: 80vh;">
-  <h1 class="text-center mb-3">Edit Category</h1>
+  <h1 class="text-center mb-3">Edit category</h1>
 
   <form action="/category/edit/<%= formData ? formData._id : '' %>" method="POST">
     <div class="row justify-content-center g-3 m-auto">
@@ -7,9 +7,9 @@
       <!-- Category Display Name -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="CategoryDispName" name="CategoryDispName" placeholder="Category Name"
+          <input type="text" class="form-control shadow-none" id="CategoryDispName" name="CategoryDispName" placeholder="Category name"
                  value="<%= formData ? formData.CategoryDispName : '' %>" autocomplete="off" required>
-          <label for="CategoryDispName">Category Name</label>
+          <label for="CategoryDispName">Category name</label>
         </div>
       </div>
 
@@ -17,12 +17,12 @@
       <div class="col-md-12">
         <div class="form-floating">
           <select class="form-select shadow-none" id="Type" name="Type" required>
-            <option value="">Select Type</option>
+            <option value="">Select type</option>
             <option value="Individual" <%= formData && formData.Type === 'Individual' ? 'selected' : '' %>>Individual</option>
             <option value="Squad" <%= formData && formData.Type === 'Squad' ? 'selected' : '' %>>Squad</option>
             <option value="PDD" <%= formData && formData.Type === 'PDD' ? 'selected' : '' %>>PDD</option>
           </select>
-          <label for="Type">Category Type</label>
+          <label for="Type">Category type</label>
         </div>
       </div>
 
@@ -30,32 +30,32 @@
       <div class="col-md-12">
         <div class="form-floating">
           <select class="form-select shadow-none" id="Sex" name="Sex">
-            <option value="">Select Sex</option>
+            <option value="">Select gender</option>
             <option value="Male" <%= formData && formData.Sex === 'Male' ? 'selected' : '' %>>Male</option>
             <option value="Female" <%= formData && formData.Sex === 'Female' ? 'selected' : '' %>>Female</option>
             <option value="Mixed" <%= formData && formData.Sex === 'Mixed' ? 'selected' : '' %>>Mixed</option>
           </select>
-          <label for="Sex">Sex</label>
+          <label for="Sex">Gender</label>
         </div>
       </div>
 
       <!-- Required Tests -->
       <div class="col-md-12 bg-secondary bg-opacity-10 rounded p-3" style="max-width: 97%;">
-        <label class="form-label mb-1">Required Tests</label>
+        <label class="form-label mb-1">Required tests</label>
         <div class="form-check">
           <input class="form-check-input" type="checkbox" id="ReqComp" name="ReqComp" value="true"
             <%= formData && formData.ReqComp ? 'checked' : '' %>>
-          <label class="form-check-label" for="ReqComp">Compulsory Test Required</label>
+          <label class="form-check-label" for="ReqComp">Compulsory test required</label>
         </div>
         <div class="form-check">
           <input class="form-check-input" type="checkbox" id="ReqFreeTest" name="ReqFreeTest" value="true"
             <%= formData && formData.ReqFreeTest ? 'checked' : '' %>>
-          <label class="form-check-label" for="ReqFreeTest">Free Test Required</label>
+          <label class="form-check-label" for="ReqFreeTest">Free test required</label>
         </div>
         <div class="form-check">
           <input class="form-check-input" type="checkbox" id="ReqTechnicalTest" name="ReqTechnicalTest" value="true"
             <%= formData && formData.ReqTechnicalTest ? 'checked' : '' %>>
-          <label class="form-check-label" for="ReqTechnicalTest">Technical Test Required</label>
+          <label class="form-check-label" for="ReqTechnicalTest">Technical test required</label>
         </div>
       </div>
 
@@ -89,9 +89,9 @@
         <%
           const scoreTypeDefs = [
             { display: 'Horse score', type: 'Horse', fields: ['A1', 'A2','A3'], text: 'Percentage' },
-            { display: 'Free test', type: 'Free', fields: ['R', 'D', 'M', 'E', 'NumberOfMaxExercises'], text: '(R,D,M,E: A Multipler value  )' },
+            { display: 'Technique score', type: 'Free', fields: ['R', 'D', 'M', 'E', 'NumberOfMaxExercises'], text: '(R,D,M,E: A multiplier value  )' },
             { display: 'Artistic score', type: 'Artistic', fields: ['CH', 'C1', 'C2', 'C3', 'C4'], text: 'Percentage' },
-            { display: 'Artistic score (Technical)', type: 'TechArtistic', fields: ['CH', 'T1', 'T2', 'T3', 'TechDivider'], text: '(CH,T1,T2,T3: A Percentage value)' }
+            { display: 'Artistic score (for Technical test)', type: 'TechArtistic', fields: ['CH', 'T1', 'T2', 'T3', 'TechDivider'], text: '(CH,T1,T2,T3: A Percentage value)' }
           ];
         %>
         <% scoreTypeDefs.forEach(function(def) { %>
@@ -111,7 +111,7 @@
 
       <!-- Submit Button -->
       <div class="col-md-12 mt-3">
-        <button type="submit" class="btn btn-primary w-100">Edit Category</button>
+        <button type="submit" class="btn btn-primary w-100">Edit category</button>
       </div>
 
     </div>

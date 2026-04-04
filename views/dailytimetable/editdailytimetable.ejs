@@ -1,5 +1,5 @@
 <div class="container my-4 border border-black border-1 border-opacity-10 rounded p-3 shadow bg-primary bg-opacity-10" style="max-width: 80vh;">
-  <h1 class="text-center mb-3">Edit Day</h1>
+  <h1 class="text-center mb-3">Edit day</h1>
 
   <form action="/dailytimetable/edit/<%= formData ? formData._id : '' %>" method="POST">
     <div class="row justify-content-center g-3 m-auto">
@@ -7,18 +7,18 @@
       <!-- Day Name -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="DayName" name="DayName" placeholder="Day Name"
+          <input type="text" class="form-control shadow-none" id="DayName" name="DayName" placeholder="Day name"
                  value="<%= formData ? formData.DayName : '' %>" autocomplete="off">
-          <label for="DayName">Day Name</label>
+          <label for="DayName">Day name</label>
         </div>
       </div>
 
       <!-- Display Name -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="DisplayName" name="DisplayName" placeholder="Display Name"
+          <input type="text" class="form-control shadow-none" id="DisplayName" name="DisplayName" placeholder="Display name"
                  value="<%= formData ? formData.DisplayName : '' %>" autocomplete="off">
-          <label for="DisplayName">Display Name</label>
+          <label for="DisplayName">Display name</label>
         </div>
       </div>
 
@@ -33,7 +33,7 @@
 
       <!-- Submit Button -->
       <div class="col-md-12 mt-3">
-        <button type="submit" class="btn btn-primary w-100">Edit Day</button>
+        <button type="submit" class="btn btn-primary w-100">Save changes</button>
       </div>
 
     </div>

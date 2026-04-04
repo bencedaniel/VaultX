@@ -23,8 +23,8 @@ describe('views/mapping/editTablemapping.ejs', () => {
 
     expect(html).toContain('action="/mapping/edit/map-1"');
     expect(html).toContain('method="POST"');
-    expect(html).toContain('Edit Table Mapping');
-    expect(html).toContain('>Save Mapping<');
+    expect(html).toContain('Edit table mapping');
+    expect(html).toContain('>Save mapping<');
   });
 
   test('renders all table options A-H and selected table', async () => {
@@ -70,9 +70,9 @@ describe('views/mapping/editTablemapping.ejs', () => {
   test('renders placeholder options in each select', async () => {
     const html = await renderEditTableMapping();
 
-    expect(html).toContain('<option value="">Select Table</option>');
-    expect(html).toContain('<option value="">Select Test Type</option>');
-    expect(html).toContain('<option value="">Select Role</option>');
+    expect(html).toContain('<option value="">Select table</option>');
+    expect(html).toContain('<option value="">Select test type</option>');
+    expect(html).toContain('<option value="">Select role</option>');
   });
 
   test('renders no selected entries when formData is undefined', async () => {

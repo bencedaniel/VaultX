@@ -123,7 +123,7 @@
         </div>
       </div>
 
-      <!-- Links (tömb) -->
+      <!-- Links (array) -->
       <div class="col-md-12 bg-secondary bg-opacity-10 p-3 rounded mt-3">
         <label class="form-label mb-2">Links</label>
         <div id="linkList"></div>
@@ -175,7 +175,7 @@
           linkList.appendChild(wrapper);
         }
 
-        // --- visszatöltés EJS-ből ---
+        // --- reload from EJS ---
         <% if (formData?.label) { %>
           <% for( let index = 0; index < formData.label.length; index++ ) { %>
                 addLinkInput("<%= formData.href[index] %>", "<%= formData.label[index] %>");

@@ -42,7 +42,7 @@ describe('views/entry/vetcheckdash.ejs', () => {
   test('renders header and search controls', async () => {
     const html = await renderVetCheckDash();
 
-    expect(html).toContain('Vet Check list');
+    expect(html).toContain('Vet check list');
     expect(html).toContain('id="search"');
     expect(html).toContain('id="dropdownMenuButton"');
     expect(html).toContain('id="dropdownMenu"');
@@ -52,12 +52,12 @@ describe('views/entry/vetcheckdash.ejs', () => {
     const html = await renderVetCheckDash();
 
     expect(html).toContain('<th scope="col">Name</th>');
-    expect(html).toContain('<th scope="col">Fei ID</th>');
+    expect(html).toContain('<th scope="col">FEI ID</th>');
     expect(html).toContain('<th scope="col">Nationality</th>');
-    expect(html).toContain('<th scope="col">Responsible person </th>');
+    expect(html).toContain('<th scope="col">Responsible person</th>');
     expect(html).toMatch(/<th[^>]*>Head Nr<\/th>/);
     expect(html).toMatch(/<th[^>]*>Status<\/th>/);
-    expect(html).toMatch(/<th[^>]*width\s*=\s*"?10%"?[^>]*>Vet Check status<\/th>/);
+    expect(html).toMatch(/<th[^>]*width\s*=\s*"?10%"?[^>]*>Vet check status<\/th>/);
 
     expect(html).toMatch(/>Apollo</);
     expect(html).toMatch(/>FEI-111</);

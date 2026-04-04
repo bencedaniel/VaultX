@@ -1,5 +1,5 @@
 <div class="container my-4 border border-black border-1 border-opacity-10 rounded p-3 shadow bg-primary bg-opacity-10" style="max-width: 80vh;">
-  <h1 class="text-center mb-3">Edit program element</h1>
+  <h1 class="text-center mb-3">Edit competition element</h1>
 
   <form action="/dailytimetable/editTTelement/<%= formData ? formData._id : '' %>" method="POST">
     <div class="row justify-content-center g-3 m-auto">
@@ -17,13 +17,13 @@
       <div class="col-md-12">
         <div class="form-floating">
           <select class="form-select shadow-none" id="dailytimetable" name="dailytimetable" required>
-            <option value="">Select Day</option>
+            <option value="">Select day</option>
             <% days.forEach(element => { %>
               <option value="<%= element._id %>" <%= formData && String(formData.dailytimetable._id) === String(element._id) ? 'selected' : '' %>><%= element.DayName %> -- <%= element.Date.toLocaleDateString() %></option>
             <% }) %>
 
           </select>
-          <label for="dailytimetable">Parent Day</label>
+          <label for="dailytimetable">Parent day</label>
         </div>
       </div>
 
@@ -33,7 +33,7 @@
           <%
             let timeValue = '';
             if (formData && formData.StartTimePlanned) {
-              const hh = String(formData.StartTimePlanned.split(':')[0]).padStart(2,'0');     // helyi óra
+              const hh = String(formData.StartTimePlanned.split(':')[0]).padStart(2,'0');     // local hour
               const mm = String(formData.StartTimePlanned.split(':')[1]).padStart(2,'0');   // helyi perc
               timeValue = `${hh}:${mm}`;
             }
@@ -113,7 +113,7 @@
 
       <!-- Submit Button -->
       <div class="col-md-12 mt-3">
-        <button type="submit" class="btn btn-primary w-100">Edit program</button>
+        <button type="submit" class="btn btn-primary w-100">Edit competition</button>
       </div>
 
     </div>

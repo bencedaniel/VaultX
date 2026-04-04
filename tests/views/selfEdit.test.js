@@ -37,7 +37,7 @@ describe('selfEdit.ejs – Edit Profile', () => {
     expect(html).toContain('id="changePasswordCheckbox"');
     expect(html).toContain('id="password"');
     expect(html).toContain('type="password"');
-    expect(html).toContain('Password (Leave blank if not changing)');
+    expect(html).toContain('Password (leave blank if not changing)');
     // JS disables password by default
     expect(html).toContain('document.getElementById("password").disabled = true;');
   });

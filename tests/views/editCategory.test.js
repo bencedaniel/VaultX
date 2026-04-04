@@ -30,10 +30,10 @@ describe('views/category/editCategory.ejs', () => {
   test('renders form action, title and submit button', async () => {
     const html = await renderEditCategory();
 
-    expect(html).toContain('Edit Category');
+    expect(html).toContain('Edit category');
     expect(html).toContain('action="/category/edit/cat-1"');
     expect(html).toContain('method="POST"');
-    expect(html).toContain('>Edit Category<');
+    expect(html).toContain('>Edit category<');
   });
 
   test('renders base field prefills and selected options', async () => {
@@ -147,7 +147,7 @@ describe('views/category/editCategory.ejs', () => {
     const html = await renderEditCategory({ formData: undefined });
 
     expect(html).toContain('action="/category/edit/"');
-    expect(html).toMatch(/id="CategoryDispName"[^>]*name="CategoryDispName"[^>]*placeholder="Category Name"[^>]*value=""/);
+    expect(html).toMatch(/id="CategoryDispName"[^>]*name="CategoryDispName"[^>]*placeholder="Category name"[^>]*value=""/);
     expect(html).toMatch(/id="Star"[^>]*name="Star"[^>]*placeholder="Star Level"[^>]*value="1"/);
     expect(html).not.toMatch(/id="ReqComp"[^>]*checked/);
     expect(html).not.toMatch(/id="ReqFreeTest"[^>]*checked/);

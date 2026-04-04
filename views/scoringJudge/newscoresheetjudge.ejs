@@ -6,10 +6,7 @@
           <img id="bgImage" src="<%= scoresheetTemp?.bgImage || '' %>" alt="Background" style="width: 100%; height: auto;">
           <% scoresheetTemp.outputFieldList.forEach((outputElement, idx) => { %>
           <div
-            class="text-center"
-            id="output-<%= outputElement.contentid %>"
-            data-index="<%= idx %>"
-            data-type="output"
+            class="text-center" id="output-<%= outputElement.contentid %>" data-index="<%= idx %>" data-type="output"
             style="
               position: absolute;
               left: <%= outputElement.position.x %>%;
@@ -20,7 +17,6 @@
               width: <%= outputElement.position.w || 100 %>%;
               cursor: pointer;
               font-size: 0.9rem;
-            "
             "
             title=""
           >
@@ -62,7 +58,7 @@
 
       <!-- Submit Button -->
       <div class="mt-3">
-        <button type="submit" class="btn btn-primary w-100">Submit Scores</button>
+        <button type="submit" class="btn btn-primary w-100">Submit scores</button>
       </div>
     </div>
 </form>

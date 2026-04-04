@@ -9,7 +9,7 @@ describe('vaulterdash.ejs – Vaulter Management', () => {
 
   it('renders the main header and container', async () => {
     const html = await render();
-    expect(html).toContain('Vaulter Management');
+    expect(html).toContain('Vaulter manager');
     expect(html).toContain('container my-4');
   });
 
@@ -19,7 +19,7 @@ describe('vaulterdash.ejs – Vaulter Management', () => {
     expect(html).toContain('dropdown-menu');
     expect(html).toContain('Select column');
     expect(html).toContain('href="/vaulter/new"');
-    expect(html).toContain('Create New Vaulter');
+    expect(html).toContain('Create new vaulter');
   });
 
   it('renders table headers correctly', async () => {
@@ -29,7 +29,7 @@ describe('vaulterdash.ejs – Vaulter Management', () => {
     expect(html).toContain('Gender');
     expect(html).toContain('Nationality');
     expect(html).toContain('Status');
-    expect(html).toContain('ArmNr');
+    expect(html).toContain('Arm nr');
   });
 
   it('renders vaulter rows with correct data and action buttons', async () => {
@@ -65,7 +65,7 @@ describe('vaulterdash.ejs – Vaulter Management', () => {
     expect(html).toContain('M');
     expect(html).toContain('GER');
     expect(html).toContain('Inactive');
-    expect(html).toContain('No Arm Nr');
+    expect(html).toContain('No arm nr');
     // Action buttons
     expect(html).toContain('href="/vaulter/details/v1"');
     expect(html).toContain('href="/vaulter/edit/v1"');

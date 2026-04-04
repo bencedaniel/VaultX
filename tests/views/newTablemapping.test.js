@@ -22,8 +22,8 @@ describe('views/mapping/newTablemapping.ejs', () => {
 
     expect(html).toContain('action="/mapping/new"');
     expect(html).toContain('method="POST"');
-    expect(html).toContain('New Table Mapping');
-    expect(html).toContain('>Save Mapping<');
+    expect(html).toContain('New table mapping');
+    expect(html).toContain('>Save mapping<');
   });
 
   test('renders all table options A-H and selects current table', async () => {
@@ -68,9 +68,9 @@ describe('views/mapping/newTablemapping.ejs', () => {
   test('renders placeholder options in all selects', async () => {
     const html = await renderNewTableMapping();
 
-    expect(html).toContain('<option value="">Select Table</option>');
-    expect(html).toContain('<option value="">Select Test Type</option>');
-    expect(html).toContain('<option value="">Select Role</option>');
+    expect(html).toContain('<option value="">Select table</option>');
+    expect(html).toContain('<option value="">Select test type</option>');
+    expect(html).toContain('<option value="">Select role</option>');
   });
 
   test('renders no selected options when formData is missing', async () => {

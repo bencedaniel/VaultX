@@ -32,12 +32,12 @@ describe('views/admin/roledash.ejs', () => {
   test('renders header, search area and create role button', async () => {
     const html = await renderRoleDash();
 
-    expect(html).toContain('Role Management');
+    expect(html).toContain('Role manager');
     expect(html).toContain('id="search"');
     expect(html).toContain('id="dropdownMenuButton"');
     expect(html).toContain('id="dropdownMenu"');
     expect(html).toContain('href="/admin/newRole"');
-    expect(html).toContain('Create New Role');
+    expect(html).toContain('Create new role');
   });
 
   test('renders table headers and role rows', async () => {
@@ -49,7 +49,7 @@ describe('views/admin/roledash.ejs', () => {
     expect(html).toContain('<th scope="col">Name</th>');
     expect(html).toContain('<th scope="col">Permissions</th>');
     expect(html).toContain('<th scope="col">Description</th>');
-    expect(html).toContain('<th scope="col">Users</th>');
+    expect(html).toContain('<th scope="col">Number of users</th>');
 
     expect(html).toContain('>Scoring Office<');
     expect(html).toContain('>Handles scoring operations<');

@@ -26,9 +26,9 @@ describe('views/resultGen/newResultGen.ejs', () => {
 
     expect(html).toContain('action="/result/generator/new"');
     expect(html).toContain('method="POST"');
-    expect(html).toContain('Edit result calc template');
+    expect(html).toContain('New result generator template');
     // Button label is intentionally asserted as currently implemented in template.
-    expect(html).toContain('>Edite<');
+    expect(html).toContain('>Create<');
   });
 
   test('renders category and calculation template dropdown options', async () => {

@@ -71,22 +71,22 @@ describe('views/scoringOffice/dashboard.ejs', () => {
   test('renders page header, search controls and create new scoresheet link', async () => {
     const html = await renderScoringOfficeDashboard();
 
-    expect(html).toContain('Score Sheet manager');
+    expect(html).toContain('Scoresheet manager');
     expect(html).toContain('id="search"');
     expect(html).toContain('id="dropdownMenuButton"');
     expect(html).toContain('id="dropdownMenu"');
     expect(html).toContain('href="/scoring/office/scoresheet/new"');
-    expect(html).toContain('Create New ScoreSheet');
+    expect(html).toContain('Create new scoresheet');
   });
 
   test('renders table headers and key columns', async () => {
     const html = await renderScoringOfficeDashboard();
 
-    expect(html).toContain('<th scope="col">Program Name</th>');
-    expect(html).toContain('<th scope="col">Vaulters / Team Name</th>');
+    expect(html).toContain('<th scope="col">Program name</th>');
+    expect(html).toContain('<th scope="col">Vaulters / team name</th>');
     expect(html).toContain('<th scope="col">Category</th>');
-    expect(html).toContain('<th scope="col">Judge and Table</th>');
-    expect(html).toContain('<th scope="col">Total Score</th>');
+    expect(html).toContain('<th scope="col">Judge and table</th>');
+    expect(html).toContain('<th scope="col">Total score</th>');
   });
 
   test('resolves vaulter/team display by priority: teamName, object, array, N/A', async () => {

@@ -18,7 +18,7 @@ describe('editHorse.ejs', () => {
 
   it('renders the Edit Horse header and form action', async () => {
     const html = await render({formData: {_id: 'abc'}});
-    expect(html).toContain('Edit Horse');
+    expect(html).toContain('Edit horse');
     expect(html).toContain('form action="/horse/edit/abc" method="POST"');
   });
 
@@ -86,8 +86,8 @@ describe('editHorse.ejs', () => {
   it('renders fallback for BoxNr and HeadNr', async () => {
     const formData = { BoxNr: [], box: '', HeadNr: [], head: '' };
     const html = await render({formData});
-    expect(html).toContain('No Box Nr');
-    expect(html).toContain('No Head Nr');
+    expect(html).toContain('No box nr');
+    expect(html).toContain('No head nr');
   });
 
   it('renders BoxNr and HeadNr from alternative fields', async () => {
@@ -100,7 +100,7 @@ describe('editHorse.ejs', () => {
   it('renders the submit button', async () => {
     const html = await render();
     expect(html).toContain('button type="submit"');
-    expect(html).toContain('Edit Horse');
+    expect(html).toContain('Save changes');
   });
 
   it('renders the container with correct classes', async () => {

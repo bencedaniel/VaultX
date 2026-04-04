@@ -36,8 +36,7 @@ describe('views/ssTemp/editScoreSheet.ejs', () => {
     expect(html).toContain('action="/scoresheets/edit/sheet-1"');
     expect(html).toContain('method="POST"');
     expect(html).toContain('enctype="multipart/form-data"');
-    expect(html).toContain('Edit Template');
-    expect(html).toContain('>Edit template<');
+    expect(html).toContain('Edit template');
   });
 
   test('renders confirm/prompt modals and control elements', async () => {
@@ -183,7 +182,7 @@ describe('views/ssTemp/editScoreSheet.ejs', () => {
     expect(html).toContain("clearAllBtn.addEventListener('click', async () => {");
     expect(html).toContain("el.addEventListener('contextmenu', async (ev) => {");
     expect(html).toContain("el.addEventListener('dblclick', async (ev) => {");
-    expect(html).toContain("const confirmed = await showConfirm('Biztos törlöd az összes mezőt?');");
+    expect(html).toContain("const confirmed = await showConfirm('Are you sure you want to delete all fields?');");
     expect(html).toContain('outputJsonInp.value = JSON.stringify(outputFields);');
     expect(html).toContain('inputJsonInp.value  = JSON.stringify(inputFields);');
   });

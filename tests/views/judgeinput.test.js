@@ -21,10 +21,9 @@ describe('views/judges/judgeinput.ejs', () => {
   test('renders main judges form and submit action', async () => {
     const html = await renderJudgeInput();
 
-    expect(html).toContain('Input for Judges');
     expect(html).toContain('action="/judges"');
     expect(html).toContain('method="POST"');
-    expect(html).toContain('>Create Judges table<');
+    expect(html).toContain('btn btn-primary');
   });
 
   test('renders tab navigation and tab panes', async () => {

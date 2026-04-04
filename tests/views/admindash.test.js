@@ -41,7 +41,6 @@ function renderAdminDash(overrides = {}) {
 describe('views/admin/admindash.ejs', () => {
   test('renders admin dashboard header', async () => {
     const html = await renderAdminDash();
-
     expect(html).toContain('VaultX Admin Dashboard');
     expect(html).toContain('container my-4');
   });

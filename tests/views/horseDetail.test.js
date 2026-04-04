@@ -55,7 +55,7 @@ describe('views/horse/horseDetail.ejs', () => {
   test('renders main disabled horse fields and edit link', async () => {
     const html = await renderHorseDetail();
 
-    expect(html).toContain('>Horse Details<');
+    expect(html).toContain('>Horse details<');
     expect(html).toContain('id="Horsename"');
     expect(html).toContain('value="Thunder"');
     expect(html).toContain('id="feiid"');
@@ -91,9 +91,9 @@ describe('views/horse/horseDetail.ejs', () => {
     });
 
     expect(html).toContain('id="BoxNr"');
-    expect(html).toContain('value="No Box Nr"');
+    expect(html).toContain('value="No box nr"');
     expect(html).toContain('id="HeadNr"');
-    expect(html).toContain('value="No Head Nr"');
+    expect(html).toContain('value="No head nr"');
   });
 
   test('renders notes and vet check filter sections with controls', async () => {

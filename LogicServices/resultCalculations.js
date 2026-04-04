@@ -1,3 +1,4 @@
+
 import {
     getSelectedEvent,
     getEntriesByEventAndCategory,
@@ -26,25 +27,25 @@ export async function SecondLevel(resultGroupDoc, part) {
     const entries = await getEntriesByEventAndCategory(event?._id, resultGroupDoc.category);
 
     if (part === 'R1') {
-        let combinedResults = [];
         const firstPromise = FirstLevel(resultGroupDoc, 'R1F');
         const secondPromise = FirstLevel(resultGroupDoc, 'R1S');
 
-        let firstMultipler = resultGroupDoc.calcTemplate.round1FirstP / 100;
-        let secondMultipler = resultGroupDoc.calcTemplate.round1SecondP / 100;
+        let firstMultiplier = resultGroupDoc.calcTemplate.round1FirstP / 100;
+        let secondMultiplier = resultGroupDoc.calcTemplate.round1SecondP / 100;
 
-        if (firstMultipler === 0) {
-            const first = await FirstLevel(resultGroupDoc, 'R1S');
-            first.results.forEach(element => {
+        // Ha a firstMultiplier 0, akkor a secondPromise eredményét használjuk, nem hívjuk meg újra a FirstLevel-t!
+        if (firstMultiplier === 0) {
+            const second = await secondPromise;
+            second.results.forEach(element => {
                 element.secondTotalScore = element.TotalScore;
             });
             return {
                 title: 'Round 2 - Final Results',
                 sizeOfpointDetails: 2,
-                results: first.results
+                results: second.results
             };
-        } else if (secondMultipler === 0) {
-            const first = await FirstLevel(resultGroupDoc, 'R1F');
+        } else if (secondMultiplier === 0) {
+            const first = await firstPromise;
             first.results.forEach(element => {
                 element.firstTotalScore = element.TotalScore;
             });
@@ -55,32 +56,33 @@ export async function SecondLevel(resultGroupDoc, part) {
             };
         }
 
-        const allMultipler = firstMultipler + secondMultipler;
-        firstMultipler = firstMultipler / allMultipler;
-        secondMultipler = secondMultipler / allMultipler;
+        const allMultiplier = firstMultiplier + secondMultiplier;
+        firstMultiplier = firstMultiplier / allMultiplier;
+        secondMultiplier = secondMultiplier / allMultiplier;
 
-        const firstResults = (await firstPromise).results;
-        const secondResults = (await secondPromise).results;
+        const [firstData, secondData] = await Promise.all([firstPromise, secondPromise]);
+        const firstResults = firstData.results;
+        const secondResults = secondData.results;
 
-        for (const entry of entries) {
+        // Sorozatos await helyett párhuzamosítjuk a getEntryWithPopulation hívásokat
+        const combinedResultsPromises = entries.map(async (entry) => {
             const firstResult = firstResults.find(r => r.entry._id.toString() === entry._id.toString());
             const secondResult = secondResults.find(r => r.entry._id.toString() === entry._id.toString());
 
-            if (!firstResult || !secondResult) {
-                continue;
-            }
+            if (!firstResult || !secondResult) return null;
 
             const entryData = await getEntryWithPopulation(entry._id);
-            const combinedresult = {
+            return {
                 entry: entryData,
                 firstTotalScore: firstResult.TotalScore,
                 secondTotalScore: secondResult.TotalScore,
-                TotalScore: ((firstResult.TotalScore * firstMultipler) + (secondResult.TotalScore * secondMultipler)),
+                TotalScore: ((firstResult.TotalScore * firstMultiplier) + (secondResult.TotalScore * secondMultiplier)),
             };
-            combinedResults.push(combinedresult);
-        }
+        });
 
+        const combinedResults = (await Promise.all(combinedResultsPromises)).filter(Boolean);
         combinedResults.sort((a, b) => b.TotalScore - a.TotalScore);
+        
         return {
             title: 'Round 1 - Final Results',
             results: combinedResults
@@ -104,21 +106,24 @@ export async function SecondLevel(resultGroupDoc, part) {
 export async function TotalLevel(resultGroupDoc) {
     const event = await getSelectedEvent();
     const entries = await getEntriesByEventAndCategory(event?._id, resultGroupDoc.category);
-    let combinedResults = [];
-    const round1 = await SecondLevel(resultGroupDoc, 'R1');
-    const round2 = await SecondLevel(resultGroupDoc, 'R2');
+    
+    // Párhuzamosan indítjuk a két szint lekérdezését
+    const [round1, round2] = await Promise.all([
+        SecondLevel(resultGroupDoc, 'R1'),
+        SecondLevel(resultGroupDoc, 'R2')
+    ]);
 
-    let round1FirstMultipler = resultGroupDoc.calcTemplate.round1FirstP / 100;
-    let round1SecondMultipler = resultGroupDoc.calcTemplate.round1SecondP / 100;
-    let round1Multipler = round1FirstMultipler + round1SecondMultipler;
-    let round2Multipler = resultGroupDoc.calcTemplate.round2FirstP / 100;
+    let round1FirstMultiplier = resultGroupDoc.calcTemplate.round1FirstP / 100;
+    let round1SecondMultiplier = resultGroupDoc.calcTemplate.round1SecondP / 100;
+    let round1Multiplier = round1FirstMultiplier + round1SecondMultiplier;
+    let round2Multiplier = resultGroupDoc.calcTemplate.round2FirstP / 100;
 
-    if (round1Multipler === 0) {
+    if (round1Multiplier === 0) {
         round2.results.forEach(element => {
             element.round2TotalScore = element.TotalScore;
         });
         return { results: round2.results };
-    } else if (round2Multipler === 0) {
+    } else if (round2Multiplier === 0) {
         round1.results.forEach(element => {
             element.round1TotalScore = element.TotalScore;
         });
@@ -128,24 +133,24 @@ export async function TotalLevel(resultGroupDoc) {
     const round1Results = round1.results;
     const round2Results = round2.results;
 
-    for (const entry of entries) {
+    // Itt is párhuzamosítjuk a DB hívásokat
+    const combinedResultsPromises = entries.map(async (entry) => {
         const round1Result = round1Results.find(r => r.entry._id.toString() === entry._id.toString());
         const round2Result = round2Results.find(r => r.entry._id.toString() === entry._id.toString());
 
-        if (!round1Result || !round2Result) {
-            continue;
-        }
+        if (!round1Result || !round2Result) return null;
 
         const entryData = await getEntryWithPopulation(entry._id);
-        const combinedresult = {
+        return {
             entry: entryData,
             round1TotalScore: round1Result.TotalScore,
             round2TotalScore: round2Result.TotalScore,
-            TotalScore: ((round1Result.TotalScore * round1Multipler) + (round2Result.TotalScore * round2Multipler)),
+            TotalScore: ((round1Result.TotalScore * round1Multiplier) + (round2Result.TotalScore * round2Multiplier)),
         };
-        combinedResults.push(combinedresult);
-    }
+    });
 
+    const combinedResults = (await Promise.all(combinedResultsPromises)).filter(Boolean);
     combinedResults.sort((a, b) => b.TotalScore - a.TotalScore);
+    
     return { results: combinedResults };
 }

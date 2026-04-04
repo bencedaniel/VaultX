@@ -24,7 +24,7 @@ import { log } from 'console';
 // ============================================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const version = '1.1.0a';
+const version = '1.1.0b';
 
 const app = express();
 

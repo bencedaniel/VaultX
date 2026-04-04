@@ -67,7 +67,7 @@ describe('views/scoringJudge/officenewscoresheetjudge.ejs', () => {
 
     expect(html).toContain('action="/scoring/office/newscoresheet"');
     expect(html).toContain('src="/static/template.png"');
-    expect(html).toContain('>Submit Scores<');
+    expect(html).toContain('>Submit scores<');
   });
 
   test('renders output and input fields from template definitions', async () => {

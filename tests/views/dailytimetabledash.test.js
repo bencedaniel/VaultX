@@ -34,12 +34,12 @@ describe('views/dailytimetable/dailytimetabledash.ejs', () => {
   test('renders header, search controls and create day button', async () => {
     const html = await renderDailyTimetableDash();
 
-    expect(html).toContain('Day Management');
+    expect(html).toContain('Day manager');
     expect(html).toContain('id="search"');
     expect(html).toContain('id="dropdownMenuButton"');
     expect(html).toContain('id="dropdownMenu"');
     expect(html).toContain('href="/dailytimetable/new"');
-    expect(html).toContain('Create New Day');
+    expect(html).toContain('Create new day');
   });
 
   test('renders table headers and day rows', async () => {
@@ -47,9 +47,9 @@ describe('views/dailytimetable/dailytimetabledash.ejs', () => {
 
     expect(html).toContain('id="TableBody"');
     expect(html).toContain('<th scope="col">Day name</th>');
-    expect(html).toContain('<th scope="col">Display Name(On print,screen)</th>');
+    expect(html).toContain('<th scope="col">Display name (on print, screen)</th>');
     expect(html).toContain('<th scope="col">Date</th>');
-    expect(html).toContain('<th scope="col">No of parts</th>');
+    expect(html).toContain('<th scope="col">Number of competitions</th>');
 
     expect(html).toContain('>Friday<');
     expect(html).toContain('>Opening Day<');
@@ -89,7 +89,7 @@ describe('views/dailytimetable/dailytimetabledash.ejs', () => {
 
     expect(html).toContain('href="/dailytimetable/dayparts/day-1"');
     expect(html).toContain('href="/dailytimetable/dayparts/day-2"');
-    expect(html).toContain('View attached parts');
+    expect(html).toContain('View assigned competitions');
 
     expect(html).toContain('href="/dailytimetable/edit/day-1"');
     expect(html).toContain('href="/dailytimetable/edit/day-2"');

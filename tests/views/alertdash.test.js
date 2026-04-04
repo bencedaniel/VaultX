@@ -35,15 +35,15 @@ describe('views/alert/alertdash.ejs', () => {
   test('renders header, search controls and top action buttons', async () => {
     const html = await renderAlertDash();
 
-    expect(html).toContain('Alert Management');
+    expect(html).toContain('Alert manager');
     expect(html).toContain('id="search"');
     expect(html).toContain('id="dropdownMenuButton"');
     expect(html).toContain('id="dropdownMenu"');
 
     expect(html).toContain('href="/alerts/new"');
-    expect(html).toContain('Create New Alert');
+    expect(html).toContain('Create new alert');
     expect(html).toContain('href="/alerts/checkEvent"');
-    expect(html).toContain('Check Event checklist');
+    expect(html).toContain('Check event checklist');
   });
 
   test('renders table headers and alert rows', async () => {
@@ -52,9 +52,9 @@ describe('views/alert/alertdash.ejs', () => {
     expect(html).toContain('id="TableBody"');
     expect(html).toContain('<th scope="col">Title</th>');
     expect(html).toContain('<th scope="col">Description</th>');
-    expect(html).toContain('<th scope="col">Required Permission</th>');
+    expect(html).toContain('<th scope="col">Required permission</th>');
     expect(html).toContain('<th scope="col">Status</th>');
-    expect(html).toContain('<th scope="col">Reappear time (Minutes)</th>');
+    expect(html).toContain('<th scope="col">Reappear time (minutes)</th>');
 
     expect(html).toContain('>System Alert<');
     expect(html).toContain('>Important maintenance window<');

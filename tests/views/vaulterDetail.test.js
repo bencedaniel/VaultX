@@ -9,7 +9,7 @@ describe('vaulterDetail.ejs – Vaulter Details', () => {
 
   it('renders the main header and container', async () => {
     const html = await render({});
-    expect(html).toContain('Vaulter Details');
+    expect(html).toContain('Vaulter details');
     expect(html).toContain('container my-4');
     expect(html).toContain('form');
   });
@@ -36,11 +36,11 @@ describe('vaulterDetail.ejs – Vaulter Details', () => {
     expect(html).toContain('value="A1"');
   });
 
-  it('renders the Edit Vaulter button with correct link', async () => {
+  it('renders the Edit vaulter button with correct link', async () => {
     const formData = { _id: 'v2' };
     const html = await render(formData);
     expect(html).toContain('href="/vaulter/edit/v2"');
-    expect(html).toContain('Edit Vaulter');
+    expect(html).toContain('Edit vaulter');
   });
 
   it('renders the incidents section and Add Incident button', async () => {

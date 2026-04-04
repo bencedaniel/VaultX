@@ -39,21 +39,21 @@ describe('views/dailytimetable/attacheddash.ejs', () => {
   test('renders header and top action links with day context', async () => {
     const html = await renderAttachedDash();
 
-    expect(html).toContain('Modify programs on Saturday');
+    expect(html).toContain('Modify competitions on Saturday');
     expect(html).toContain('href="/dailytimetable/dashboard"');
-    expect(html).toContain('Back to Day view');
+    expect(html).toContain('Back to day view');
     expect(html).toContain('href="/dailytimetable/newTTelement/day-1"');
-    expect(html).toContain('Create New program under Saturday');
+    expect(html).toContain('Create new competition under Saturday');
   });
 
   test('renders table headers and row values', async () => {
     const html = await renderAttachedDash();
 
     expect(html).toContain('<th scope="col">Name</th>');
-    expect(html).toContain('<th scope="col">Start Time Planned</th>');
-    expect(html).toContain('<th scope="col">Start Time Real</th>');
+    expect(html).toContain('<th scope="col"><i>Planned</i> start time</th>');
+    expect(html).toContain('<th scope="col"><i>Real</i> start time</th>');
     expect(html).toContain('<th scope="col">Categories</th>');
-    expect(html).toContain('<th scope="col">Test Type</th>');
+    expect(html).toContain('<th scope="col">Test type</th>');
     expect(html).toContain('<th scope="col">Round</th>');
 
     expect(html).toContain('>First Program<');
@@ -119,7 +119,7 @@ describe('views/dailytimetable/attacheddash.ejs', () => {
     expect(html).toContain('id="confirmDeleteButton"');
 
     expect(html).toContain('id="saveModal"');
-    expect(html).toContain('Save timetable part starttime');
+    expect(html).toContain('Save competition starttime');
     expect(html).toContain('id="confirmSaveButton"');
   });
 

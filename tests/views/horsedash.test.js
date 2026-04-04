@@ -14,9 +14,9 @@ describe('horsedash.ejs', () => {
     return await ejs.render(template, { horses: [], ...data }, {async: true});
   };
 
-  it('renders the Horse Management header', async () => {
+  it('renders the Horse manager header', async () => {
     const html = await render();
-    expect(html).toContain('Horse Management');
+    expect(html).toContain('Horse manager');
   });
 
   it('renders the search input and dropdown', async () => {
@@ -27,20 +27,20 @@ describe('horsedash.ejs', () => {
     expect(html).toContain('Select column');
   });
 
-  it('renders the Create New Horse button', async () => {
+  it('renders the Create new horse button', async () => {
     const html = await render();
     expect(html).toContain('href="/horse/new"');
-    expect(html).toContain('Create New Horse');
+    expect(html).toContain('Create new horse');
   });
 
   it('renders the table headers', async () => {
     const html = await render();
     expect(html).toContain('Name');
     expect(html).toContain('FEI ID');
-    expect(html).toContain('Head Nr');
-    expect(html).toContain('Box Nr');
+    expect(html).toContain('Head nr');
+    expect(html).toContain('Box nr');
     expect(html).toContain('Status');
-    expect(html).toContain('Responsible Person');
+    expect(html).toContain('Person responsible');
   });
 
   it('renders horse rows with correct data', async () => {
@@ -73,8 +73,8 @@ describe('horsedash.ejs', () => {
     expect(html).toContain('Kiss Béla');
     expect(html).toContain('Villám');
     expect(html).toContain('FEI456');
-    expect(html).toContain('No head Nr');
-    expect(html).toContain('No box Nr');
+    expect(html).toContain('No head nr');
+    expect(html).toContain('No box nr');
     expect(html).toContain('inactive');
     expect(html).toContain('Nagy Anna');
   });

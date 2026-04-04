@@ -9,7 +9,7 @@ describe('createscoresheet.ejs – Scoring Office (Create Score Sheet)', () => {
 
   it('renders the main header and container', async () => {
     const html = await render();
-    expect(html).toContain('Select datas for a new scoresheet');
+    expect(html).toContain('Select data for a new scoresheet');
     expect(html).toContain('container my-4');
     expect(html).toContain('form');
     expect(html).toContain('action="/scoring/office/scoresheet/new"');

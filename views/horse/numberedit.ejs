@@ -12,8 +12,8 @@
           <input class="form-control mr-sm-2 rounded-0 rounded-start-1 border " type="search" placeholder="Search" aria-label="Search" id="search">
         </form>
         <div class="dropdown w-50 ">
-            <button class="btn btn-primary dropdown-toggle rounded-0 rounded-end-1 " type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Select search column">
-              Select column
+                        <button class="btn btn-primary dropdown-toggle rounded-0 rounded-end-1 " type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Select search column">
+                            Select column
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="dropdownMenu">
 
@@ -29,9 +29,9 @@
             <th scope="col">Name</th>
             <th scope="col">FEI ID</th>
             <th scope="col">Nationality</th>
-            <th scope="col" width="10%">Box Nr</th>
-            <th scope="col" width="10%">Head Nr</th>
-            <th scope="col"  width="10%">&nbsp</th>
+            <th scope="col" width="10%">Box nr</th>
+            <th scope="col" width="10%">Head nr</th>
+            <th scope="col"  width="10%">&nbsp;</th>
 
         </thead>
         <tbody class="align-middle" id="TableBody">
@@ -77,8 +77,8 @@
     window.addEventListener('beforeunload', (event) => {
         if (formChanged !== 0) {
             event.preventDefault();
-            event.returnValue = 'Biztosan el akarod hagyni az oldalt? A módosítások elveszhetnek!';
-            // Fontos: a böngésző ezt nem mutatja szó szerint, csak a standard figyelmeztetést.
+            event.returnValue = 'Are you sure you want to leave this page? Changes you made may not be saved!';
+            // Note: the browser will not display this text literally, only a standard warning.
             return event.returnValue;
         }
     });

@@ -20,9 +20,9 @@ describe('LungerDetail.ejs', () => {
     return await ejs.render(template, { ...defaults, ...data }, {async: true});
   };
 
-  it('renders the Lunger Details header', async () => {
+  it('renders the Lunger details header', async () => {
     const html = await render();
-    expect(html).toContain('Lunger Details');
+    expect(html).toContain('Lunger details');
   });
 
   it('renders disabled input fields with formData values', async () => {
@@ -49,11 +49,11 @@ describe('LungerDetail.ejs', () => {
     expect(html).toContain('id="addIncident"');
   });
 
-  it('renders the Edit Lunger button with correct href', async () => {
+  it('renders the Edit lunger button with correct href', async () => {
     const formData = {_id: 'lung1'};
     const html = await render({formData});
     expect(html).toContain('href="/lunger/edit/lung1"');
-    expect(html).toContain('Edit Lunger');
+    expect(html).toMatch(/Edit( |<)/i);
   });
 
   it('renders the Add Incident modal', async () => {

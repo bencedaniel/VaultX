@@ -1,5 +1,5 @@
 <div class="container my-4 border border-black border-1 border-opacity-10 rounded p-3  shadow bg-primary bg-opacity-10 " style="max-width: 80vh;">
-  <h1 class="text-center mb-3">New Table Mapping</h1>
+  <h1 class="text-center mb-3">New table mapping</h1>
 
   <form action="/mapping/new" method="POST">
     <div class="row justify-content-center g-3 m-auto">
@@ -8,7 +8,7 @@
       <div class="col-md-12">
         <div class="form-floating">
           <select class="form-select shadow-none" id="Table" name="Table" required>
-            <option value="">Select Table</option>
+            <option value="">Select table</option>
             <% ['A','B','C','D','E','F','G','H'].forEach(t => { %>
               <option value="<%= t %>" <%= formData && formData.Table === t ? 'selected' : '' %>><%= t %></option>
             <% }); %>
@@ -21,12 +21,12 @@
       <div class="col-md-12">
         <div class="form-floating">
           <select class="form-select shadow-none" id="TestType" name="TestType" required>
-            <option value="">Select Test Type</option>
+            <option value="">Select test type</option>
             <% ['compulsory','free test','technical'].forEach(tt => { %>
               <option value="<%= tt %>" <%= formData && formData.TestType === tt ? 'selected' : '' %>><%= tt.charAt(0).toUpperCase() + tt.slice(1) %></option>
             <% }); %>
           </select>
-          <label for="TestType">Test Type</label>
+          <label for="TestType">Test type</label>
         </div>
       </div>
 
@@ -34,7 +34,7 @@
       <div class="col-md-12">
         <div class="form-floating">
           <select class="form-select shadow-none" id="Role" name="Role" required>
-            <option value="">Select Role</option>
+            <option value="">Select role</option>
             <% const roles = ['horse','compulsory','artistic','technical']; %>
             <% roles.forEach(r => { %>
               <option value="<%= r %>" <%= formData && formData.Role === r ? 'selected' : '' %>><%= r.charAt(0).toUpperCase() + r.slice(1) %></option>
@@ -45,7 +45,7 @@
       </div>
 
       <div class="col-md-12 mt-3">
-        <button type="submit" class="btn btn-primary w-100">Save Mapping</button>
+        <button type="submit" class="btn btn-primary w-100">Save mapping</button>
       </div>
 
     </div>

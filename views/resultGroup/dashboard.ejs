@@ -2,15 +2,15 @@
   <ul class="list-group">
 
     <li class="list-group-item border-0">
-        <h3 class="text-center">Result Group Management</h3>
+        <h3 class="text-center">Result group manager</h3>
     </li>
 
   </ul>
 <div class="d-flex justify-content-start align-items-center w-100 shadow-sm p-1 mb-4 bg-secondary bg-opacity-25 rounded border border-1 border-black border-opacity-10 flex-grow-1">
 
-        <a href="/result/groups/new" class="btn btn-outline-primary w-50 me-1">Create New Result Group</a>
+        <a href="/result/groups/new" class="btn btn-outline-primary w-50 me-1">Create new result group</a>
         <button type="button" class="btn btn-outline-success w-50 ms-1" data-bs-toggle="modal"
-                data-bs-target="#genModal" data-horseid=""><i class="bi bi-plus-lg"></i> Generate Result Groups</button>
+            data-bs-target="#genModal" data-horseid=""><i class="bi bi-plus-lg"></i> Generate result groups</button>
 
   </div>
 
@@ -48,13 +48,13 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="2" >Round 1 -- <%= Number(resultGroup.calcTemplate.round1FirstP) + Number(resultGroup.calcTemplate.round1SecondP) %>%</td>
-                <td colspan="1">Round 2 -- <%= resultGroup.calcTemplate.round2FirstP %>%</td>
+                <td colspan="2" >Test 1 -- <%= Number(resultGroup.calcTemplate.round1FirstP) + Number(resultGroup.calcTemplate.round1SecondP) %>%</td>
+                <td colspan="1">Test 2 -- <%= resultGroup.calcTemplate.round2FirstP %>%</td>
             </tr>
             <tr>
-                <td colspan="1" width="22.5%">  <%= resultGroup.calcTemplate.round1FirstP  %>% -- First program:</td>
-                <td colspan="1" width="22.5%"><%= resultGroup.calcTemplate.round1SecondP  %>% -- Second program:</td>
-                <td colspan="1"width="45%"><%= resultGroup.calcTemplate.round2FirstP %>% -- First program:</td>
+                <td colspan="1" width="22.5%">  <%= resultGroup.calcTemplate.round1FirstP  %>% -- Test 1 competition:</td>
+                <td colspan="1" width="22.5%"><%= resultGroup.calcTemplate.round1SecondP  %>% -- Test 2 competition:</td>
+                <td colspan="1"width="45%"><%= resultGroup.calcTemplate.round2FirstP %>% -- Final competition:</td>
             </tr>
             <tr>
                 <td colspan="1" width="22.5%"> <%= resultGroup.round1First?.dailytimetable.DayName %> - <%= resultGroup.round1First?.Name %></td>

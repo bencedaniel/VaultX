@@ -1,5 +1,5 @@
 <div class="container my-4 border border-black border-1 border-opacity-10 rounded p-3 shadow bg-primary bg-opacity-10" style="max-width: 80vh;">
-  <h1 class="text-center mb-3">New Event</h1>
+  <h1 class="text-center mb-3">New event</h1>
 
   <form action="/admin/event/new" method="POST">
     <div class="row justify-content-center g-3 m-auto">
@@ -7,42 +7,42 @@
       <!-- Event Name -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="EventName" name="EventName" placeholder="Event Name"
+          <input type="text" class="form-control shadow-none" id="EventName" name="EventName" placeholder="Event name"
                  value="<%= formData ? formData.EventName : '' %>" autocomplete="off" required>
-          <label for="EventName">Event Name</label>
+          <label for="EventName">Event name</label>
         </div>
       </div>
 
       <!-- Event Location -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="EventLocation" name="EventLocation" placeholder="Event Location"
+          <input type="text" class="form-control shadow-none" id="EventLocation" name="EventLocation" placeholder="Event location"
                  value="<%= formData ? formData.EventLocation : '' %>" autocomplete="off" required>
-          <label for="EventLocation">Event Location</label>
+          <label for="EventLocation">Event location</label>
         </div>
       </div>
 
       <!-- Event Director Name -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="EventDirectorName" name="EventDirectorName" placeholder="Director Name"
+          <input type="text" class="form-control shadow-none" id="EventDirectorName" name="EventDirectorName" placeholder="Director name"
                  value="<%= formData ? formData.EventDirectorName : '' %>" autocomplete="off" required>
-          <label for="EventDirectorName">Event Director Name</label>
+          <label for="EventDirectorName">Event director name</label>
         </div>
       </div>
 
       <!-- Event Director Contact -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="EventDirectorContact" name="EventDirectorContact" placeholder="Director Contact"
+          <input type="text" class="form-control shadow-none" id="EventDirectorContact" name="EventDirectorContact" placeholder="Director contact"
                  value="<%= formData ? formData.EventDirectorContact : '' %>" autocomplete="off" required>
-          <label for="EventDirectorContact">Event Director Contact</label>
+          <label for="EventDirectorContact">Event director contact</label>
         </div>
       </div>
 
       <!-- Submit Button -->
       <div class="col-md-12 mt-3">
-        <button type="submit" class="btn btn-primary w-100">New Event</button>
+        <button type="submit" class="btn btn-primary w-100">Create event</button>
       </div>
 
     </div>

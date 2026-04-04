@@ -14,9 +14,9 @@ describe('eventdash.ejs', () => {
     return await ejs.render(template, data, {async: true});
   };
 
-  it('renders the Event Management header', async () => {
+  it('renders the Event manager header', async () => {
     const html = await render({events: []});
-    expect(html).toContain('Event Management');
+    expect(html).toContain('Event manager');
   });
 
   it('renders the search input and dropdown', async () => {
@@ -27,18 +27,18 @@ describe('eventdash.ejs', () => {
     expect(html).toContain('Select column');
   });
 
-  it('renders the Create New Event button', async () => {
+  it('renders the Create new event button', async () => {
     const html = await render({events: []});
     expect(html).toContain('href="/admin/event/new"');
-    expect(html).toContain('Create New Event');
+    expect(html).toContain('Create new event');
   });
 
   it('renders the table headers', async () => {
     const html = await render({events: []});
     expect(html).toContain('Name');
     expect(html).toContain('Location');
-    expect(html).toContain('Director Name');
-    expect(html).toContain('Director Contact');
+    expect(html).toContain('Director name');
+    expect(html).toContain('Director contact');
     expect(html).toContain('Selected');
   });
 

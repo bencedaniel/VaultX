@@ -9,15 +9,15 @@ describe('dashboard.ejs – Result Group Management', () => {
 
   it('renders the main header and container', async () => {
     const html = await render();
-    expect(html).toContain('Result Group Management');
+    expect(html).toContain('Result group manager');
     expect(html).toContain('container my-4');
   });
 
   it('renders the Create New Result Group and Generate buttons', async () => {
     const html = await render();
     expect(html).toContain('href="/result/groups/new"');
-    expect(html).toContain('Create New Result Group');
-    expect(html).toContain('Generate Result Groups');
+    expect(html).toContain('Create new result group');
+    expect(html).toContain('Generate result groups');
     expect(html).toContain('data-bs-target="#genModal"');
   });
 
@@ -38,11 +38,11 @@ describe('dashboard.ejs – Result Group Management', () => {
     ];
     const html = await render(resultGroups);
     expect(html).toContain('Category: Vaulting');
-    expect(html).toContain('Round 1 -- 80%');
-    expect(html).toContain('Round 2 -- 20%');
-    expect(html).toContain('50% -- First program:');
-    expect(html).toContain('30% -- Second program:');
-    expect(html).toContain('20% -- First program:');
+    expect(html).toContain('Test 1 -- 80%');
+    expect(html).toContain('Test 2 -- 20%');
+    expect(html).toContain('50% -- Test 1 competition:');
+    expect(html).toContain('30% -- Test 2 competition:');
+    expect(html).toContain('20% -- Final competition:');
     expect(html).toContain('Monday - R1F-Name');
     expect(html).toContain('Tuesday - R1S-Name');
     expect(html).toContain('Wednesday - R2F-Name');

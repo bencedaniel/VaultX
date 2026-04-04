@@ -16,7 +16,7 @@
 
         <% } else { %>
             <h1 class="display-3 fw-bold text-danger mb-2"> </i><i class="bi bi-emoji-frown"></i></h1>
-            <% message = "IDK why are you here  SORRRY" %>
+            <% message = "Unknown error occurred" %>
         <% } %>
 
     </div>
@@ -25,19 +25,19 @@
 
 
     <% if (errorCode == 401) { %>
-            <a href="/login" class="btn btn-outline-dark">Go to Login page</a>
+            <a href="/login" class="btn btn-outline-dark">Go to login page</a>
 
 
     <% } else if (errorCode == 403) { %>
-            <a href="<%= redirectPath %>" class="btn btn-outline-dark">Go to Back</a>
+            <a href="<%= redirectPath %>" class="btn btn-outline-dark">Go back</a>
 
 
     <% } else if (errorCode == 404) { %>
-            <a href="/dashboard" class="btn btn-outline-dark">Go to Dashboard</a>
+            <a href="/dashboard" class="btn btn-outline-dark">Go to dashboard</a>
 
 
         <% } else { %>
-            <a href="/dashboard" class="btn btn-outline-dark">Go to Dashboard</a>
+            <a href="/dashboard" class="btn btn-outline-dark">Go to dashboard</a>
         <% } %>
           </div>
 

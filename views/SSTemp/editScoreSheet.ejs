@@ -1,18 +1,18 @@
 <div class="container my-4 border border-black border-1 border-opacity-10 rounded p-3 shadow bg-primary bg-opacity-10" style="max-width: 80vh;">
-  <h1 class="text-center mb-3">Edit Template</h1>
+  <h1 class="text-center mb-3">Edit template</h1>
 
   <!-- Confirm Modal -->
   <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-hidden="true" style="backdrop-filter: blur(5px);">
     <div class="modal-dialog" role="document" style="margin-top: 2rem;">
       <div class="modal-content border-0 shadow">
         <div class="modal-header">
-          <h5 class="modal-title" id="confirmModalLabel">Megerősítés</h5>
+          <h5 class="modal-title" id="confirmModalLabel">Confirmation</h5>
           <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" id="confirmMessage"></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-dark" id="confirmCancel" data-bs-dismiss="modal">Mégsem</button>
-          <button type="button" class="btn btn-danger" id="confirmOk">Igen</button>
+          <button type="button" class="btn btn-dark" id="confirmCancel" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmOk">OK</button>
         </div>
       </div>
     </div>
@@ -23,7 +23,7 @@
     <div class="modal-dialog" role="document" style="margin-top: 2rem;">
       <div class="modal-content border-0 shadow">
         <div class="modal-header">
-          <h5 class="modal-title" id="promptModalLabel">Adatok megadása</h5>
+          <h5 class="modal-title" id="promptModalLabel">Request data</h5>
           <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -31,7 +31,7 @@
           <input type="text" class="form-control" id="promptInput">
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-dark" id="promptCancel" data-bs-dismiss="modal">Mégsem</button>
+          <button type="button" class="btn btn-dark" id="promptCancel" data-bs-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-primary" id="promptOk">OK</button>
         </div>
       </div>
@@ -65,7 +65,7 @@
                      id="test_freestyle"
                      <%= formData && formData.TestType && (formData.TestType === 'free test' || (Array.isArray(formData.TestType) && formData.TestType.includes('free test'))) ? 'checked' : '' %>>
               <label class="form-check-label" for="test_freestyle">
-                Freestyle
+                Free test
               </label>
             </div>
           </div>
@@ -77,7 +77,7 @@
                      id="test_technical"
                      <%= formData && formData.TestType && (formData.TestType === 'technical test' || (Array.isArray(formData.TestType) && formData.TestType.includes('technical test'))) ? 'checked' : '' %>>
               <label class="form-check-label" for="test_technical">
-                Technical
+                Technical test
               </label>
             </div>
           </div>
@@ -130,7 +130,7 @@
             <option value="">Select score type</option>
             <option value="horse" <%= formData && formData.typeOfScores === 'horse' ? 'selected' : '' %>>Horse</option>
             <option value="artistic" <%= formData && formData.typeOfScores === 'artistic' ? 'selected' : '' %>>Artistic</option>
-            <option value="technical" <%= formData && formData.typeOfScores === 'technical' ? 'selected' : '' %>>Technical</option>
+            <option value="technical" <%= formData && formData.typeOfScores === 'technical' ? 'selected' : '' %>>Technique</option>
             <option value="compulsory" <%= formData && formData.typeOfScores === 'compulsory' ? 'selected' : '' %>>Compulsory</option>
           </select>
           <label for="typeOfScores">Type of Scores</label>
@@ -335,7 +335,7 @@
   });
 
   clearAllBtn.addEventListener('click', async () => {
-    const confirmed = await showConfirm('Biztos törlöd az összes mezőt?');
+    const confirmed = await showConfirm('Are you sure you want to delete all fields?');
     if (!confirmed) return;
     inputFields.length = 0;
     outputFields.length = 0;
@@ -429,7 +429,7 @@
     el.addEventListener('contextmenu', async (ev) => {
       ev.preventDefault();
       const currentWidth = field.width || 100;
-      const newWidth = await showPrompt(`Új szélesség (%): [jelenlegi: ${currentWidth}%]`, currentWidth);
+      const newWidth = await showPrompt(`New width (%): [current: ${currentWidth}%]`, currentWidth);
       if (newWidth === null) return;
 
       const widthVal = Math.max(1, parseFloat(newWidth) || currentWidth);
@@ -442,7 +442,7 @@
     // Double-click to delete a single field
     el.addEventListener('dblclick', async (ev) => {
       ev.preventDefault();
-      const confirmed = await showConfirm(`Törlöd a(z) "${name}" mezőt?`);
+      const confirmed = await showConfirm(`Delete the field "${name}"?`);
       if (!confirmed) return;
       if (kind === 'input') {
         inputFields.splice(idx, 1);
@@ -474,7 +474,7 @@
   }
 
   function syncHiddenJson() {
-    // Backend: JSON parse-olás; ha stringet küldünk, a router parse-olja
+    // Backend: JSON parsing; if we send a string, the router parses it
     outputJsonInp.value = JSON.stringify(outputFields);
     inputJsonInp.value  = JSON.stringify(inputFields);
   }

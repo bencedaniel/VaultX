@@ -1,5 +1,5 @@
 <div class="container my-4 border border-black border-1 border-opacity-10 rounded p-3 shadow bg-primary bg-opacity-10" style="max-width: 80vh;">
-  <h1 class="text-center mb-3">Select datas for a new scoresheet</h1>
+    <h1 class="text-center mb-3">Select data for a new scoresheet</h1>
 
   <form action="/scoring/office/scoresheet/new" method="POST">
     <div class="row justify-content-center g-3 m-auto">
@@ -13,31 +13,31 @@
 
                 <% }) %>
             </select>
-            <label for="TTprogram">Start </label>
+            <label for="TTprogram">Start</label>
             </div>
             </div>
 
         <div class="col-md-12">
             <div class="form-floating">
             <select class="form-select shadow-none" id="entriesDropdown" name="entry" aria-label="Creation Method" required>
-                <option value="" selected disabled>Select entry </option>
+                <option value="" selected disabled">Select entry</option>
             </select>
-            <label for="entriesDropdown">Start </label>
+            <label for="entriesDropdown">Start</label>
             </div>
             </div>
 
         <div class="col-md-12">
             <div class="form-floating">
             <select class="form-select shadow-none" id="Table" name="Table" aria-label="Creation Method" required>
-                <option value="" selected disabled>Select Table </option>
+                <option value="" selected disabled">Select table</option>
             </select>
-            <label for="Table">Start </label>
+            <label for="Table">Start</label>
             </div>
             </div>
 
       <div class="col-md-12 mt-3 d-flex justify-content-between">
         <a href="/dailytimetable/dayparts/" class="btn btn-secondary w-50">Back</a>
-        <button type="submit" id="submit" class="btn btn-primary w-50 ms-2" disabled >Next</button>
+        <button type="submit" id="submit" class="btn btn-primary w-50 ms-2" disabled>Next</button>
       </div>
 
     </div>

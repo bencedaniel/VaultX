@@ -63,7 +63,7 @@ describe('views/order/editorder.ejs', () => {
   test('renders header, search controls and restart session button', async () => {
     const html = await renderEditOrder();
 
-    expect(html).toContain('Order editor : Friday');
+    expect(html).toContain('Order editor: Friday');
     expect(html).toContain('Morning Session');
     expect(html).toContain('id="search"');
     expect(html).toContain('id="dropdownMenuButton"');

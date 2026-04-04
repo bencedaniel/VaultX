@@ -2,7 +2,7 @@
   <ul class="list-group">
 
     <li class="list-group-item border-0">
-        <h3 class="text-center">Vet Check list</h3>
+        <h3 class="text-center">Vet check list</h3>
     </li>
 
   </ul>
@@ -27,12 +27,12 @@
 <table class="table table-striped table-hover table-bordered w-100 m-0" id="TableBody">
         <thead class="table-primary">
             <th scope="col">Name</th>
-            <th scope="col">Fei ID</th>
+            <th scope="col">FEI ID</th>
             <th scope="col">Nationality</th>
-            <th scope="col">Responsible person </th>
+            <th scope="col">Responsible person</th>
             <th scope="col">Head Nr</th>
             <th scope="col">Status</th>
-            <th scope="col"  width="10%">Vet Check status</th>
+            <th scope="col"  width="10%">Vet check status</th>
 
         </thead>
         <tbody class="align-middle" id="TableBody">
@@ -49,7 +49,7 @@
         <%
           const vetArr = Array.isArray(horse.VetCheckStatus) ? horse.VetCheckStatus : [];
           const sortedVetArr = vetArr.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-          const lastVet = sortedVetArr.length ? sortedVetArr[sortedVetArr.length - 1] : null; // legutolsó elem
+          const lastVet = sortedVetArr.length ? sortedVetArr[sortedVetArr.length - 1] : null; // last element
           const currentStatus = (lastVet && lastVet.status) ? String(lastVet.status) : 'before';
           const vetStatuses = ['before','passed','failed','pending','holding','reinspection','withdrawn','ToBeFollowed'];
         %>

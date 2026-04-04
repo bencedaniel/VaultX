@@ -42,7 +42,7 @@ describe('views/dashboard.ejs', () => {
   test('renders dashboard header', async () => {
     const html = await renderDashboard();
 
-    expect(html).toContain('VaultX Dashboard');
+    expect(html).toContain('VaultX dashboard');
     expect(html).toContain('container my-4');
   });
 

@@ -1,5 +1,5 @@
 <div class="container my-4 border border-black border-1 border-opacity-10 rounded p-3 shadow bg-primary bg-opacity-10" style="max-width: 80vh;">
-  <h1 class="text-center mb-3">Method of creation</h1>
+    <h1 class="text-center mb-3">Method of creation</h1>
 
   <form action="/order/createSelect/<%= formData._id %>" method="POST">
     <div class="row justify-content-center g-3 m-auto">
@@ -7,11 +7,11 @@
         <div class="col-md-12">
             <div class="form-floating">
             <select class="form-select shadow-none" id="creationMethod" name="creationMethod" aria-label="Creation Method">
-                <option value="" selected disabled>Select method</option>
+                <option value="" selected disabled">Select method</option>
                 <option value="Drawing" <%= formData.creationMethod === 'Drawing' ? 'selected' : '' %>>Drawing</option>
                 <option value="Copy" <%= formData.creationMethod === 'Copy' ? 'selected' : '' %>>Copy(From another program or a round score)</option>
             </select>
-            <label for="creationMethod">Start </label>
+            <label for="creationMethod">Start</label>
             </div>
 
       <div class="col-md-12 mt-3 d-flex justify-content-between">
@@ -33,10 +33,10 @@
             const selectedValue = this.value;
             if (selectedValue === 'Drawing') {
                 submitButton.disabled = false;
-                submitButton.textContent = 'Proceed to Drawing';
+                submitButton.textContent = 'Proceed to drawing';
             } else if (selectedValue === 'Copy') {
                 submitButton.disabled = false;
-                submitButton.textContent = 'Proceed to Copy';
+                submitButton.textContent = 'Proceed to copy';
             }
             else {
                 submitButton.disabled = true;

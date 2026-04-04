@@ -30,10 +30,10 @@ describe('views/category/newCategory.ejs', () => {
   test('renders current title, action and submit label', async () => {
     const html = await renderNewCategory();
 
-    expect(html).toContain('Edit Category');
-    expect(html).toContain('action="/category/edit/new-cat-1"');
+    expect(html).toContain('New category');
+    expect(html).toContain('action="/category/new"');
     expect(html).toContain('method="POST"');
-    expect(html).toContain('>Edit Category<');
+    expect(html).toContain('>Create category<');
   });
 
   test('renders base field prefills and selected options', async () => {
@@ -121,8 +121,8 @@ describe('views/category/newCategory.ejs', () => {
   test('renders safe fallback when formData missing', async () => {
     const html = await renderNewCategory({ formData: undefined });
 
-    expect(html).toMatch(/action="\/category\/edit\/"/);
-    expect(html).toMatch(/id="CategoryDispName"[^>]*name="CategoryDispName"[^>]*placeholder="Category Name"[^>]*value=""/);
+    expect(html).toMatch(/action="\/category\/new"/);
+    expect(html).toMatch(/id="CategoryDispName"[^>]*name="CategoryDispName"[^>]*placeholder="Category name"[^>]*value=""/);
     expect(html).toMatch(/id="Star"[^>]*name="Star"[^>]*placeholder="Star Level"[^>]*value="1"/);
     expect(html).not.toMatch(/id="ReqComp"[^>]*checked/);
     expect(html).not.toMatch(/id="ReqFreeTest"[^>]*checked/);

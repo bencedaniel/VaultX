@@ -2,7 +2,7 @@
   <ul class="list-group">
 
     <li class="list-group-item border-0">
-        <h3 class="text-center">Order editor : <%= formData.dailytimetable.DayName %> » <%= formData.Name %></h3>
+        <h3 class="text-center">Order editor: <%= formData.dailytimetable.DayName %> » <%= formData.Name %></h3>
     </li>
 
   </ul>
@@ -31,7 +31,7 @@
             <th scope="col">Horse</th>
             <th scope="col">Lunger</th>
             <th scope="col">Status</th>
-            <th scope="col"  width="20%">Order Nr.</th>
+            <th scope="col"  width="20%">Order nr.</th>
 
         </thead>
         <tbody class="align-middle" id="TableBody">
@@ -123,8 +123,8 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('beforeunload', (event) => {
         if (formChanged !== 0) {
             event.preventDefault();
-            event.returnValue = 'Biztosan el akarod hagyni az oldalt? A módosítások elveszhetnek!';
-            // Fontos: a böngésző ezt nem mutatja szó szerint, csak a standard figyelmeztetést.
+            event.returnValue = 'Are you sure you want to leave this page? Changes you made may not be saved!';
+            // Note: the browser will not display this text literally, only a standard warning.
             return event.returnValue;
         }
     });

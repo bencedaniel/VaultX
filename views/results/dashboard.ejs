@@ -2,7 +2,7 @@
   <ul class="list-group">
 
     <li class="list-group-item border-0">
-        <h3 class="text-center">Result Group Management</h3>
+        <h3 class="text-center">Result group manager</h3>
     </li>
 
   </ul>
@@ -22,8 +22,8 @@
 
             </tr>
             <tr>
-                <td colspan="2" ><a class="btn btn-outline-secondary" href="/result/detailed/<%= resultGroup._id %>/R1"> Round 1 -- <%= Number(resultGroup.calcTemplate.round1FirstP) + Number(resultGroup.calcTemplate.round1SecondP) %>%</a></td>
-                <td colspan="1">  <a class="btn btn-outline-secondary" href="/result/detailed/<%= resultGroup._id %>/R2"> Round 2 -- <%= resultGroup.calcTemplate.round2FirstP %>%</a></td>
+                <td colspan="2" ><a class="btn btn-outline-secondary" href="/result/detailed/<%= resultGroup._id %>/R1">Test 1-2 -- <%= Number(resultGroup.calcTemplate.round1FirstP) + Number(resultGroup.calcTemplate.round1SecondP) %>%</a></td>
+                <td colspan="1">  <a class="btn btn-outline-secondary" href="/result/detailed/<%= resultGroup._id %>/R2">Final -- <%= resultGroup.calcTemplate.round2FirstP %>%</a></td>
             </tr>
            <!-- <tr>
                 <td colspan="1" width="22.5%">  <%= resultGroup.calcTemplate.round1FirstP  %>% -- First program:</td>

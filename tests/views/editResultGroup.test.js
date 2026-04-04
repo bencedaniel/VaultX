@@ -47,13 +47,12 @@ function renderEditResultGroup(overrides = {}) {
 }
 
 describe('views/resultGroup/editResultGroup.ejs', () => {
-  test('renders edit form skeleton with id-based action and Edit button', async () => {
+  test('renders edit form skeleton with id-based action and Save changes button', async () => {
     const html = await renderEditResultGroup({ formData: { _id: 'rg-77' } });
-
     expect(html).toContain('action="/result/groups/edit/rg-77"');
     expect(html).toContain('method="POST"');
-    expect(html).toContain('Edit result calc template');
-    expect(html).toContain('>Edit<');
+    expect(html).toContain('Edit result group template');
+    expect(html).toContain('>Save changes<');
   });
 
   test('renders category and calc template lists from source arrays', async () => {

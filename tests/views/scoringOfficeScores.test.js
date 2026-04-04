@@ -9,7 +9,7 @@ describe('scores.ejs – Scoring Office (Score Sheet manager)', () => {
 
   it('renders the main header and container', async () => {
     const html = await render();
-    expect(html).toContain('Score Sheet manager');
+    expect(html).toContain('Scoresheet manager');
     expect(html).toContain('container my-4');
   });
 
@@ -18,14 +18,14 @@ describe('scores.ejs – Scoring Office (Score Sheet manager)', () => {
     expect(html).toContain('type="search"');
     expect(html).toContain('dropdown-menu');
     expect(html).toContain('Select column');
-    expect(html).toContain('href="/scoring/office/score/new"');
-    expect(html).toContain('Create New ScoreSheet');
+    expect(html).toContain('href="/scoring/office/scoresheet/new"');
+    expect(html).toContain('Create new scoresheet');
   });
 
   it('renders table headers correctly', async () => {
     const html = await render();
-    expect(html).toContain('Program Name');
-    expect(html).toContain('Vaulters / Team Name');
+    expect(html).toContain('Program name');
+    expect(html).toContain('Vaulters / Team name');
     expect(html).toContain('Category');
     expect(html).toContain('Scoresheets');
     expect(html).toContain('Total');

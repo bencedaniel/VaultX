@@ -1,15 +1,15 @@
 <div class="container my-4 border border-black border-1 border-opacity-10 rounded p-3 shadow bg-primary bg-opacity-10 " style="max-width: 80vh;">
-  <h1 class="text-center mb-3">Horse Details</h1>
+  <h1 class="text-center mb-3">Horse details</h1>
 
   <form action="/horse/new" method="POST">
     <div class="row justify-content-center g-3 m-auto">
 
-      <!-- Horse Name -->
+      <!-- Horse name -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="Horsename" name="Horsename" placeholder="Horse Name" disabled
+          <input type="text" class="form-control shadow-none" id="Horsename" name="Horsename" placeholder="Horse name" disabled
                  value="<%= formData ? formData.Horsename : '' %>" autocomplete="off">
-          <label for="Horsename">Horse Name</label>
+          <label for="Horsename">Horse name</label>
         </div>
       </div>
 
@@ -31,12 +31,12 @@
         </div>
       </div>
 
-      <!-- Birthdate -->
+      <!-- Birth date -->
       <div class="col-md-12">
         <div class="form-floating">
           <input type="date" class="form-control shadow-none" id="Bdate" name="Bdate" disabled
             value="<%= formData && formData.Bdate ? new Date(formData.Bdate).toISOString().split('T')[0] : '' %>">
-          <label for="Bdate">Birthdate</label>
+          <label for="Bdate">Birth date</label>
         </div>
       </div>
 
@@ -52,39 +52,39 @@
       <!-- Vet -->
       <div class="col-md-12 bg-secondary bg-opacity-10 rounded p-3 " style="max-width: 97%;" >
           <div class="d-flex justify-content-between m-2">
-        <label class="form-label mb-2">Vet Check history</label>
+        <label class="form-label mb-2">Vet check history</label>
         <div class="p-1 px-2 border border-1 border-black border-opacity-25 rounded">
         <input type="checkbox" class="form-check-input me-2" id="filterCheckVet" onchange="loadFilteredVetData()" checked>
-        <label for="filterCheckVet"> Filter to the selected event</label>
+        <label for="filterCheckVet">Filter for selected event</label>
         </div>
         </div>
         <div id="VetCheckActions"></div>
       </div>
 
-      <!-- Horse Status -->
+      <!-- Horse status -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="HorseStatus" name="HorseStatus" placeholder="Horse Status" disabled
+          <input type="text" class="form-control shadow-none" id="HorseStatus" name="HorseStatus" placeholder="Horse status" disabled
                  value="<%= formData ? formData.HorseStatus : '' %>">
-          <label for="HorseStatus">Horse Status</label>
+          <label for="HorseStatus">Horse status</label>
         </div>
       </div>
 
-      <!-- Box Number -->
+      <!-- Box number -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="BoxNr" name="BoxNr" placeholder="Box Number" disabled
-                 value="<%= formData && formData.BoxNr && formData.BoxNr[0] && formData.BoxNr[0].boxNumber ? formData.BoxNr[0].boxNumber : 'No Box Nr' %>">
-          <label for="BoxNr">Box Number</label>
+          <input type="text" class="form-control shadow-none" id="BoxNr" name="BoxNr" placeholder="Box number" disabled
+                 value="<%= formData && formData.BoxNr && formData.BoxNr[0] && formData.BoxNr[0].boxNumber ? formData.BoxNr[0].boxNumber : 'No box nr' %>">
+          <label for="BoxNr">Box number</label>
         </div>
       </div>
 
-      <!-- Head Number -->
+      <!-- Head number -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="HeadNr" name="HeadNr" placeholder="Head Number" disabled
-                 value="<%= formData && formData.HeadNr && formData.HeadNr[0] && formData.HeadNr[0].headNumber ? formData.HeadNr[0].headNumber : 'No Head Nr' %>">
-          <label for="HeadNr">Head Number</label>
+          <input type="text" class="form-control shadow-none" id="HeadNr" name="HeadNr" placeholder="Head number" disabled
+                 value="<%= formData && formData.HeadNr && formData.HeadNr[0] && formData.HeadNr[0].headNumber ? formData.HeadNr[0].headNumber : 'No head nr' %>">
+          <label for="HeadNr">Head number</label>
         </div>
       </div>
 
@@ -94,29 +94,29 @@
         <label class="form-label mb-2">Notes</label>
         <div class="p-1 px-2 border border-1 border-black border-opacity-25 rounded">
         <input type="checkbox" class="form-check-input me-2" id="filterCheck" onchange="loadFilteredData()" checked>
-        <label for="filterCheck"> Filter to the selected event</label>
+        <label for="filterCheck">Filter for selected event</label>
         </div>
         </div>
 
         <div id="NoteList"></div>
-        <a type="button" class="btn btn-sm btn-success mt-2" id="addNote">+ Add Note</a>
+        <a type="button" class="btn btn-sm btn-success mt-2" id="addNote">+ Add note</a>
       </div>
 
-      <!-- Responsible Person Name -->
+      <!-- Person responsible name -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="ResponsiblePersonName" name="ResponsiblePersonName" placeholder="Responsible Person Name" disabled
+          <input type="text" class="form-control shadow-none" id="ResponsiblePersonName" name="ResponsiblePersonName" placeholder="Person responsible name" disabled
                  value="<%= formData ? formData.ResponsiblePersonName : '' %>">
-          <label for="ResponsiblePersonName">Responsible Person Name</label>
+          <label for="ResponsiblePersonName">Person responsible name</label>
         </div>
       </div>
 
-      <!-- Responsible Person Contact -->
+      <!-- Person responsible contact -->
       <div class="col-md-12">
         <div class="form-floating">
-          <input type="text" class="form-control shadow-none" id="ResponsiblePersonContact" name="ResponsiblePersonContact" placeholder="Responsible Person Contact" disabled
+          <input type="text" class="form-control shadow-none" id="ResponsiblePersonContact" name="ResponsiblePersonContact" placeholder="Person responsible contact" disabled
                  value="<%= formData ? formData.ResponsiblePersonContact : '' %>">
-          <label for="ResponsiblePersonContact">Responsible Person Contact</label>
+          <label for="ResponsiblePersonContact">Person responsible contact</label>
         </div>
       </div>
 
@@ -135,7 +135,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content border-0 shadow">
             <div class="modal-header">
-                <h5 class="modal-title" id="NoteModalLabel">Add Note</h5>
+                <h5 class="modal-title" id="NoteModalLabel">Add note</h5>
                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -376,7 +376,7 @@ console.log(dataList)
 let vetCheckList = []
 
   <% if (formData && formData.VetCheckStatus) { %>
-    <% // VetCheckStatus rendezése dátum szerint (legújabb elöl)
+    <% // Sort VetCheckStatus by date (latest first)
        const sortedVet = (formData?.VetCheckStatus || [])
          .slice()
          .sort((a,b) => new Date(b.date || b.timestamp || 0) - new Date(a.date || a.timestamp || 0));
@@ -398,7 +398,7 @@ let vetCheckList = []
       });
     <% }) %>
 
-    <% // Notes rendezése timestamp szerint (legújabb elöl)
+    <% // Sort notes by timestamp (latest first)
        const sortedNotes = (formData?.Notes || [])
          .slice()
          .sort((a,b) => new Date(b.timestamp || b.date || 0) - new Date(a.timestamp || a.date || 0));

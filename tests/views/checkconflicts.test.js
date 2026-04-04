@@ -63,7 +63,7 @@ describe('views/order/checkconflicts.ejs', () => {
   test('renders header, search controls, confirm conflicts link and restart button', async () => {
     const html = await renderCheckConflicts();
 
-    expect(html).toContain('Order editor (Conflicts) : Friday');
+    expect(html).toContain('Order editor (conflicts): Friday');
     expect(html).toContain('Morning Session');
     expect(html).toContain('id="search"');
     expect(html).toContain('id="dropdownMenuButton"');

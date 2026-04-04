@@ -5,10 +5,10 @@
 
   <div class="row g-4 text-center justify-content-center">
     <%
-      // Például itt definiálod a kártya "adatbázist"
-      const allCards = cardsFromDB; // Feltételezve, hogy ez egy tömb objektumokkal
+      // For example, define the card "database" here
+      const allCards = cardsFromDB; // Assuming this is an array of objects
 
-      // Ha nincs rolePermissons, legyen üres tömb
+      // If there are no rolePermissions, use an empty array
       const permissons = typeof rolePermissons !== "undefined" ? rolePermissons : [];
     %>
 

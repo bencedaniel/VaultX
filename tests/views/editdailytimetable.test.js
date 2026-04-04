@@ -20,11 +20,11 @@ function renderEditDailyTimetable(overrides = {}) {
 describe('views/dailytimetable/editdailytimetable.ejs', () => {
   test('renders title, form action and submit button', async () => {
     const html = await renderEditDailyTimetable();
-
-    expect(html).toContain('Edit Day');
+    expect(html).toContain('Edit day');
     expect(html).toContain('action="/dailytimetable/edit/day-1"');
     expect(html).toContain('method="POST"');
-    expect(html).toContain('>Edit Day<');
+    expect(html).toContain('>Edit day<');
+    expect(html).toContain('Save changes');
   });
 
   test('renders prefilled day name and display name fields', async () => {
@@ -33,10 +33,11 @@ describe('views/dailytimetable/editdailytimetable.ejs', () => {
     expect(html).toContain('id="DayName"');
     expect(html).toContain('name="DayName"');
     expect(html).toContain('value="Saturday"');
-
+    expect(html).toContain('placeholder="Day name"');
     expect(html).toContain('id="DisplayName"');
     expect(html).toContain('name="DisplayName"');
     expect(html).toContain('value="Final Day"');
+    expect(html).toContain('placeholder="Display name"');
   });
 
   test('formats Date input to yyyy-mm-dd from formData.Date', async () => {
@@ -65,8 +66,8 @@ describe('views/dailytimetable/editdailytimetable.ejs', () => {
     const html = await renderEditDailyTimetable({ formData: undefined });
 
     expect(html).toContain('action="/dailytimetable/edit/"');
-    expect(html).toMatch(/id="DayName"\s+name="DayName"\s+placeholder="Day Name"\s+value=""/);
-    expect(html).toMatch(/id="DisplayName"\s+name="DisplayName"\s+placeholder="Display Name"\s+value=""/);
+    expect(html).toMatch(/id="DayName"\s+name="DayName"\s+placeholder="Day name"\s+value=""/);
+    expect(html).toMatch(/id="DisplayName"\s+name="DisplayName"\s+placeholder="Display name"\s+value=""/);
     expect(html).toMatch(/id="Date"\s+name="Date"\s+value=""/);
   });
 

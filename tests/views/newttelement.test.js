@@ -31,7 +31,7 @@ describe('views/dailytimetable/newttelement.ejs', () => {
 
     expect(html).toContain('action="/dailytimetable/newTTelement/"');
     expect(html).toContain('method="POST"');
-    expect(html).toContain('New program element');
+    expect(html).toContain('New competition element');
 
     expect(html).toContain('id="Name"');
     expect(html).toContain('name="Name"');
@@ -39,13 +39,13 @@ describe('views/dailytimetable/newttelement.ejs', () => {
 
     expect(html).toContain('id="dailytimetable"');
     expect(html).toContain('name="dailytimetable"');
-    expect(html).toContain('Select Day');
+    expect(html).toContain('Select day');
 
     expect(html).toContain('id="StartTimePlanned"');
     expect(html).toContain('type="time"');
 
     expect(html).toContain('id="judgeInputs"');
-    expect(html).toContain('>New program<');
+    expect(html).toContain('btn btn-primary');
   });
 
   test('renders day options with hu-HU date formatting', async () => {
