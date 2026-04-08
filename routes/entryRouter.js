@@ -8,42 +8,81 @@ import entryController from '../controllers/entryController.js';
 
 
 
+
+/**
+ * Nevezések (Entry) router.
+ * Nevezések, incidensek, állatorvosi státuszok kezelése (létrehozás, szerkesztés, dashboard, stb.).
+ *
+ * Minden végpont csak hitelesített, megfelelő jogosultságú felhasználó számára érhető el.
+ */
 const entryRouter = express.Router();
 
+
+/**
+ * Új nevezés űrlap megjelenítése.
+ * GET /entries/new
+ */
 entryRouter.get('/new', Verify, VerifyRole(), entryController.renderNew);
 
+/**
+ * Új nevezés létrehozása.
+ * POST /entries/new
+ */
 entryRouter.post('/new', Verify, VerifyRole(), entryController.createNew);
-  entryRouter.get('/dashboard', Verify, VerifyRole(), entryController.dashboard);
 
+/**
+ * Nevezések dashboard megjelenítése.
+ * GET /entries/dashboard
+ */
+entryRouter.get('/dashboard', Verify, VerifyRole(), entryController.dashboard);
 
+/**
+ * Nevezés szerkesztő űrlap megjelenítése.
+ * GET /entries/edit/:id
+ */
 entryRouter.get('/edit/:id', Verify, VerifyRole(), entryController.editGet);
+
+/**
+ * Nevezés adatainak frissítése.
+ * POST /entries/edit/:id
+ */
 entryRouter.post('/edit/:id', Verify, VerifyRole(), Validate, entryController.editPost);
 
-     /*  entryRouter.delete('/delete/:id',Verify, VerifyRole(), async (req, res) => {
-        try {
+// Nevezés törlésének végpontja (jelenleg kikommentezve)
+/*  entryRouter.delete('/delete/:id',Verify, VerifyRole(), async (req, res) => {
+      ...existing code...
+  });*/
 
-          const entry = await Entries.findByIdAndDelete(req.params.id);
-          logger.db(`Entry ${entry.name} deleted by user ${req.user.username}.`);
-          if (!entry) {
-            req.session.failMessage = 'Entry not found';
-            return res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Entry not found' });
-          }
-          res.status(HTTP_STATUS.OK).json({ message: 'Entry deleted successfully' });
-        } catch (err) {
-          logError('ENTRY_ROUTE', err.toString(), `User: ${req.user.username}`);
-          req.session.failMessage = 'Server error';
-          res.status(HTTP_STATUS.INTERNAL_ERROR).json({ message: 'Server error' });
-        }
-      });*/
+/**
+ * Nevezéshez tartozó incidens törlése.
+ * DELETE /entries/deleteIncident/:id
+ */
 entryRouter.delete('/deleteIncident/:id', Verify, VerifyRole(), entryController.deleteIncident);
+
+/**
+ * Új incidens hozzáadása nevezéshez.
+ * POST /entries/newIncident/:id
+ */
 entryRouter.post('/newIncident/:id', Verify, VerifyRole(), entryController.newIncidentPost);
 
+/**
+ * Állatorvosi ellenőrzés oldal megjelenítése.
+ * GET /entries/vetCheck
+ */
 entryRouter.get('/vetCheck', Verify, VerifyRole(), entryController.vetCheckGet);
 
-    entryRouter.post('/updateVetStatus/:horseId', Verify, VerifyRole(), entryController.updateVetStatus);
+/**
+ * Ló állatorvosi státuszának frissítése.
+ * POST /entries/updateVetStatus/:horseId
+ */
+entryRouter.post('/updateVetStatus/:horseId', Verify, VerifyRole(), entryController.updateVetStatus);
 
 
 
 
 
+
+/**
+ * entryRouter exportálása.
+ */
 export default entryRouter;

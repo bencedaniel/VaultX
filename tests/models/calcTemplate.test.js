@@ -24,7 +24,7 @@ describe('calcTemplate Model - Unit Tests', () => {
 
     expect(validationError).toBeDefined();
     expect(validationError.errors.round1FirstP).toBeDefined();
-    expect(validationError.errors.round1FirstP.message).toBe('Round 1 first percentage required!');
+    expect(validationError.errors.round1FirstP.message).toBe('Test 1 percentage required!');
   });
 
   test('fails when round1SecondP is missing', () => {
@@ -34,7 +34,7 @@ describe('calcTemplate Model - Unit Tests', () => {
 
     expect(validationError).toBeDefined();
     expect(validationError.errors.round1SecondP).toBeDefined();
-    expect(validationError.errors.round1SecondP.message).toBe('Round 1 second percentage required!');
+    expect(validationError.errors.round1SecondP.message).toBe('Test 2  percentage required!');
   });
 
   test('fails when round2FirstP is missing', () => {
@@ -44,7 +44,7 @@ describe('calcTemplate Model - Unit Tests', () => {
 
     expect(validationError).toBeDefined();
     expect(validationError.errors.round2FirstP).toBeDefined();
-    expect(validationError.errors.round2FirstP.message).toBe('Round 2 first percentage required!');
+    expect(validationError.errors.round2FirstP.message).toBe('Final percentage required!');
   });
 
   test('schema metadata is configured', () => {

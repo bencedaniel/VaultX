@@ -4,45 +4,54 @@ import calcTemplate from '../models/calcTemplate.js';
 import { logDb } from '../logger.js';
 
 /**
- * Retrieves all result generators with populated category and calculation schema template
- * @returns {Promise<Array>} Array of all result generators
+ * Eredménygenerátor (resultGenerator) adatkezelő szolgáltatások.
+ * Minden függvény részletes magyar nyelvű dokumentációval és inline kommentekkel ellátva.
+ */
+
+/**
+ * Összes eredménygenerátor lekérdezése, feltöltött kategória és számítási sablon adatokkal.
+ * @returns {Promise<Array>} Az összes eredménygenerátor tömbje.
  */
 export async function getAllGenerators() {
+    // Generátorok lekérdezése, kapcsolt mezők feltöltése
     return await resultGenerator.find().populate('category').populate('calcSchemaTemplate');
 }
 
 /**
- * Retrieves a single result generator by ID
- * @param {string} id - Generator ID
- * @returns {Promise<Object>} Generator document
+ * Egy eredménygenerátor lekérdezése azonosító alapján.
+ * @param {string} id - Generátor azonosító.
+ * @returns {Promise<Object>} A generátor dokumentum.
  */
 export async function getGeneratorById(id) {
+    // Generátor keresése azonosító alapján, kapcsolt mezők feltöltése
     return await resultGenerator.findById(id).populate('category').populate('calcSchemaTemplate');
 }
 
 /**
- * Gathers form data needed for generator create/edit forms
- * @returns {Promise<Object>} Object containing categories and calcTemplates arrays
+ * Űrlap-adatok lekérdezése generátor létrehozásához/szerkesztéséhez.
+ * @returns {Promise<Object>} Objektum, amely tartalmazza a kategóriák és sablonok tömbjét.
  */
 export async function getGeneratorFormData() {
+    // Kategóriák és sablonok lekérdezése
     const categories = await Category.find();
     const calcTemplates = await calcTemplate.find();
     return { categories, calcTemplates };
 }
 
 /**
- * Creates a new result generator with validation
- * Ensures only one generator per category exists
- * @param {Object} data - Generator data (category, calcSchemaTemplate, active)
- * @returns {Promise<Object>} Created generator document
- * @throws {Error} If generator for category already exists
+ * Új eredménygenerátor létrehozása, ellenőrzéssel, hogy csak egy generátor lehet kategóriánként.
+ * @param {Object} data - Generátor adatai (category, calcSchemaTemplate, active).
+ * @returns {Promise<Object>} A létrehozott generátor dokumentum.
+ * @throws {Error} Ha már létezik generátor az adott kategóriához.
  */
 export async function createGenerator(data) {
+    // Ellenőrizzük, hogy van-e már generátor az adott kategóriához
     const existingGenerator = await resultGenerator.findOne({ category: data.category });
     if (existingGenerator) {
         throw new Error("A result generator for the selected category already exists.");
     }
 
+    // Új generátor példány létrehozása
     const newGenerator = new resultGenerator(data);
     await newGenerator.save();
     logDb('CREATE', 'ResultGenerator', `${newGenerator._id}`);
@@ -50,31 +59,33 @@ export async function createGenerator(data) {
 }
 
 /**
- * Updates an existing result generator with validation
- * Ensures category uniqueness (other than the current generator)
- * @param {string} id - Generator ID
- * @param {Object} data - Updated generator data
- * @returns {Promise<Object>} Updated generator document
- * @throws {Error} If another generator with same category exists
+ * Létező eredménygenerátor frissítése, kategória egyediség ellenőrzésével (kivéve saját magát).
+ * @param {string} id - Generátor azonosító.
+ * @param {Object} data - Frissített generátor adatok.
+ * @returns {Promise<Object>} A frissített generátor dokumentum.
+ * @throws {Error} Ha már létezik másik generátor ugyanazzal a kategóriával.
  */
 export async function updateGenerator(id, data) {
+    // Ellenőrizzük, hogy másik generátor nem használja-e ezt a kategóriát
     const existingGenerator = await resultGenerator.findOne({ category: data.category, _id: { $ne: id } });
     if (existingGenerator) {
         throw new Error("A result generator for the selected category already exists.");
     }
+    // Generátor frissítése azonosító alapján
     const updated = await resultGenerator.findByIdAndUpdate(id, data, { new: true });
     logDb('UPDATE', 'ResultGenerator', `${id}`);
     return updated;
 }
 
 /**
- * Updates the active status of a result generator
- * @param {string} id - Generator ID
- * @param {boolean} status - Active status
- * @returns {Promise<Object>} Updated generator document
- * @throws {Error} If generator not found
+ * Eredménygenerátor aktív státuszának frissítése.
+ * @param {string} id - Generátor azonosító.
+ * @param {boolean} status - Aktív státusz.
+ * @returns {Promise<Object>} A frissített generátor dokumentum.
+ * @throws {Error} Ha a generátor nem található.
  */
 export async function updateGeneratorStatus(id, status) {
+    // Generátor keresése azonosító alapján
     const generator = await resultGenerator.findById(id);
     if (!generator) {
         throw new Error("Result generator not found.");
@@ -86,11 +97,12 @@ export async function updateGeneratorStatus(id, status) {
 }
 
 /**
- * Deletes a result generator by ID
- * @param {string} id - Generator ID
- * @returns {Promise<Object>} Deleted generator document
+ * Eredménygenerátor törlése azonosító alapján.
+ * @param {string} id - Generátor azonosító.
+ * @returns {Promise<void>}
  */
 export async function deleteGenerator(id) {
+    // Generátor törlése az adatbázisból
     await resultGenerator.findByIdAndDelete(id);
     logDb('DELETE', 'ResultGenerator', `${id}`);
 }

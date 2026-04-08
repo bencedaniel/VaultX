@@ -4,7 +4,10 @@ import bcrypt from 'bcrypt';
 import { logDb, logDebug } from '../logger.js';
 
 /**
- * Get user by ID
+ * Felhasználó lekérdezése azonosító alapján.
+ * @param {string} id - Felhasználó azonosító.
+ * @returns {Promise<Object>} Felhasználó dokumentum.
+ * @throws {Error} Ha a felhasználó nem található.
  */
 export const getUserById = async (id) => {
     const user = await User.findById(id);
@@ -15,7 +18,10 @@ export const getUserById = async (id) => {
 };
 
 /**
- * Get user by ID and populate role
+ * Felhasználó lekérdezése azonosító alapján, szerepkörrel feltöltve.
+ * @param {string} id - Felhasználó azonosító.
+ * @returns {Promise<Object>} Feltöltött felhasználó dokumentum.
+ * @throws {Error} Ha a felhasználó nem található.
  */
 export const getUserByIdWithRole = async (id) => {
     const user = await User.findById(id).populate('role');
@@ -26,13 +32,18 @@ export const getUserByIdWithRole = async (id) => {
 };
 
 /**
- * Update user profile (username, feiid, password)
+ * Felhasználói profil frissítése (felhasználónév, feiid, jelszó, teljes név).
+ * @param {string} id - Felhasználó azonosító.
+ * @param {Object} data - Frissítendő adatok (username, feiid, password, fullname).
+ * @returns {Promise<Object>} A frissített felhasználó dokumentum.
+ * @throws {Error} Ha a felhasználó nem található.
  */
 export const updateUserProfile = async (id, data) => {
     logDebug(`Updating user ${id} with data: ${JSON.stringify(data)}`);
     const { username, feiid, password, fullname } = data;
     const updateData = { username, feiid, fullname };
     
+    // Ha nincs új jelszó megadva, megtartjuk a régit
     if (!password || password === '') {
         const user = await User.findById(id);
         if (!user) {
@@ -40,6 +51,7 @@ export const updateUserProfile = async (id, data) => {
         }
         updateData.password = user.password;
     } else {
+        // Új jelszó titkosítása
         updateData.password = await bcrypt.hash(password, 10);
     }
     
@@ -52,14 +64,16 @@ export const updateUserProfile = async (id, data) => {
 };
 
 /**
- * Get all roles
+ * Összes szerepkör lekérdezése.
+ * @returns {Promise<Array>} Szerepkörök tömbje.
  */
 export const getAllRoles = async () => {
     return await Role.find();
 };
 
 /**
- * Get form data for user profile (roles list)
+ * Űrlap-adatok lekérdezése felhasználói profilhoz (szerepkörök listája).
+ * @returns {Promise<Object>} Objektum, amely tartalmazza a szerepkörök tömbjét.
  */
 export const getUserProfileFormData = async () => {
     const roleList = await Role.find();

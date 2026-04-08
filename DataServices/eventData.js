@@ -1,17 +1,25 @@
+// Esemény modell importálása
 import Event from '../models/Event.js';
+// Jogosultság modell importálása
 import Permissions from '../models/Permissions.js';
+// Felhasználó modell importálása
 import User from '../models/User.js';
+// Naplózó függvény importálása
 import { logDb } from '../logger.js';
 
 /**
- * Get all events sorted by name
+ * Az összes esemény lekérése név szerint rendezve
+ * @returns {Promise<Array>} - Események listája név szerint rendezve
  */
 export async function getAllEvents() {
     return await Event.find().sort({ name: 1 });
 }
 
 /**
- * Get event by ID
+ * Esemény lekérése azonosító alapján
+ * @param {string} id - Az esemény azonosítója
+ * @returns {Promise<Object>} - A megtalált esemény
+ * @throws {Error} - Ha az esemény nem található
  */
 export async function getEventById(id) {
     const event = await Event.findById(id);
@@ -22,7 +30,9 @@ export async function getEventById(id) {
 }
 
 /**
- * Create a new event
+ * Új esemény létrehozása
+ * @param {Object} data - Az új esemény adatai
+ * @returns {Promise<Object>} - A létrehozott esemény
  */
 export async function createEvent(data) {
     const newEvent = new Event(data);
@@ -32,7 +42,11 @@ export async function createEvent(data) {
 }
 
 /**
- * Update event by ID
+ * Esemény frissítése azonosító alapján
+ * @param {string} id - A frissítendő esemény azonosítója
+ * @param {Object} data - Az új adatok
+ * @returns {Promise<Object>} - A frissített esemény
+ * @throws {Error} - Ha az esemény nem található
  */
 export async function updateEvent(id, data) {
     const event = await Event.findByIdAndUpdate(id, data, { runValidators: true });
@@ -44,14 +58,17 @@ export async function updateEvent(id, data) {
 }
 
 /**
- * Delete a responsible person from event's AssignedOfficials
+ * Felelős személy törlése az esemény AssignedOfficials mezőjéből
+ * @param {string} id - Az esemény azonosítója
+ * @param {Object} personData - A törlendő személy adatai
+ * @returns {Promise<Object>} - A frissített esemény
+ * @throws {Error} - Ha az esemény nem található
  */
 export async function deleteResponsiblePerson(id, personData) {
     const event = await Event.findById(id);
     if (!event) {
         throw new Error('Event not found');
     }
-    
     event.AssignedOfficials = event.AssignedOfficials.filter(official =>
         !(
             official.name === personData.name &&
@@ -59,28 +76,29 @@ export async function deleteResponsiblePerson(id, personData) {
             official.contact === personData.contact
         )
     );
-    
     logDb('UPDATE', 'Event', `${id}`);
     await Event.findByIdAndUpdate(id, event, { runValidators: true });
     return event;
 }
 
 /**
- * Add a responsible person to event's AssignedOfficials
+ * Felelős személy hozzáadása az esemény AssignedOfficials mezőjéhez
+ * @param {string} id - Az esemény azonosítója
+ * @param {Object} personData - A hozzáadandó személy adatai
+ * @returns {Promise<Object>} - A frissített esemény
+ * @throws {Error} - Ha az esemény nem található
  */
 export async function addResponsiblePerson(id, personData) {
     const event = await Event.findById(id);
     if (!event) {
         throw new Error('Event not found');
     }
-    
     const newResponsiblePerson = {
         name: personData.name,
         role: personData.role,
         contact: personData.contact,
         userID: personData.userID
     };
-    
     event.AssignedOfficials.push(newResponsiblePerson);
     logDb('UPDATE', 'Event', `${id}`);
     await Event.findByIdAndUpdate(id, event, { runValidators: true });
@@ -88,27 +106,31 @@ export async function addResponsiblePerson(id, personData) {
 }
 
 /**
- * Set an event as selected (uses static method)
+ * Esemény kiválasztása (statikus metódussal)
+ * @param {string} eventId - Az esemény azonosítója
+ * @returns {Promise<Object>} - A kiválasztott esemény
+ * @throws {Error} - Ha az esemény nem található
  */
 export async function selectEvent(eventId) {
     const event = await Event.findById(eventId);
     if (!event) {
         throw new Error('Event not found');
     }
-    
     await Event.setSelected(eventId);
     return event;
 }
 
 /**
- * Get all permissions for form data
+ * Az összes jogosultság lekérése űrlaphoz
+ * @returns {Promise<Array>} - Jogosultságok listája
  */
 export async function getAllPermissions() {
     return await Permissions.find();
 }
 
 /**
- * Get all users with limited fields for selection
+ * Az összes felhasználó lekérése (csak _id és username mezőkkel)
+ * @returns {Promise<Array>} - Felhasználók listája
  */
 export async function getAllUsers() {
     return await User.find().select('_id username');

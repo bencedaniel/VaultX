@@ -6,6 +6,11 @@ import DailyTimeTable from '../models/DailyTimeTable.js';
 import TimetablePart from '../models/Timetablepart.js';
 import { logDb, logDebug } from '../logger.js';
 
+/**
+ * Segédfüggvény: az azonosítót normalizálja (üres vagy null esetén null, egyébként string).
+ * @param {any} value - Az azonosító értéke.
+ * @returns {string|null} Normalizált azonosító vagy null.
+ */
 const normalizeID = (value) => {
     if (value === '' || value === null || value === undefined) {
         return null;
@@ -14,9 +19,12 @@ const normalizeID = (value) => {
 };
 
 /**
- * Get all result groups for a specific event with full population
+ * Összes eredménycsoport lekérdezése egy adott eseményhez, teljes feltöltéssel.
+ * @param {string} eventId - Esemény azonosító.
+ * @returns {Promise<Array>} Eredménycsoportok tömbje, feltöltött mezőkkel.
  */
 export const getResultGroupsByEvent = async (eventId) => {
+    // Eredménycsoportok lekérdezése és kapcsolt mezők feltöltése
     const groups = await resultGroup.find({ event: eventId })
         .populate('event')
         .populate('category')
@@ -33,15 +41,18 @@ export const getResultGroupsByEvent = async (eventId) => {
             path: 'round2First',
             populate: { path: 'dailytimetable' }
         });
-    
+    // Csillag szerint rendezés
     groups.sort((a, b) => b.category.Star - a.category.Star);
     return groups;
 };
 
 /**
- * Get result groups for results display (simpler population)
+ * Eredménycsoportok lekérdezése eredménymegjelenítéshez (egyszerűbb feltöltéssel).
+ * @param {string} eventId - Esemény azonosító.
+ * @returns {Promise<Array>} Eredménycsoportok tömbje.
  */
 export const getResultGroupsForResults = async (eventId) => {
+    // Eredménycsoportok lekérdezése, egyszerűbb feltöltéssel
     const groups = await resultGroup.find({ event: eventId })
         .populate('category')
         .populate('calcTemplate')
@@ -57,22 +68,27 @@ export const getResultGroupsForResults = async (eventId) => {
             path: 'round2First',
             populate: { path: 'dailytimetable' }
         });
-    
     groups.sort((a, b) => b.category.Star - a.category.Star);
     return groups;
 };
 
 /**
- * Get single result group by ID
+ * Egy eredménycsoport lekérdezése azonosító alapján.
+ * @param {string} id - Eredménycsoport azonosító.
+ * @returns {Promise<Object>} Az eredménycsoport dokumentum.
  */
 export const getResultGroupById = async (id) => {
+    // Eredménycsoport keresése azonosító alapján
     return await resultGroup.findById(id);
 };
 
 /**
- * Get result group with full details for detailed results display
+ * Egy eredménycsoport lekérdezése részletes adatokkal, részletes eredménymegjelenítéshez.
+ * @param {string} id - Eredménycsoport azonosító.
+ * @returns {Promise<Object>} Feltöltött eredménycsoport dokumentum.
  */
 export const getResultGroupWithDetails = async (id) => {
+    // Eredménycsoport keresése és kapcsolt mezők feltöltése
     return await resultGroup.findById(id)
         .populate('category')
         .populate('calcTemplate')
@@ -82,9 +98,12 @@ export const getResultGroupWithDetails = async (id) => {
 };
 
 /**
- * Get form data for result group creation/editing
+ * Űrlap-adatok lekérdezése eredménycsoport létrehozásához/szerkesztéséhez.
+ * @param {string} eventId - Esemény azonosító.
+ * @returns {Promise<Object>} Objektum: kategóriák, sablonok, programrészek tömbjei.
  */
 export const getGroupFormData = async (eventId) => {
+    // Kategóriák, sablonok, napi programok és programrészek lekérdezése
     const categories = await Category.find();
     const calcTemplates = await calcTemplate.find();
     const dailyTimetables = await DailyTimeTable.find({ event: eventId }).select('_id');
@@ -113,14 +132,19 @@ export const getGroupFormData = async (eventId) => {
 };
 
 /**
- * Update result group
+ * Eredménycsoport frissítése.
+ * Ellenőrzi, hogy ugyanaz a programrész nem szerepelhet több fordulóban.
+ * @param {string} id - Eredménycsoport azonosító.
+ * @param {Object} data - Frissített adatok.
+ * @returns {Promise<Object>} A frissített eredménycsoport dokumentum.
+ * @throws {Error} Ha ugyanaz a programrész több fordulóban is szerepel.
  */
 export const updateResultGroup = async (id, data) => {
     const round1First = normalizeID(data.round1First);
     const round1Second = normalizeID(data.round1Second);
     const round2First = normalizeID(data.round2First);
 
-    // Validate timetable parts are not the same (ignore empty values)
+    // Ellenőrzés: ugyanaz a programrész nem szerepelhet több fordulóban
     if ((round1First && round1Second && round1First === round1Second) || 
         (round1First && round2First && round1First === round2First) || 
         (round1Second && round2First && round1Second === round2First)) {
@@ -137,14 +161,19 @@ export const updateResultGroup = async (id, data) => {
 };
 
 /**
- * Create new result group
+ * Új eredménycsoport létrehozása.
+ * Ellenőrzi, hogy ugyanaz a programrész nem szerepelhet több fordulóban.
+ * @param {string} eventId - Esemény azonosító.
+ * @param {Object} data - Új eredménycsoport adatai.
+ * @returns {Promise<Object>} A létrehozott eredménycsoport dokumentum.
+ * @throws {Error} Ha ugyanaz a programrész több fordulóban is szerepel.
  */
 export const createResultGroup = async (eventId, data) => {
     const round1First = normalizeID(data.round1First);
     const round1Second = normalizeID(data.round1Second);
     const round2First = normalizeID(data.round2First);
 
-    // Validate timetable parts are not the same (ignore empty values)
+    // Ellenőrzés: ugyanaz a programrész nem szerepelhet több fordulóban
     if ((round1First && round1Second && round1First === round1Second) || 
         (round1First && round2First && round1First === round2First) || 
         (round1Second && round2First && round1Second === round2First)) {
@@ -157,6 +186,7 @@ export const createResultGroup = async (eventId, data) => {
 
     data.event = eventId;
 
+    // Új eredménycsoport példány létrehozása
     const newGroup = new resultGroup(data);
     await newGroup.save();
     logDb('CREATE', 'ResultGroup', `${newGroup._id}`);
@@ -164,29 +194,38 @@ export const createResultGroup = async (eventId, data) => {
 };
 
 /**
- * Delete result group by ID
+ * Eredménycsoport törlése azonosító alapján.
+ * @param {string} id - Eredménycsoport azonosító.
+ * @returns {Promise<void>}
  */
 export const deleteResultGroup = async (id) => {
+    // Eredménycsoport törlése az adatbázisból
     await resultGroup.findByIdAndDelete(id);
     logDb('DELETE', 'ResultGroup', `${id}`);
 };
 
 /**
- * Generate result groups from active generators
+ * Eredménycsoportok generálása az aktív generátorok alapján.
+ * @param {string} eventId - Esemény azonosító.
+ * @param {string} username - Felhasználónév (jelenleg nem használt).
+ * @returns {Promise<void>}
  */
 export const generateGroupsForActiveGenerators = async (eventId, username) => {
+    // Aktív generátorok lekérdezése
     const activeGenerators = await resultGenerator.find({ active: true });
     
     for (const generator of activeGenerators) {
+        // Ellenőrizzük, hogy már létezik-e csoport az adott eseményhez és kategóriához
         const groupExists = await resultGroup.findOne({ 
             event: eventId, 
             category: generator.category 
         });
         
         if (groupExists) {
-            continue; // Skip if group already exists
+            continue; // Ha már létezik, kihagyjuk
         }
         
+        // Új eredménycsoport példány létrehozása
         const newResultGroup = new resultGroup({
             event: eventId,
             category: generator.category,

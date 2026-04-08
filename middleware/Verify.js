@@ -12,24 +12,34 @@ import {
 import { get } from "mongoose";
 import { getHelpMessagebyUri } from "../DataServices/helpMessageData.js";
 
+
 /**
- * Helper to detect if client wants HTML response (browser) vs JSON (API)
+ * Segédfüggvény: eldönti, hogy a kliens HTML választ vár-e (böngésző) vagy JSON-t (API).
+ * Ha az Accept fejléc tartalmazza a 'text/html'-t, akkor HTML-t vár (pl. böngésző),
+ * egyébként API hívásnak tekintjük.
+ * @param {Request} req - Express kérés objektum.
+ * @returns {boolean} Igaz, ha HTML választ vár.
  */
 function wantsHtml(req) {
   const acceptHeader = req.headers['accept'] || '';
   return acceptHeader.includes('text/html');
 }
 
+
 /**
- * Send 401 Unauthorized response
+ * 401-es (Nincs jogosultság) válasz küldése böngészőnek vagy API-nak.
+ * Ha böngészőből jön a kérés, akkor hibaoldalt renderel, egyébként JSON hibát ad vissza.
+ * @param {Request} req - Express kérés objektum.
+ * @param {Response} res - Express válasz objektum.
+ * @param {string} [message] - Hibaüzenet.
+ * @returns {Response}
  */
 function unauthorized(req, res, message = MESSAGES.AUTH.SESSION_EXPIRED) {
-  
   if (wantsHtml(req)) {
-    // Browser request - render 401 error page
+    // Böngésző kérés - hibaoldal renderelése
     return res.status(HTTP_STATUS.UNAUTHORIZED).render('errorpage', { errorCode: 401, message });
   } else {
-    // API request - send JSON
+    // API kérés - JSON válasz
     return res.status(HTTP_STATUS.UNAUTHORIZED).json({ 
       error: 'Unauthorized', 
       message 
@@ -37,16 +47,22 @@ function unauthorized(req, res, message = MESSAGES.AUTH.SESSION_EXPIRED) {
   }
 }
 
+
 /**
- * Send 403 Forbidden response
+ * 403-as (Tiltott) válasz küldése böngészőnek vagy API-nak.
+ * Ha böngészőből jön a kérés, akkor hibaoldalt renderel, egyébként JSON hibát ad vissza.
+ * @param {Request} req - Express kérés objektum.
+ * @param {Response} res - Express válasz objektum.
+ * @param {string} [message] - Hibaüzenet.
+ * @param {string|null} [redirectPath] - Átirányítási útvonal (opcionális).
+ * @returns {Response}
  */
 function forbidden(req, res, message = MESSAGES.AUTH.PERMISSION_DENIED, redirectPath = null) {
-  
   if (wantsHtml(req)) {
-    // Render the 403 error page from views/errors/403.ejs
+    // Böngésző kérés - hibaoldal renderelése
     return res.status(HTTP_STATUS.FORBIDDEN).render('errorpage', { errorCode: 403, message, redirectPath });
   } else {
-    // API request - send JSON
+    // API kérés - JSON válasz
     return res.status(HTTP_STATUS.FORBIDDEN).json({ 
       error: 'Forbidden', 
       message 
@@ -54,23 +70,39 @@ function forbidden(req, res, message = MESSAGES.AUTH.PERMISSION_DENIED, redirect
   }
 }
 
+
+/**
+ * Hitelesítési middleware: JWT token ellenőrzés, blacklist, user lekérés, session frissítés.
+ * Sikeres ellenőrzés után a felhasználó adatai a req.user-ben lesznek.
+ *
+ * Lépések:
+ * 1. Token lekérése cookie-ból vagy Authorization headerből
+ * 2. Token blacklist ellenőrzése (kijelentkezett vagy visszavont token)
+ * 3. Token validálás (aláírás, lejárat)
+ * 4. Felhasználó lekérése az adatbázisból (és aktív-e)
+ * 5. Ha inaktív, session törlés, token blacklistelés, hiba
+ * 6. Rolling JWT generálása (lejárat frissítése)
+ * 7. Cookie-ba írás
+ * 8. User adatok a requesthez
+ * 9. Segítség üzenet az oldalhoz (ha van)
+ *
+ * @type {import('express').RequestHandler}
+ */
 export const Verify = asyncHandler(async (req, res, next) => {
-  // 1️⃣ Token lekérése cookie-ból vagy Authorization headerből
+  // 1 Token lekérése cookie-ból vagy Authorization headerből
   const token = req.cookies.token || req.headers["authorization"]?.split(" ")[1];
   if (!token) {
+    // Nincs token: logolás, 401-es válasz
     logAuth('VERIFY_TOKEN', 'unknown', false, 'TOKEN_MISSING');
     return unauthorized(req, res, MESSAGES.AUTH.SESSION_EXPIRED);
   }
-  
-  // 2️⃣ Blacklist ellenőrzés
+  // 2 Blacklist ellenőrzés: ha a token vissza lett vonva, nem engedjük tovább
   const blacklisted = await isTokenBlacklisted(token);
-
   if (blacklisted) {
     logAuth('VERIFY_TOKEN', 'unknown', false, 'TOKEN_BLACKLISTED');
     return unauthorized(req, res, MESSAGES.AUTH.SESSION_LOGGED_OUT);
   }
-
-  // 3️⃣ Token validálás
+  // 3 Token validálás: aláírás, lejárat, stb.
   let decoded;
   try {
     decoded = jwt.verify(token, SECRET_ACCESS_TOKEN);
@@ -78,32 +110,29 @@ export const Verify = asyncHandler(async (req, res, next) => {
     logError('TOKEN_VERIFICATION_FAILED', err.message, 'Token validation');
     return unauthorized(req, res, MESSAGES.AUTH.INVALID_TOKEN);
   }
-
-  // 4️⃣ Felhasználó lekérése az adatbázisból
+  // 4 Felhasználó lekérése az adatbázisból
   const user = await findUserByIdWithRole(decoded.id);
-
   if (!user) {
     logAuth('VERIFY_TOKEN', decoded.id, false, 'USER_NOT_FOUND');
     return unauthorized(req, res, MESSAGES.AUTH.USER_NOT_FOUND);
   }
-  
-  if(!user.active){
+  // 4.1 Ha a felhasználó inaktív, session-t töröl, tokent blacklistel
+  if (!user.active) {
     logAuth('VERIFY_TOKEN', user.username, false, 'ACCOUNT_DEACTIVATED');
     req.session.failMessage = MESSAGES.AUTH.ACCOUNT_DEACTIVATED;
-    const authHeader = req.headers['cookie']; // get the session cookie from request header
+    // Cookie headerből token kinyerése
+    const authHeader = req.headers['cookie'];
     if (!authHeader) {
       req.session.failMessage = MESSAGES.AUTH.ACCOUNT_DEACTIVATED;
       return res.sendStatus(HTTP_STATUS.NO_CONTENT);
-    } 
-    const cookie = authHeader.split('=')[1]; // If there is, split the cookie string to get the actual jwt token
+    }
+    const cookie = authHeader.split('=')[1];
     const accessToken = cookie.split(';')[0];
-    const checkIfBlacklisted = await isTokenBlacklisted(accessToken); // Check if that token is blacklisted
-    // if true, send a no content response.
-    if (checkIfBlacklisted){
+    const checkIfBlacklisted = await isTokenBlacklisted(accessToken);
+    if (checkIfBlacklisted) {
       req.session.failMessage = MESSAGES.AUTH.ACCOUNT_DEACTIVATED;
       return res.sendStatus(HTTP_STATUS.NO_CONTENT);
-    } 
-    // otherwise blacklist token
+    }
     await blacklistToken(accessToken);
     res.clearCookie(COOKIE_CONFIG.TOKEN_NAME, {
       ...COOKIE_CONFIG.OPTIONS,
@@ -112,51 +141,54 @@ export const Verify = asyncHandler(async (req, res, next) => {
     req.session.failMessage = MESSAGES.AUTH.ACCOUNT_DEACTIVATED;
     return unauthorized(req, res, MESSAGES.AUTH.ACCOUNT_DEACTIVATED);
   }
-
-  // 5️⃣ Rolling JWT generálása
-  const timeoutMinutes = parseInt(TIMEOUT, 10)*3 || 90;
+  // 5 Rolling JWT generálása (lejárat frissítése): minden kérésnél új token, hogy ne járjon le a session
+  const timeoutMinutes = parseInt(TIMEOUT, 10) * 3 || 90;
   const newToken = jwt.sign({ id: user._id }, SECRET_ACCESS_TOKEN, { expiresIn: `${timeoutMinutes}m` });
-
-  // 6️⃣ Cookie-ba írás
+  // 6 Cookie-ba írás: új token beállítása
   res.cookie(COOKIE_CONFIG.TOKEN_NAME, newToken, {
     ...COOKIE_CONFIG.OPTIONS,
-    secure: SECURE_MODE === 'true', // élesben: true
-    maxAge: parseInt(TIMEOUT, 10) * 60 * 1000 // maxAge beállítása a TIMEOUT alapján
+    secure: SECURE_MODE === 'true',
+    maxAge: parseInt(TIMEOUT, 10) * 60 * 1000
   });
-
-  // 7️⃣ User adatok a requesthez
+  // 7 User adatok a requesthez (jelszó nélkül)
   const { password, ...data } = user._doc;
   req.user = data;
-
-  // Get help message for this URL and attach to res.locals only if exists
+  // 8 Segítség üzenet az oldalhoz (ha van)
   res.locals.helpMessage = await getHelpMessagebyUri(req.originalUrl);
- 
-
-
-
   next();
 });
+
+/**
+ * Hitelesítési middleware, amely csak ellenőrzi a token meglétét, de nem dob hibát, ha nincs.
+ * @type {import('express').RequestHandler}
+ */
 export const VerifyNoerror = asyncHandler(async (req, res, next) => {
-  // 1️⃣ Token lekérése cookie-ból vagy Authorization headerből
   const token = req.cookies.token || req.headers["authorization"]?.split(" ")[1];
   if (!token) {
     return unauthorized(req, res, MESSAGES.AUTH.SESSION_EXPIRED);
   }
-
   next();
 });
 
+/**
+ * Segédfüggvény: ellenőrzi, hogy két URL minta egyezik-e (pl. jogosultságokhoz).
+ * @param {string} pattern - Jogosultság URL minta (pl. /admin/:id).
+ * @param {string} actual - Aktuális URL.
+ * @returns {boolean} Igaz, ha egyeznek.
+ */
 function urlsMatch(pattern, actual) {
-    const patternParts = pattern.split('/').filter(Boolean);
-    const actualParts = actual.split('/').filter(Boolean);
-
-    if (patternParts.length !== actualParts.length) return false;
-
-    return patternParts.every((part, i) => {
-        return part.startsWith(':') || part === actualParts[i];
-    });
+  const patternParts = pattern.split('/').filter(Boolean);
+  const actualParts = actual.split('/').filter(Boolean);
+  if (patternParts.length !== actualParts.length) return false;
+  return patternParts.every((part, i) => {
+    return part.startsWith(':') || part === actualParts[i];
+  });
 }
 
+/**
+ * Jogosultság ellenőrző middleware: csak akkor enged tovább, ha a felhasználó szerepköre engedélyezi az adott URL-t.
+ * @returns {import('express').RequestHandler}
+ */
 export function VerifyRole() {
     return asyncHandler(async (req, res, next) => {
         const user = req.user;
@@ -164,127 +196,106 @@ export function VerifyRole() {
         if (!role) {
             return unauthorized(req, res, MESSAGES.AUTH.USER_ROLE_NOT_FOUND);
         }
-
         const roleData = await getRoleWithPermissions(role);
         if (!roleData) {
             return unauthorized(req, res, MESSAGES.AUTH.ROLE_NOT_FOUND);
         }
-
         const { role: roleFromDB, permissions: permissionsDocs } = roleData;
-
-        // Most minden permission dokumentum elérhető a permissionsDocs tömbben
+        // Minden permission dokumentum elérhető a permissionsDocs tömbben
         const allAttachedURLs = permissionsDocs.flatMap(p => p.attachedURL);
-
-        let hasPermission = false
+        let hasPermission = false;
         const perm = allAttachedURLs.find(pattern => urlsMatch(pattern.url, req.originalUrl));
         if (!perm) {
           hasPermission = false;
         } else {
           req.session.parent = perm.parent;
           hasPermission = true;
-            res.locals.parent = (typeof req.session?.parent === 'string' && req.session.parent.trim() !== '')
-              ? req.session.parent
-              : '/dashboard';
+          res.locals.parent = (typeof req.session?.parent === 'string' && req.session.parent.trim() !== '')
+            ? req.session.parent
+            : '/dashboard';
         }
         if (!roleFromDB || !hasPermission)  {
             logWarn('PERMISSION_DENIED', `User ${user.username} with role ${roleFromDB ? roleFromDB.roleName : 'unknown'} tried to access ${req.originalUrl} without permission.`);
             return forbidden(req, res, MESSAGES.AUTH.PERMISSION_DENIED, '/dashboard');
-          }
-
-
-
+        }
         next();
     });
 }
+/**
+ * Middleware: csak akkor enged tovább, ha a felhasználó saját ID-ját használja (pl. saját profil szerkesztése).
+ * @type {import('express').RequestHandler}
+ */
 export const UserIDValidator = asyncHandler(async (req, res, next) => {
-    const userId = req.params.id;
-    if (!userId) {
-        return unauthorized(req, res, MESSAGES.AUTH.USER_ID_REQUIRED);
-    }
-    if (userId !== req.user._id.toString()) {
-        return forbidden(req, res, MESSAGES.AUTH.PERMISSION_DENIED);
-    }
-    next();
+  const userId = req.params.id;
+  if (!userId) {
+    return unauthorized(req, res, MESSAGES.AUTH.USER_ID_REQUIRED);
+  }
+  if (userId !== req.user._id.toString()) {
+    return forbidden(req, res, MESSAGES.AUTH.PERMISSION_DENIED);
+  }
+  next();
 });
 
+/**
+ * Middleware: ha van érvényes token, beállítja a req.user-t, de nem dob hibát, ha nincs vagy hibás.
+ * @type {import('express').RequestHandler}
+ */
 export const StoreUserWithoutValidation = asyncHandler(async (req, res, next) => {
-  // 1️⃣ Token lekérése cookie-ból vagy Authorization headerből
   const token = req.cookies.token || req.headers["authorization"]?.split(" ")[1];
   if (!token) {
     return next();
   }
-
-  // 2️⃣ Blacklist ellenőrzés
   const blacklisted = await isTokenBlacklisted(token);
-
   if (blacklisted) {
     return next();
   }
-
-  // 3️⃣ Token validálás
   let decoded;
   try {
     decoded = jwt.verify(token, SECRET_ACCESS_TOKEN);
   } catch (err) {
     return next();
   }
-
-  // 4️⃣ Felhasználó lekérése az adatbázisból
   const user = await findUserByIdWithRole(decoded.id);
-
   if (!user) {
     return next();
   }
-
-  // 5️⃣ Rolling JWT generálása
-    const timeoutMinutes = parseInt(TIMEOUT, 10)*3 || 90;
-  const newToken = jwt.sign({ id: user._id }, SECRET_ACCESS_TOKEN, { expiresIn: `${timeoutMinutes}m`  });
-
-  // 6️⃣ Cookie-ba írás
+  const timeoutMinutes = parseInt(TIMEOUT, 10) * 3 || 90;
+  const newToken = jwt.sign({ id: user._id }, SECRET_ACCESS_TOKEN, { expiresIn: `${timeoutMinutes}m` });
   res.cookie(COOKIE_CONFIG.TOKEN_NAME, newToken, {
     ...COOKIE_CONFIG.OPTIONS,
-    secure: SECURE_MODE === 'true', // élesben: true
-    maxAge: parseInt(TIMEOUT, 10) * 60 * 1000 // maxAge beállítása a TIMEOUT alapján
+    secure: SECURE_MODE === 'true',
+    maxAge: parseInt(TIMEOUT, 10) * 60 * 1000
   });
-
-  // 7️⃣ User adatok a requesthez
   const { password, ...data } = user._doc;
   req.user = data;
-
   next();
 });
 
 
 
+/**
+ * Middleware: ha a felhasználó már be van jelentkezve, átirányítja a dashboardra.
+ * @type {import('express').RequestHandler}
+ */
 export const CheckLoggedIn = asyncHandler(async (req, res, next) => {
-  // 1️⃣ Token lekérése cookie-ból vagy Authorization headerből
   const token = req.cookies.token || req.headers["authorization"]?.split(" ")[1];
-
   if (!token) {
     return next();
   }
-
-  // 2️⃣ Blacklist ellenőrzés
   const blacklisted = await isTokenBlacklisted(token);
-
   if (blacklisted) {
     return next();
   }
-
-  // 3️⃣ Token validálás
   let decoded;
   try {
     decoded = jwt.verify(token, SECRET_ACCESS_TOKEN);
   } catch (err) {
-    return next(); // invalid token → tovább
+    return next();
   }
-
-  // 4️⃣ Felhasználó lekérése
   const user = await findUserByIdWithRole(decoded.id);
   if (!user) {
-    return next(); // nincs felhasználó → tovább
+    return next();
   }
-
   console.info("User already logged in:", user.username);
   return res.redirect("/dashboard");
 });

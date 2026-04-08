@@ -50,7 +50,8 @@ let fieldNumbers = 0
       fieldNumbers++;
     }
   });
-  if(fieldNumbers >= neededFields.length ){
+  // Csak akkor számol, ha minden szükséges mező megvan
+  if (fieldNumbers >= neededFields.length) {
     return excelRound(calcA1(inputDatas, category) + calcA2(inputDatas, category) + calcA3(inputDatas, category), 3);
   }
 }

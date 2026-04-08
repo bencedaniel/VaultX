@@ -1,29 +1,40 @@
+// Logger és naplózó függvények importálása
 import { logger, logOperation, logAuth, logError, logValidation, logWarn } from '../logger.js';
+
+// Aszinkron hibakezelő middleware importálása
 import { asyncHandler } from '../middleware/asyncHandler.js';
+
+// HTTP státuszkódok és üzenetek konstansainak importálása
 import { HTTP_STATUS, MESSAGES } from '../config/index.js';
+
+// Validációs és jogosultság middleware-ek importálása
 import Validate from "../middleware/Validate.js";
 import { Verify, VerifyRole } from "../middleware/Verify.js";
+
+// Napi időtáblákkal és versenyelemekkel kapcsolatos adatkezelő függvények importálása
 import {
-    getAllDailyTimeTables,
-    getDailyTimeTableById,
-    createDailyTimeTable,
-    updateDailyTimeTable,
-    deleteDailyTimeTable,
-    getAllTimetableParts,
-      getTimetablePartsByDailyTimeTable,
-    getTimetablePartById,
-    createTimetablePart,
-    updateTimetablePart,
-    deleteTimetablePart,
-    saveTimetablePartStartTime,
-    getTimetablePartFormData
+    getAllDailyTimeTables,           // Összes napi időtábla lekérdezése
+    getDailyTimeTableById,           // Egy adott napi időtábla lekérdezése ID alapján
+    createDailyTimeTable,            // Új napi időtábla létrehozása
+    updateDailyTimeTable,            // Napi időtábla módosítása
+    deleteDailyTimeTable,            // Napi időtábla törlése
+    getAllTimetableParts,            // Összes versenyelem lekérdezése
+    getTimetablePartsByDailyTimeTable, // Versenyelemek lekérdezése napi időtábla szerint
+    getTimetablePartById,            // Egy adott versenyelem lekérdezése ID alapján
+    createTimetablePart,             // Új versenyelem létrehozása
+    updateTimetablePart,             // Versenyelem módosítása
+    deleteTimetablePart,             // Versenyelem törlése
+    saveTimetablePartStartTime,      // Versenyelem kezdési idejének mentése
+    getTimetablePartFormData         // Versenyelem űrlaphoz szükséges adatok lekérdezése
 } from '../DataServices/dailyTimetableData.js';
 
-// Temporary model imports kept for compatibility with existing templates
+// Ideiglenes modellek importálása a régi template kompatibilitás miatt
 import DailyTimeTable from '../models/DailyTimeTable.js';
 import TimetablePart from '../models/Timetablepart.js';
 
+// Napi időtáblák és versenyelemek vezérlője
 class DailyTimeTableController {
+  // Új napi időtábla űrlap megjelenítése
   renderNew = (req, res) => {
     res.render('dailytimetable/newdailytimetable', {
       formData: req.session.formData,
@@ -36,6 +47,7 @@ class DailyTimeTableController {
     req.session.successMessage = null;
   }
 
+  // Új napi időtábla létrehozása POST kérésre
   createNew = asyncHandler(async (req, res) => {
       const newDailyTimeTable = await createDailyTimeTable(req.body);
       logOperation('DAILY_TIMETABLE_CREATE', `Daily TimeTable created: ${newDailyTimeTable.DayName}`, req.user.username, HTTP_STATUS.CREATED);
@@ -45,6 +57,7 @@ class DailyTimeTableController {
     
   })
 
+  // Napi időtáblák dashboard oldal megjelenítése
   dashboard = asyncHandler(async (req, res) => {
     const timetableparts = await getAllTimetableParts();
     const eventID = res.locals.selectedEvent?._id;
@@ -63,6 +76,7 @@ class DailyTimeTableController {
 
 
 
+  // Napi időtábla szerkesztő űrlap megjelenítése
   editGet = asyncHandler(async (req, res) => {
     const dailytimetable = await getDailyTimeTableById(req.params.id);
     if (!dailytimetable) {
@@ -81,6 +95,7 @@ class DailyTimeTableController {
     req.session.successMessage = null;
   })
 
+  // Napi időtábla adatainak frissítése POST kérésre
   editPost = asyncHandler(async (req, res) => {
       const dailytimetable = await updateDailyTimeTable(req.params.id, req.body);
       if (!dailytimetable) {
@@ -94,6 +109,7 @@ class DailyTimeTableController {
     
   })
 
+  // Napi időtábla törlése DELETE kérésre
   delete = asyncHandler(async (req, res) => {
     const dailytimetable = await deleteDailyTimeTable(req.params.id);
     if (!dailytimetable) {
@@ -103,6 +119,7 @@ class DailyTimeTableController {
     res.status(HTTP_STATUS.OK).json({ message: MESSAGES.SUCCESS.DAILY_TIMETABLE_DELETED });
   })
 
+  // Egy adott napi időtáblához tartozó versenyelemek megjelenítése
   dayparts = asyncHandler(async (req, res) => {
     const dailytimetables = await getTimetablePartsByDailyTimeTable(req.params.id);
     const dailytable = await getDailyTimeTableById(req.params.id);
@@ -122,6 +139,7 @@ class DailyTimeTableController {
     req.session.successMessage = null;
   })
 
+  // Versenyelem törlése DELETE kérésre
   deleteTTelement = asyncHandler(async (req, res) => {
     const timetablepart = await deleteTimetablePart(req.params.id);
     if (!timetablepart) {
@@ -131,6 +149,7 @@ class DailyTimeTableController {
     res.status(HTTP_STATUS.OK).json({ message: MESSAGES.SUCCESS.TIMETABLE_ELEMENT_DELETED });
   })
 
+  // Versenyelem szerkesztő űrlap megjelenítése
   editTTelementGet = asyncHandler(async (req, res) => {
     const { judges, days, categorys } = await getTimetablePartFormData(res.locals.selectedEvent._id);
     const timetablepart = await getTimetablePartById(req.params.id);
@@ -154,6 +173,7 @@ class DailyTimeTableController {
     req.session.successMessage = null;
   })
 
+  // Versenyelem adatainak frissítése POST kérésre
   editTTelementPost = asyncHandler(async (req, res) => {
       const timetablepart = await updateTimetablePart(req.params.id, req.body);
       logOperation('TIMETABLE_PART_UPDATE', `Timetable Part updated: ${timetablepart.Name}`, req.user.username, HTTP_STATUS.OK);
@@ -169,12 +189,14 @@ class DailyTimeTableController {
 
   })
 
+  // Versenyelem kezdési idejének mentése
   saveTTelement = asyncHandler(async (req, res) => {
     const timetablepart = await saveTimetablePartStartTime(req.params.id);
     logOperation('TIMETABLE_PART_UPDATE', `Timetable Part updated: ${timetablepart.Name}`, req.user.username, HTTP_STATUS.OK);
     res.status(HTTP_STATUS.OK).json({ message: MESSAGES.SUCCESS.TIMETABLE_ELEMENT_UPDATED });
   })
 
+  // Új versenyelem űrlap megjelenítése adott napi időtáblához
   newTTelementGetById = asyncHandler(async (req, res) => {
     const { judges, days, categorys } = await getTimetablePartFormData(res.locals.selectedEvent._id);
     const dailytable = await getDailyTimeTableById(req.params.id);
@@ -199,6 +221,7 @@ class DailyTimeTableController {
     req.session.successMessage = null;
   })
 
+  // Új versenyelem űrlap megjelenítése (általános)
   newTTelementGet = asyncHandler(async (req, res) => {
     if (!res.locals.selectedEvent?._id) {
       throw new Error('Event required');
@@ -219,6 +242,7 @@ class DailyTimeTableController {
     req.session.successMessage = null;
   })
 
+  // Új versenyelem létrehozása POST kérésre
   newTTelementPost = asyncHandler(async (req, res) => {
       const newTimetablePart = await createTimetablePart(req.body);
       logOperation('TIMETABLE_PART_CREATE', `Timetable Part created: ${newTimetablePart.Name}`, req.user.username, HTTP_STATUS.CREATED);

@@ -1,17 +1,25 @@
+// Ló modell importálása
 import Horse from '../models/Horse.js';
+// Jogosultság modell importálása
 import Permissions from '../models/Permissions.js';
+// Nevezés modell importálása
 import Entries from '../models/Entries.js';
+// Naplózó függvény importálása
 import { logDb } from '../logger.js';
 
 /**
- * Get all horses sorted by name
+ * Az összes ló lekérése név szerint rendezve
+ * @returns {Promise<Array>} - Lovak listája név szerint rendezve
  */
 export async function getAllHorses() {
     return await Horse.find().sort({ name: 1 });
 }
 
 /**
- * Get horse by ID
+ * Ló lekérése azonosító alapján
+ * @param {string} id - A ló azonosítója
+ * @returns {Promise<Object>} - A megtalált ló
+ * @throws {Error} - Ha a ló nem található
  */
 export async function getHorseById(id) {
     const horse = await Horse.findById(id);
@@ -22,7 +30,10 @@ export async function getHorseById(id) {
 }
 
 /**
- * Get horse by ID with full population for details view
+ * Ló lekérése azonosító alapján, minden kapcsolódó adattal (részletes nézethez)
+ * @param {string} id - A ló azonosítója
+ * @returns {Promise<Object>} - A megtalált ló populált mezőkkel
+ * @throws {Error} - Ha a ló nem található
  */
 export async function getHorseByIdWithPopulation(id) {
     const horse = await Horse.findById(id)
@@ -37,7 +48,12 @@ export async function getHorseByIdWithPopulation(id) {
 }
 
 /**
- * Create a new horse with HeadNr and BoxNr for event
+ * Új ló létrehozása, HeadNr és BoxNr beállításával adott eseményhez
+ * @param {Object} data - Az új ló adatai
+ * @param {string|number} headNr - Fejszám
+ * @param {string|number} boxNr - Bokszszám
+ * @param {string} eventId - Esemény azonosítója
+ * @returns {Promise<Object>} - A létrehozott ló
  */
 export async function createHorse(data, headNr, boxNr, eventId) {
     const newHorse = new Horse(data);
@@ -55,17 +71,22 @@ export async function createHorse(data, headNr, boxNr, eventId) {
 }
 
 /**
- * Update horse and manage HeadNr/BoxNr for specific event
+ * Ló frissítése és HeadNr/BoxNr kezelése adott eseményhez
+ * @param {string} id - A frissítendő ló azonosítója
+ * @param {Object} data - Új adatok
+ * @param {string|number} headNr - Új fejszám
+ * @param {string|number} boxNr - Új bokszszám
+ * @param {string} eventId - Esemény azonosítója
+ * @returns {Promise<Object>} - A frissített ló
+ * @throws {Error} - Ha a ló nem található
  */
 export async function updateHorse(id, data, headNr, boxNr, eventId) {
     const horse = await Horse.findByIdAndUpdate(id, data, { runValidators: true });
     if (!horse) {
         throw new Error('Horse not found');
     }
-    
     const horseToUpdate = await Horse.findById(id);
-    
-    // Update BoxNr for the event
+    // BoxNr frissítése az eseményhez
     let editedCount = 0;
     horseToUpdate.BoxNr.forEach(b => {
         if (String(b.eventID) === String(eventId)) {
@@ -79,8 +100,7 @@ export async function updateHorse(id, data, headNr, boxNr, eventId) {
             eventID: eventId
         });
     }
-
-    // Update HeadNr for the event
+    // HeadNr frissítése az eseményhez
     editedCount = 0;
     horseToUpdate.HeadNr.forEach(h => {
         if (String(h.eventID) === String(eventId)) {
@@ -94,14 +114,17 @@ export async function updateHorse(id, data, headNr, boxNr, eventId) {
             eventID: eventId
         });
     }
-
     logDb('UPDATE', 'Horse', `${id}`);
     await horseToUpdate.save();
     return horse;
 }
 
 /**
- * Delete a note from horse
+ * Megjegyzés törlése lóról
+ * @param {string} id - A ló azonosítója
+ * @param {string} noteText - A törlendő megjegyzés szövege
+ * @returns {Promise<Object>} - A frissített ló
+ * @throws {Error} - Ha a ló nem található
  */
 export async function deleteHorseNote(id, noteText) {
     const horse = await Horse.findById(id);
@@ -115,7 +138,11 @@ export async function deleteHorseNote(id, noteText) {
 }
 
 /**
- * Add a note to horse
+ * Megjegyzés hozzáadása lóhoz
+ * @param {string} id - A ló azonosítója
+ * @param {Object} noteData - A megjegyzés adatai
+ * @returns {Promise<Object>} - A frissített ló
+ * @throws {Error} - Ha a ló nem található
  */
 export async function addHorseNote(id, noteData) {
     const horse = await Horse.findById(id);
@@ -136,15 +163,20 @@ export async function addHorseNote(id, noteData) {
 }
 
 /**
- * Update horse numbers (HeadNr and BoxNr) for specific event
+ * Ló számainak (HeadNr, BoxNr) frissítése adott eseményhez
+ * @param {string} id - A ló azonosítója
+ * @param {string|number} headNumber - Új fejszám
+ * @param {string|number} boxNumber - Új bokszszám
+ * @param {string} eventId - Esemény azonosítója
+ * @returns {Promise<Object>} - A frissített ló
+ * @throws {Error} - Ha a ló nem található
  */
 export async function updateHorseNumbers(id, headNumber, boxNumber, eventId) {
     const horse = await Horse.findById(id);
     if (!horse) {
         throw new Error('Horse not found');
     }
-    
-    // Update HeadNr
+    // HeadNr frissítése
     let editedCount = 0;
     horse.HeadNr.forEach(h => {
         if (String(h.eventID) === String(eventId)) {
@@ -158,8 +190,7 @@ export async function updateHorseNumbers(id, headNumber, boxNumber, eventId) {
             eventID: eventId
         });
     }
-
-    // Update BoxNr
+    // BoxNr frissítése
     editedCount = 0;
     horse.BoxNr.forEach(b => {
         if (String(b.eventID) === String(eventId)) {
@@ -173,29 +204,30 @@ export async function updateHorseNumbers(id, headNumber, boxNumber, eventId) {
             eventID: eventId
         });
     }
-
     await Horse.findByIdAndUpdate(id, horse, { runValidators: true });
     logDb('UPDATE', 'Horse', `${id}`);
     return horse;
 }
 
 /**
- * Get horses for specific event from entries
+ * Lovak lekérése adott eseményhez a nevezésekből
+ * @param {string} eventId - Az esemény azonosítója
+ * @returns {Promise<Array>} - Lovak listája
+ * @throws {Error} - Ha nincs nevezés az eseményhez
  */
 export async function getHorsesForEvent(eventId) {
     const horsesontheEvent = await Entries.find({ event: eventId }).populate('horse').select('horse');
-    
     if (horsesontheEvent.length === 0) {
         throw new Error('No entries found for the selected event');
     }
-    
     const uniqueHorses = Array.from(new Set(horsesontheEvent.map(entry => entry.horse._id.toString())));
     const horses = await Horse.find({ _id: { $in: uniqueHorses } }).sort({ name: 1 });
     return horses;
 }
 
 /**
- * Get all permissions for form data
+ * Az összes jogosultság lekérése űrlaphoz
+ * @returns {Promise<Array>} - Jogosultságok listája
  */
 export async function getAllPermissions() {
     return await Permissions.find();

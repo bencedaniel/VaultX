@@ -17,21 +17,36 @@ import mappingRouter from './mappingRouter.js';
 import resultRouter from './resultRouter.js';
 import helpMessageRouter from './helpMessageRouter.js';
 
-
+/**
+ * Alkalmazás route-regisztráló függvény.
+ *
+ * Feladata az összes modul-router megfelelő URL prefix alá történő felcsatolása.
+ * A csoportosítás célja az átláthatóság: fő útvonalak, admin, entitás alapú,
+ * operatív, valamint pontozási/eredmény útvonalak külön blokkban szerepelnek.
+ *
+ * @param {import('express').Application} app - Az Express alkalmazás példány.
+ * @returns {void}
+ */
 const setupRoutes = (app) => {
   // ============================================
   // MAIN ROUTES
   // ============================================
+
+  // Alap (root) route-ok: pl. kezdőoldal, auth oldalak, közös belépési pontok.
   app.use('/', router);
 
   // ============================================
   // ADMIN ROUTES
   // ============================================
+
+  // Admin felülethez tartozó route-ok.
   app.use('/admin', adminRouter);
 
   // ============================================
   // ENTITY ROUTES
   // ============================================
+
+  // Entitás-alapú route-ok (ló, voltizsáló, lóvezető, kategória, esemény, nevezés).
   app.use('/horse', horseRouter);
   app.use('/vaulter', vaulterRouter);
   app.use('/lunger', lungerRouter);
@@ -42,6 +57,8 @@ const setupRoutes = (app) => {
   // ============================================
   // OPERATIONAL ROUTES
   // ============================================
+
+  // Napi működést támogató route-ok (bírók, időbeosztás, riasztás, sorrend, súgó).
   app.use('/judges', JudgesRouter);
   app.use('/dailytimetable', dailytimetableRouter);
   app.use('/alerts', alertRouter);
@@ -51,6 +68,8 @@ const setupRoutes = (app) => {
   // ============================================
   // SCORING & RESULTS ROUTES
   // ============================================
+
+  // Pontlap sablonok, pontozás, mapping és eredmény route-ok.
   app.use('/scoresheets', SSTempRouter);
   app.use('/scoring', scoringRouter);
   app.use('/mapping', mappingRouter);

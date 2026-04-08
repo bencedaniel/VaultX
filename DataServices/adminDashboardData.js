@@ -1,10 +1,15 @@
+// Dashboard kártya modell importálása
 import DashCards from '../models/DashCards.js';
+// Felhasználó modell importálása
 import User from '../models/User.js';
+// Jogosultság modell importálása
 import Permissions from '../models/Permissions.js';
+// Szerepkör modell importálása
 import Role from '../models/Role.js';
 
 /**
- * Get admin dashboard data with statistics
+ * Admin dashboard statisztikai adatok lekérése
+ * @returns {Promise<Object>} - Kártyák, felhasználó-, jogosultság- és szerepkör-szám
  */
 export async function getAdminDashboardData() {
     const [cards, userCount, permissionCount, roleCount] = await Promise.all([
@@ -23,14 +28,16 @@ export async function getAdminDashboardData() {
 }
 
 /**
- * Get all users for admin dashboard
+ * Az összes felhasználó lekérése az admin dashboardhoz
+ * @returns {Promise<Array>} - Minden User rekord
  */
 export async function getAllUsers() {
     return await User.find();
 }
 
 /**
- * Get all permissions for admin dashboard
+ * Az összes jogosultság lekérése az admin dashboardhoz
+ * @returns {Promise<Array>} - Minden Permissions rekord
  */
 export async function getAllPermissions() {
     return await Permissions.find();

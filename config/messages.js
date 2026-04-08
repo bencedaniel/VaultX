@@ -1,11 +1,21 @@
+
 /**
- * Centralized message constants for the application
- * Used for success messages, error messages, and user-facing notifications
+ * Központi üzenetkonstansok az alkalmazáshoz.
+ *
+ * Ebben a modulban minden felhasználói és rendszerüzenet egy helyen található,
+ * így biztosítva a konzisztens visszajelzéseket, hibákat és értesítéseket.
+ *
+ * Fő csoportok:
+ * - AUTH: Hitelesítési és jogosultsági üzenetek (login, session, jogosultságok)
+ * - SUCCESS: Sikeres műveletekhez tartozó visszajelző üzenetek
+ * - ERROR: Hibákhoz, hiányzó adatokhoz, vagy érvénytelen műveletekhez tartozó üzenetek
+ * - VALIDATION: Űrlap- és adatellenőrzési hibákhoz tartozó üzenetek
+ * - HELP: Súgóüzenetek, ha nincs elérhető magyarázat vagy leírás
  */
 
 
 export const MESSAGES = {
-  // Authentication & Authorization Messages
+  // AUTH: Hitelesítés, jogosultság, session
   AUTH: {
     SESSION_EXPIRED: "Your session has expired or you are not authorized. Please log in to continue.",
     SESSION_LOGGED_OUT: "This session has been logged out.",
@@ -21,7 +31,7 @@ export const MESSAGES = {
     USER_ALREADY_LOGGED_IN: "User already logged in"
   },
 
-  // Success Messages
+  // SUCCESS: Sikeres műveletek visszajelzései
   SUCCESS: {
     // User Management
     USER_CREATED: "User created.",
@@ -151,7 +161,7 @@ export const MESSAGES = {
     JUDGE_INPUT_RECEIVED: "Judge input received!"
   },
 
-  // Error/Failure Messages
+  // ERROR: Hibák, hiányzó adatok, érvénytelen műveletek
   ERROR: {
     // Permissions & Not Found
     PERMISSION_NOT_FOUND: "Permission not found.",
@@ -191,13 +201,14 @@ export const MESSAGES = {
     COPY_METHOD_NOT_IMPLEMENTED: "Copy method not implemented yet."
   },
 
-  // Validation Messages
+  // VALIDATION: Űrlap- és adatellenőrzési hibák
   VALIDATION: {
     REQUIRED_FIELD: "This field is required",
     INVALID_FORMAT: "Invalid format",
     PERCENTAGE_SUM_ERROR: "The sum of the percentages must be 100."
   },
-  HELP: {
+   HELP:{
+    // Súgóüzenetek
     NO_HELP_AVAILABLE: "No help message available for this page."
   }
 

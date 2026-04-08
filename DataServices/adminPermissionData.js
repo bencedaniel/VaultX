@@ -1,25 +1,34 @@
+// Jogosultság modell importálása
 import Permissions from '../models/Permissions.js';
+// Szerepkör modell importálása
 import Role from '../models/Role.js';
+// Dashboard kártya modell importálása
 import DashCards from '../models/DashCards.js';
+// Riasztás modell importálása
 import Alert from '../models/Alert.js';
+// Naplózó függvény importálása
 import { logDb } from '../logger.js';
 
 /**
- * Get all permissions
+ * Az összes jogosultság lekérése
+ * @returns {Promise<Array>} - Minden Permissions rekord
  */
 export async function getAllPermissions() {
     return await Permissions.find();
 }
 
 /**
- * Get permission by ID
+ * Jogosultság lekérése azonosító alapján
+ * @param {string} permId - Jogosultság egyedi azonosítója
+ * @returns {Promise<Object|null>} - A megtalált Permissions rekord vagy null
  */
 export async function getPermissionById(permId) {
     return await Permissions.findById(permId);
 }
 
 /**
- * Get all permissions with usage counts
+ * Az összes jogosultság lekérése, valamint hogy hány helyen van használatban (szerepkör, kártya, riasztás)
+ * @returns {Promise<Object>} - Jogosultságok és használati statisztikák
  */
 export async function getAllPermissionsWithUsageCounts() {
     const permissions = await Permissions.find();
@@ -38,7 +47,9 @@ export async function getAllPermissionsWithUsageCounts() {
 }
 
 /**
- * Create a new permission
+ * Új jogosultság létrehozása
+ * @param {Object} permData - Az új jogosultság adatai
+ * @returns {Promise<Object>} - A létrehozott Permissions rekord
  */
 export async function createPermission(permData) {
     const { name, displayName, attachedURL, requestType } = permData;
@@ -54,7 +65,10 @@ export async function createPermission(permData) {
 }
 
 /**
- * Update permission
+ * Jogosultság frissítése
+ * @param {string} permId - A frissítendő jogosultság azonosítója
+ * @param {Object} permData - Új adatok
+ * @returns {Promise<Object|null>} - A frissített Permissions rekord vagy null
  */
 export async function updatePermission(permId, permData) {
     const { displayName, attachedURL } = permData;
@@ -69,7 +83,10 @@ export async function updatePermission(permId, permData) {
 }
 
 /**
- * Delete permission (with validation that it's not used anywhere)
+ * Jogosultság törlése (csak ha nincs használatban sehol)
+ * @param {string} permId - A törlendő jogosultság azonosítója
+ * @returns {Promise<Object>} - A törölt Permissions rekord
+ * @throws {Error} - Ha a jogosultság használatban van, vagy nem található
  */
 export async function deletePermission(permId) {
     const permission = await Permissions.findById(permId);

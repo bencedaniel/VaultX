@@ -5,44 +5,64 @@ import Category from '../models/Category.js';
 import { logDb } from '../logger.js';
 
 /**
- * Get all calculation templates
+ * Eredményszámítási sablonok (calcTemplate) adatkezelő szolgáltatások.
+ * Minden függvény részletes magyar nyelvű dokumentációval és inline kommentekkel ellátva.
+ */
+
+/**
+ * Összes eredményszámítási sablon lekérdezése.
+ * @returns {Promise<Array>} Az összes sablon tömbje.
  */
 export const getAllCalcTemplates = async () => {
+    // Sablonok lekérdezése
     return await calcTemplate.find();
 };
 
 /**
- * Get calculation template by ID
+ * Eredményszámítási sablon lekérdezése azonosító alapján.
+ * @param {string} id - A sablon egyedi azonosítója.
+ * @returns {Promise<Object>} A sablon dokumentum.
  */
 export const getCalcTemplateById = async (id) => {
+    // Sablon keresése azonosító alapján
     return await calcTemplate.findById(id);
 };
 
 /**
- * Create new calculation template
+ * Új eredményszámítási sablon létrehozása.
+ * @param {Object} data - Az új sablon adatai.
+ * @returns {Promise<Object>} A létrehozott sablon dokumentum.
  */
 export const createCalcTemplate = async (data) => {
+    // Új sablon példány létrehozása
     const calcTemp = new calcTemplate(data);
     await calcTemp.save();
+    // Naplózás az adatbázisban
     logDb('CREATE', 'CalcTemplate', `${calcTemp._id}`);
     return calcTemp;
 };
 
 /**
- * Update calculation template by ID
+ * Eredményszámítási sablon frissítése azonosító alapján.
+ * @param {string} id - A sablon egyedi azonosítója.
+ * @param {Object} data - A frissített sablon adatai.
+ * @returns {Promise<Object>} A frissített sablon dokumentum.
  */
 export const updateCalcTemplate = async (id, data) => {
+    // Sablon frissítése azonosító alapján
     const calcTemp = await calcTemplate.findByIdAndUpdate(id, data, { new: true });
     logDb('UPDATE', 'CalcTemplate', `${id}`);
     return calcTemp;
 };
 
 /**
- * Delete calculation template by ID
- * Checks if it's in use before deleting
+ * Eredményszámítási sablon törlése azonosító alapján.
+ * Törlés előtt ellenőrzi, hogy használatban van-e.
+ * @param {string} id - A sablon egyedi azonosítója.
+ * @throws {Error} Ha a sablon használatban van.
  */
 export const deleteCalcTemplate = async (id) => {
-    // Check if template is in use
+    // Ellenőrizzük, hogy a sablon használatban van-e eredménycsoport vagy generátor által
     const inUseByGroup = await resultGroup.findOne({ calcTemplate: id });
     const inUseByGenerator = await resultGenerator.findOne({ calcSchemaTemplate: id });
     
@@ -55,9 +75,11 @@ export const deleteCalcTemplate = async (id) => {
 };
 
 /**
- * Get form data for calculation template (categories)
+ * Űrlap-adatok lekérdezése eredményszámítási sablonhoz (kategóriák).
+ * @returns {Promise<Object>} Objektum, amely tartalmazza a kategóriák tömbjét.
  */
 export const getCalcTemplateFormData = async () => {
+    // Kategóriák lekérdezése
     const categories = await Category.find();
     return { categories };
 };

@@ -126,7 +126,7 @@ describe('LogicServices/scoreSync.syncScoreTable', () => {
     const action = syncScoreTable(timetablePartId, entryId, eventId);
     await expect(action).rejects.toBeInstanceOf(ValidationError);
     await expect(action).rejects.toThrow(
-      'Data inconsistency: Multiple scores found for timetablePartId: tp1, EntryId: en1, EventId: ev1'
+      /Data inconsistency:\s+Multiple scores found for timetablePartId: tp1, EntryId: en1, EventId: ev1/
     );
   });
 

@@ -3,7 +3,12 @@ import { MESSAGES } from '../config/index.js';
 import { HTTP_STATUS } from '../config/index.js';
 
 /**
- * Custom Application Error Class
+ * Egyedi alkalmazás hibaosztály (alap hibakezeléshez).
+ * @class
+ * @extends Error
+ * @param {string} message - Hibaüzenet.
+ * @param {number} [statusCode=500] - HTTP státuszkód.
+ * @param {string} [type='ERROR'] - Hibatípus.
  */
 export class AppError extends Error {
   constructor(message, statusCode = 500, type = 'ERROR') {
@@ -15,7 +20,9 @@ export class AppError extends Error {
 }
 
 /**
- * Validation Error - 400
+ * Validációs hiba (HTTP 400)
+ * @class
+ * @extends AppError
  */
 export class ValidationError extends AppError {
   constructor(message) {
@@ -24,7 +31,9 @@ export class ValidationError extends AppError {
 }
 
 /**
- * Not Found Error - 404
+ * Nem található hiba (HTTP 404)
+ * @class
+ * @extends AppError
  */
 export class NotFoundError extends AppError {
   constructor(message = 'Resource not found') {
@@ -33,7 +42,9 @@ export class NotFoundError extends AppError {
 }
 
 /**
- * Unauthorized Error - 401
+ * Jogosultsági hiba (HTTP 401)
+ * @class
+ * @extends AppError
  */
 export class UnauthorizedError extends AppError {
   constructor(message = 'Unauthorized') {
@@ -42,7 +53,9 @@ export class UnauthorizedError extends AppError {
 }
 
 /**
- * Database/Mongoose Error - 500
+ * Adatbázis/Mongoose hiba (HTTP 500)
+ * @class
+ * @extends AppError
  */
 export class DatabaseError extends AppError {
   constructor(message = 'Database error occurred') {
@@ -51,7 +64,9 @@ export class DatabaseError extends AppError {
 }
 
 /**
- * Duplicate Key Error - 400
+ * Duplikált kulcs hiba (HTTP 400)
+ * @class
+ * @extends AppError
  */
 export class DuplicateError extends AppError {
   constructor(field = 'field') {
@@ -60,7 +75,9 @@ export class DuplicateError extends AppError {
 }
 
 /**
- * Cast Error (Invalid ObjectId) - 400
+ * Cast hiba (érvénytelen ObjectId vagy típuskonverzió, HTTP 400)
+ * @class
+ * @extends AppError
  */
 export class CastError extends AppError {
   constructor(field = 'ID') {
@@ -69,32 +86,36 @@ export class CastError extends AppError {
 }
 
 /**
- * Central Error Handler Middleware
- * Catches all errors from routes and sends standardized responses
- * Handles Express, Mongoose, and custom errors
+ * Központi hibakezelő Express middleware-hez.
+ * Minden route-ból érkező hibát egységesen kezel, naplóz és visszairányítja a felhasználót.
+ * Kezeli az Express, Mongoose és egyedi hibákat is.
+ * @param {Error} err - A dobott hibaobjektum.
+ * @param {Request} req - Express kérés objektum.
+ * @param {Response} res - Express válasz objektum.
+ * @param {Function} next - Express next függvény.
+ * @returns {Response} Átirányítás hibával a referer oldalra.
  */
 export function errorHandler(err, req, res, next) {
-  // Default error values
+  // Alapértelmezett hibaértékek
   let error = {
     statusCode: err.statusCode || 500,
     message: err.message || 'Internal Server Error',
     type: err.type || 'INTERNAL_ERROR'
   };
 
-  // Log error with user context
+  // Hibák naplózása felhasználói kontextussal
   const userInfo = req.user ? `${req.user.username}` : 'unknown';
   logError(error.type, error.message, `User: ${userInfo}`);
 
-  // ==========================================
-  // MONGOOSE VALIDATION ERRORS
-  // ==========================================
-  
-  // Schema validation errors (required fields, enum values, etc.)
+  // =============================
+  // MONGOOSE VALIDÁCIÓS HIBÁK
+  // =============================
+  // Séma validációs hibák (kötelező mezők, enum, stb.)
   if (err.name === 'ValidationError') {
     const fields = Object.keys(err.errors);
     const messages = Object.entries(err.errors)
       .map(([field, error]) => {
-        // Extract custom validation message if exists
+        // Egyedi validációs üzenet, ha van
         if (error.message) return error.message;
         switch (error.kind) {
           case 'required':
@@ -117,10 +138,10 @@ export function errorHandler(err, req, res, next) {
       })
       .join('; ');
 
-    // Log validation error
-    logValidation('MONGOOSE_VALIDATION', `Fields: ${fields.join(', ')}`, { 
+    // Validációs hiba naplózása
+    logValidation('MONGOOSE_VALIDATION', `Fields: ${fields.join(', ')}`, {
       user: userInfo,
-      errors: err.errors 
+      errors: err.errors
     });
 
     error = {
@@ -131,7 +152,7 @@ export function errorHandler(err, req, res, next) {
     };
   }
 
-  // Duplicate key error (unique constraint violation)
+  // Duplikált kulcs hiba (egyedi mező megsértése)
   if (err.code === 11000) {
     const field = Object.keys(err.keyValue)[0];
     const value = err.keyValue[field];
@@ -143,7 +164,7 @@ export function errorHandler(err, req, res, next) {
     };
   }
 
-  // CastError - invalid MongoDB ObjectId or type conversion error
+  // CastError - érvénytelen MongoDB ObjectId vagy típuskonverziós hiba
   if (err.name === 'CastError') {
     error = {
       statusCode: 400,
@@ -152,10 +173,9 @@ export function errorHandler(err, req, res, next) {
     };
   }
 
-  // ==========================================
-  // JWT & AUTHENTICATION ERRORS
-  // ==========================================
-  
+  // =============================
+  // JWT & AUTHENTIKÁCIÓS HIBÁK
+  // =============================
   if (err.name === 'JsonWebTokenError') {
     error = {
       statusCode: HTTP_STATUS.UNAUTHORIZED,
@@ -172,7 +192,7 @@ export function errorHandler(err, req, res, next) {
     };
   }
 
-
+  // MongoDB hálózati hiba
   if (err.name === 'MongoNetworkError') {
     error = {
       statusCode: HTTP_STATUS.SERVICE_UNAVAILABLE,
@@ -181,23 +201,21 @@ export function errorHandler(err, req, res, next) {
     };
   }
 
-  // ==========================================
-  // RESPONSE HANDLING
-  // ==========================================
-  
-  // Always set error message in session
+  // =============================
+  // VÁLASZ KÜLDÉSE
+  // =============================
+  // Mindig beállítjuk a hibát a session-ben
   req.session.failMessage = error.message;
-  
-  // Get the page to redirect to (referer or default dashboard)
+  // Visszairányítás az előző oldalra (vagy dashboardra)
   const referer = req.get('referer') || '/dashboard';
-  
-  // Redirect to previous page with error message
   return res.redirect(referer);
 }
 
 /**
- * Async error wrapper for controllers
- * Eliminates try-catch boilerplate
+ * Aszinkron hibakezelő wrapper controllerekhez.
+ * Kiváltja a try-catch blokkokat, minden hibát automatikusan továbbad a hibakezelőnek.
+ * @param {Function} fn - Aszinkron controller vagy middleware függvény.
+ * @returns {Function} Express middleware, amely automatikusan kezeli az aszinkron hibákat.
  */
 export function catchAsync(fn) {
   return (req, res, next) => {

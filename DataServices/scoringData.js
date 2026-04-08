@@ -7,24 +7,31 @@ import Event from '../models/Event.js';
 import ScoreSheetTemp from '../models/ScoreSheetTemp.js';
 
 /**
- * Get today's daily timetable
+ * A mai napi program lekérdezése.
+ * @returns {Promise<Object>} A mai napi program dokumentum.
  */
 export async function getTodaysTimetable() {
+  // Mai nap kezdete és vége UTC szerint
   const now = new Date();
   const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0));
   const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0, 0));
+  // Napi program lekérdezése
   return await DailyTimeTable.findOne({ Date: { $gte: start, $lt: end } });
 }
 
 /**
- * Get timetable parts for a daily timetable with categories
+ * Egy napi programhoz tartozó programrészek lekérdezése kategóriákkal.
+ * @param {string} dailyId - Napi program azonosító.
+ * @returns {Promise<Array>} Programrészek tömbje, feltöltött kategóriákkal.
  */
 export async function getTimetablePartsByDaily(dailyId) {
   return await TimetablePart.find({ dailytimetable: dailyId }).populate('Category').exec();
 }
 
 /**
- * Get a timetable part with all nested relationships
+ * Egy programrész lekérdezése minden kapcsolt mezővel.
+ * @param {string} id - Programrész azonosító.
+ * @returns {Promise<Object>} Feltöltött programrész dokumentum.
  */
 export async function getTimetablePartById(id) {
   return await TimetablePart.findById(id)
@@ -41,6 +48,11 @@ export async function getTimetablePartById(id) {
     .exec();
 }
 
+/**
+ * Egy programrész lekérdezése minden kapcsolt mezővel, beleértve a napi programot is.
+ * @param {string} id - Programrész azonosító.
+ * @returns {Promise<Object>} Feltöltött programrész dokumentum.
+ */
 export async function getTimetablePartByIdWithDay(id) {
   return await TimetablePart.findById(id)
     .populate('Category')
@@ -58,14 +70,18 @@ export async function getTimetablePartByIdWithDay(id) {
 }
 
 /**
- * Get a timetable part with dailytimetable populated
+ * Egy programrész lekérdezése, napi programmal feltöltve.
+ * @param {string} id - Programrész azonosító.
+ * @returns {Promise<Object>} Feltöltött programrész dokumentum.
  */
 export async function getTimetablePartByIdWithDaily(id) {
   return await TimetablePart.findById(id).populate('dailytimetable').exec();
 }
 
 /**
- * Get all timetable parts for events within specified date range
+ * Programrészek lekérdezése eseményekhez, adott dátumtartományban.
+ * @param {Array} eventIds - Esemény azonosítók tömbje.
+ * @returns {Promise<Array>} Programrészek tömbje, feltöltött kapcsolatokkal.
  */
 export async function getTimetablePartsByEvents(eventIds) {
   const dailytables = await DailyTimeTable.find({ event: { $in: eventIds } }).exec();
@@ -84,14 +100,18 @@ export async function getTimetablePartsByEvents(eventIds) {
 }
 
 /**
- * Get judge information
+ * Bíró adatainak lekérdezése azonosító alapján.
+ * @param {string} judgeId - Bíró azonosító.
+ * @returns {Promise<Object>} Bíró dokumentum.
  */
 export async function getJudgeById(judgeId) {
   return await User.findById(judgeId).exec();
 }
 
 /**
- * Get entries for an event
+ * Egy eseményhez tartozó nevezések lekérdezése.
+ * @param {string} eventId - Esemény azonosító.
+ * @returns {Promise<Array>} Nevezések tömbje, feltöltött kapcsolatokkal.
  */
 export async function getEntriesByEvent(eventId) {
   return await Entries.find({ event: eventId })
@@ -103,7 +123,9 @@ export async function getEntriesByEvent(eventId) {
 }
 
 /**
- * Get a single entry by ID
+ * Egy nevezés lekérdezése azonosító alapján.
+ * @param {string} entryId - Nevezés azonosító.
+ * @returns {Promise<Object>} Feltöltött nevezés dokumentum.
  */
 export async function getEntryById(entryId) {
   return await Entries.findById(entryId)
@@ -115,7 +137,10 @@ export async function getEntryById(entryId) {
 }
 
 /**
- * Get table mapping for a table and test type
+ * Táblázat-hozzárendelés lekérdezése asztal és teszttípus alapján.
+ * @param {string} table - Asztal azonosító.
+ * @param {string} testType - Teszttípus.
+ * @returns {Promise<Object>} Táblázat-hozzárendelés dokumentum.
  */
 export async function getTableMapping(table, testType) {
   return await TableMapping.findOne({
@@ -125,13 +150,20 @@ export async function getTableMapping(table, testType) {
 }
 
 /**
- * Get event by ID
+ * Esemény lekérdezése azonosító alapján.
+ * @param {string} eventId - Esemény azonosító.
+ * @returns {Promise<Object>} Esemény dokumentum.
  */
 export async function getEventById(eventId) {
   return await Event.findById(eventId).exec();
 }
 /**
- * Get score sheet template by test type, category, number of judges, and role
+ * Pontozólap sablon lekérdezése teszttípus, kategória, bírók száma és szerepkör alapján.
+ * @param {string} testType - Teszttípus.
+ * @param {string} categoryId - Kategória azonosító.
+ * @param {number} numberOfJudges - Bírók száma.
+ * @param {string} role - Szerepkör.
+ * @returns {Promise<Object>} Pontozólap sablon dokumentum.
  */
 export async function getScoreSheetTemplate(testType, categoryId, numberOfJudges, role) {
   return await ScoreSheetTemp.findOne({
@@ -143,7 +175,9 @@ export async function getScoreSheetTemplate(testType, categoryId, numberOfJudges
 }
 
 /**
- * Get all timetable parts for an event
+ * Egy eseményhez tartozó összes programrész lekérdezése.
+ * @param {string} eventId - Esemény azonosító.
+ * @returns {Promise<Array>} Programrészek tömbje, feltöltött kapcsolatokkal.
  */
 export async function getTimetablePartsByEvent(eventId) {
   const dailytables = await DailyTimeTable.find({ event: eventId }).exec();

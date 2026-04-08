@@ -1,6 +1,13 @@
+// Logger és naplózó függvények importálása
 import { logger, logOperation, logAuth, logError, logValidation, logWarn } from '../logger.js';
+
+// Aszinkron hibakezelő middleware importálása
 import { asyncHandler } from '../middleware/asyncHandler.js';
+
+// HTTP státusz és üzenet konstansok importálása
 import { HTTP_STATUS, MESSAGES } from '../config/index.js';
+
+// Vaulter adatelérési függvények importálása
 import {
     getAllVaulters,
     getVaulterById,
@@ -15,6 +22,7 @@ import {
     getAllUsers
 } from '../DataServices/vaulterData.js';
 
+// Országok listája a vaulter űrlaphoz
 const countries = [
     "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua & Deps",
     "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas",
@@ -53,6 +61,12 @@ const countries = [
     "Zambia", "Zimbabwe"
 ];
 
+/**
+ * @route GET /vaulter/new
+ * @desc Új vaulter létrehozó űrlap megjelenítése
+ * @param {Object} req - Express kérés objektum (session, user)
+ * @param {Object} res - Express válasz objektum (render)
+ */
 const getNewVaulterForm = asyncHandler(async (req, res) => {
     res.render('vaulter/newVaulter', {
         countries: countries,
@@ -66,6 +80,12 @@ const getNewVaulterForm = asyncHandler(async (req, res) => {
     req.session.successMessage = null;
 });
 
+/**
+ * @route POST /vaulter/new
+ * @desc Új vaulter létrehozása
+ * @param {Object} req - Express kérés objektum (body, session, user)
+ * @param {Object} res - Express válasz objektum (redirect)
+ */
 const createNewVaulter = asyncHandler(async (req, res) => {
     const newVaulter = req.body;
     const armNr = {
@@ -80,6 +100,12 @@ const createNewVaulter = asyncHandler(async (req, res) => {
     res.redirect('/vaulter/dashboard');
 });
 
+/**
+ * @route GET /vaulter/dashboard
+ * @desc Vaulter dashboard oldal megjelenítése
+ * @param {Object} req - Express kérés objektum (session, user)
+ * @param {Object} res - Express válasz objektum (render)
+ */
 const getVaultersDashboard = asyncHandler(async (req, res) => {
     const vaulters = await getAllVaulters();
     vaulters.forEach(element => {
@@ -96,6 +122,12 @@ const getVaultersDashboard = asyncHandler(async (req, res) => {
     req.session.successMessage = null;
 });
 
+/**
+ * @route GET /vaulter/:id
+ * @desc Vaulter részletező oldal megjelenítése
+ * @param {Object} req - Express kérés objektum (params, session, user)
+ * @param {Object} res - Express válasz objektum (render, redirect)
+ */
 const getVaulterDetails = asyncHandler(async (req, res) => {
     const eventID = res.locals.selectedEvent._id;
     const vaulter = await getVaulterById(req.params.id);
@@ -116,6 +148,12 @@ const getVaulterDetails = asyncHandler(async (req, res) => {
     req.session.successMessage = null;
 });
 
+/**
+ * @route GET /vaulter/edit/:id
+ * @desc Vaulter szerkesztő űrlap megjelenítése
+ * @param {Object} req - Express kérés objektum (params, session, user)
+ * @param {Object} res - Express válasz objektum (render, redirect)
+ */
 const getEditVaulterForm = asyncHandler(async (req, res) => {
     const vaulter = await getVaulterByIdLean(req.params.id);
     vaulter.ArmNr = vaulter.ArmNr.filter(a => String(a.eventID) === String(res.locals.selectedEvent._id));
@@ -135,6 +173,12 @@ const getEditVaulterForm = asyncHandler(async (req, res) => {
     req.session.successMessage = null;
 });
 
+/**
+ * @route POST /vaulter/edit/:id
+ * @desc Vaulter adatainak frissítése
+ * @param {Object} req - Express kérés objektum (body, params, session, user)
+ * @param {Object} res - Express válasz objektum (redirect)
+ */
 const updateVaulterById = asyncHandler(async (req, res) => {
     const ArmNr = req.body.ArmNr;
     delete req.body.ArmNr;
@@ -151,6 +195,12 @@ const updateVaulterById = asyncHandler(async (req, res) => {
     res.redirect('/vaulter/dashboard');
 });
 
+/**
+ * @route POST /vaulter/:id/incident/delete
+ * @desc Vaulter incidens törlése
+ * @param {Object} req - Express kérés objektum (body, params, user)
+ * @param {Object} res - Express válasz objektum (json)
+ */
 const deleteVaulterIncident = asyncHandler(async (req, res) => {
     const vaulter = await getVaulterById(req.params.id);
     logOperation('VAULTER_UPDATE', `Vaulter updated: ${vaulter.Name}`, req.user.username, HTTP_STATUS.OK);
@@ -170,6 +220,12 @@ const deleteVaulterIncident = asyncHandler(async (req, res) => {
     res.status(HTTP_STATUS.OK).json({ message: MESSAGES.SUCCESS.INCIDENT_DELETED });
 });
 
+/**
+ * @route POST /vaulter/:id/incident
+ * @desc Vaulter incidens hozzáadása
+ * @param {Object} req - Express kérés objektum (body, params, user)
+ * @param {Object} res - Express válasz objektum (json)
+ */
 const createVaulterIncident = asyncHandler(async (req, res) => {
     const vaulter = await getVaulterById(req.params.id);
     logOperation('VAULTER_UPDATE', `Vaulter incident created: ${vaulter.Name}`, req.user.username, HTTP_STATUS.CREATED);
@@ -185,6 +241,12 @@ const createVaulterIncident = asyncHandler(async (req, res) => {
     res.status(HTTP_STATUS.OK).json({ message: MESSAGES.SUCCESS.INCIDENT_ADDED });
 });
 
+/**
+ * @route GET /vaulter/numberedit
+ * @desc Vaulter rajtszám szerkesztő oldal megjelenítése
+ * @param {Object} req - Express kérés objektum (session, user)
+ * @param {Object} res - Express válasz objektum (render)
+ */
 const getArmNumbersEditPage = asyncHandler(async (req, res) => {
     const entries = await getAllEntriesWithVaulters();
     const VaulterSet = new Set();
@@ -205,12 +267,19 @@ const getArmNumbersEditPage = asyncHandler(async (req, res) => {
     req.session.successMessage = null;
 });
 
+/**
+ * @route POST /vaulter/:id/numberedit
+ * @desc Vaulter rajtszám frissítése
+ * @param {Object} req - Express kérés objektum (body, params, user)
+ * @param {Object} res - Express válasz objektum (json)
+ */
 const updateArmNumber = asyncHandler(async (req, res) => {
     await updateVaulterArmNumber(req.params.id, res.locals.selectedEvent._id, req.body.armNumber);
     logOperation('VAULTER_UPDATE', `Vaulter updated: ${req.params.id}`, req.user.username, HTTP_STATUS.OK);
     res.status(HTTP_STATUS.OK).json({ message: MESSAGES.SUCCESS.ARM_NUMBER_UPDATED });
 });
 
+// A vezérlő által exportált handler függvények
 export default {
     getNewVaulterForm,
     createNewVaulter,

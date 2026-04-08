@@ -3,12 +3,18 @@ import Entries from '../models/Entries.js';
 import { logDb } from '../logger.js';
 
 /**
- * Retrieves a timetable part by ID with populated daily timetable
- * @param {string} id - Timetable part ID
- * @returns {Promise<Object>} Timetable part document
- * @throws {Error} If timetable part not found
+ * Versenyprogram-rész (TimetablePart) és rajtsorrend adatkezelő szolgáltatások.
+ * Minden függvény részletes magyar nyelvű dokumentációval és inline kommentekkel ellátva.
+ */
+
+/**
+ * Versenyprogram-rész lekérdezése azonosító alapján, napi program feltöltésével.
+ * @param {string} id - A programrész egyedi azonosítója.
+ * @returns {Promise<Object>} A programrész dokumentum.
+ * @throws {Error} Ha a programrész nem található.
  */
 export async function getTimetablePartById(id) {
+    // Programrész keresése és napi program feltöltése
     const timetablePart = await TimetablePart.findById(id).populate('dailytimetable').exec();
     if (!timetablePart) {
         throw new Error("Timetable part not found.");
@@ -17,13 +23,14 @@ export async function getTimetablePartById(id) {
 }
 
 /**
- * Retrieves entries for given categories with filtering
- * @param {string} eventId - Event ID
- * @param {Array} categories - Category IDs
- * @param {string} status - Entry status (default: 'confirmed')
- * @returns {Promise<Array>} Entries with populated vaulter, horse, lunger
+ * Adott kategóriákhoz tartozó nevezések lekérdezése szűréssel.
+ * @param {string} eventId - Esemény azonosító.
+ * @param {Array} categories - Kategória azonosítók tömbje.
+ * @param {string} status - Nevezés státusza (alapértelmezett: 'confirmed').
+ * @returns {Promise<Array>} Nevezések tömbje, feltöltött vaulter, ló, lóvezető adatokkal.
  */
 export async function getEntriesForCategories(eventId, categories, status = 'confirmed') {
+    // Nevezések lekérdezése esemény, státusz és kategória alapján
     const entries = await Entries.find({ 
         event: eventId, 
         status: status, 
@@ -35,13 +42,15 @@ export async function getEntriesForCategories(eventId, categories, status = 'con
 }
 
 /**
- * Validates and filters starting order to only include valid entries
- * @param {Object} timetablePart - Timetable part with StartingOrder
- * @param {Array} validEntryIds - Array of valid entry IDs
- * @returns {Promise<Object>} Updated timetable part
+ * Rajtsorrend validálása és szűrése, hogy csak érvényes nevezések maradjanak.
+ * @param {Object} timetablePart - Programrész, amely tartalmazza a rajtsorrendet.
+ * @param {Array} validEntryIds - Érvényes nevezés azonosítók tömbje.
+ * @returns {Promise<Object>} Frissített programrész.
  */
 export async function validateAndFilterStartingOrder(timetablePart, validEntryIds) {
+    // Érvényes nevezések azonosítóinak halmaza
     const validSet = new Set(validEntryIds.map(e => e.toString()));
+    // Csak az érvényes nevezések maradnak a rajtsorrendben
     timetablePart.StartingOrder = timetablePart.StartingOrder.filter(so => 
         validSet.has(so.Entry.toString())
     );
@@ -51,12 +60,13 @@ export async function validateAndFilterStartingOrder(timetablePart, validEntryId
 }
 
 /**
- * Updates starting order for a timetable part
- * @param {string} id - Timetable part ID
- * @param {Object} orderData - { entryId, newOrder }
- * @returns {Promise<Object>} Updated timetable part
+ * Rajtsorrend frissítése egy programrészhez.
+ * @param {string} id - Programrész azonosító.
+ * @param {Object} orderData - Objektum: { entryId, newOrder }.
+ * @returns {Promise<Object>} Frissített programrész.
  */
 export async function updateStartingOrder(id, orderData) {
+    // Programrész keresése azonosító alapján
     const timetablePart = await TimetablePart.findById(id);
     if (!timetablePart) {
         throw new Error("Timetable part not found.");
@@ -65,12 +75,12 @@ export async function updateStartingOrder(id, orderData) {
     let changed = false;
     let oldOrder = "";
 
-    // Remove the entry from current position
+    // Az adott nevezés eltávolítása a jelenlegi pozícióból
     timetablePart.StartingOrder = timetablePart.StartingOrder.filter(
         so => String(so.Entry) !== String(orderData.entryId)
     );
 
-    // Find if order number already exists
+    // Megnézzük, hogy a kívánt rajtszám már foglalt-e
     for (let i = 0; i < timetablePart.StartingOrder.length; i++) {
         if (timetablePart.StartingOrder[i].Order == orderData.newOrder) {
             oldOrder = timetablePart.StartingOrder[i].Entry;
@@ -80,12 +90,12 @@ export async function updateStartingOrder(id, orderData) {
         }
     }
 
-    // Remove old entry if it was replaced
+    // Ha volt csere, a régi nevezést eltávolítjuk
     timetablePart.StartingOrder = timetablePart.StartingOrder.filter(
         so => String(so.Entry) !== String(oldOrder)
     );
 
-    // Add entry to new position if not changed (means order number was free)
+    // Ha nem volt csere, új pozícióba tesszük a nevezést
     if (!changed) {
         timetablePart.StartingOrder.push({ 
             Entry: orderData.entryId, 
@@ -99,19 +109,21 @@ export async function updateStartingOrder(id, orderData) {
 }
 
 /**
- * Generates a new unique order number for an entry
- * @param {Object} timetablePart - Timetable part with StartingOrder
- * @param {number} entriesCount - Total number of entries
- * @param {number} currentOrderNr - Current order number to exclude
- * @returns {Promise<number>} New unique order number
- * @throws {Error} If cannot generate after 50 attempts
+ * Új, egyedi rajtszám generálása egy nevezéshez.
+ * @param {Object} timetablePart - Programrész, amely tartalmazza a rajtsorrendet.
+ * @param {number} entriesCount - Nevezések száma.
+ * @param {number} currentOrderNr - Jelenlegi rajtszám, amit ki kell hagyni.
+ * @returns {Promise<number>} Új, egyedi rajtszám.
+ * @throws {Error} Ha 50 próbálkozás után sem sikerül.
  */
 export async function generateNewOrderNumber(timetablePart, entriesCount, currentOrderNr) {
+    // Már használt rajtszámok halmaza
     const usedNumbers = new Set(timetablePart.StartingOrder.map(so => so.Order));
 
     let attempts = 50;
     let randomnumber;
 
+    // Véletlenszerű, még nem használt rajtszám generálása
     do {
         randomnumber = Math.floor(Math.random() * entriesCount) + 1;
         if (attempts-- < 0) {
@@ -123,18 +135,20 @@ export async function generateNewOrderNumber(timetablePart, entriesCount, curren
 }
 
 /**
- * Updates order number for a specific entry in starting order
- * @param {string} id - Timetable part ID
- * @param {string} entryId - Entry ID
- * @param {number} newOrder - New order number
- * @returns {Promise<Object>} Updated timetable part
+ * Egy adott nevezés rajtszámának frissítése a rajtsorrendben.
+ * @param {string} id - Programrész azonosító.
+ * @param {string} entryId - Nevezés azonosító.
+ * @param {number} newOrder - Új rajtszám.
+ * @returns {Promise<Object>} Frissített programrész.
  */
 export async function updateEntryOrderNumber(id, entryId, newOrder) {
+    // Programrész keresése azonosító alapján
     const timetablePart = await TimetablePart.findById(id);
     if (!timetablePart) {
         throw new Error("Timetable part not found.");
     }
 
+    // Megkeressük a nevezést és frissítjük a rajtszámát
     for (let i = 0; i < timetablePart.StartingOrder.length; i++) {
         if (timetablePart.StartingOrder[i].Entry == entryId) {
             timetablePart.StartingOrder[i].Order = newOrder;
@@ -148,13 +162,15 @@ export async function updateEntryOrderNumber(id, entryId, newOrder) {
 }
 
 /**
- * Checks for conflicts (same horse or lunger) and generates starting order for conflicted entries
- * @param {Object} timetablePart - Timetable part
- * @param {Array} entries - All entries for this category
- * @returns {Promise<Object>} Object with timetablePart, conflictedEntries
+ * Ütközések (azonos ló vagy lóvezető) ellenőrzése és rajtsorrend generálása ütköző nevezésekhez.
+ * @param {Object} timetablePart - Programrész.
+ * @param {Array} entries - Az adott kategória összes nevezése.
+ * @returns {Promise<Object>} Objektum: { timetablePart, conflictedEntries }.
  */
 export async function checkAndGenerateConflictingOrders(timetablePart, entries) {
+    // Ütköző nevezések listája
     const conflictedEntries = [];
+    // Már kiosztott rajtszámok halmaza
     const usedNumbers = new Set(
         timetablePart.StartingOrder.map(so => so.Order)
     );
@@ -162,7 +178,7 @@ export async function checkAndGenerateConflictingOrders(timetablePart, entries) 
     for (let i = 0; i < entries.length; i++) {
         let hasConflict = false;
 
-        // Check for conflicts with other entries
+        // Ellenőrizzük, hogy van-e ütközés más nevezéssel (azonos ló vagy lóvezető)
         for (let j = 0; j < entries.length; j++) {
             if (i !== j) {
                 if (String(entries[i].horse) === String(entries[j].horse) || 
@@ -176,7 +192,7 @@ export async function checkAndGenerateConflictingOrders(timetablePart, entries) 
         if (hasConflict) {
             conflictedEntries.push(entries[i]);
 
-            // Check if entry already has order assigned
+            // Ha még nincs rajtszám kiosztva, generálunk egyet
             const isGenerated = timetablePart.StartingOrder.some(
                 so => String(so.Entry) === String(entries[i]._id)
             );
@@ -202,20 +218,22 @@ export async function checkAndGenerateConflictingOrders(timetablePart, entries) 
 }
 
 /**
- * Generates complete starting order for all entries
- * @param {Object} timetablePart - Timetable part
- * @param {Array} entries - All entries for this category
- * @returns {Promise<Object>} Updated timetable part with complete StartingOrder
+ * Teljes rajtsorrend generálása minden nevezéshez.
+ * @param {Object} timetablePart - Programrész.
+ * @param {Array} entries - Az adott kategória összes nevezése.
+ * @returns {Promise<Object>} Frissített programrész, teljes rajtsorrenddel.
  */
 export async function generateCompleteStartingOrder(timetablePart, entries) {
+    // Már hozzárendelt nevezés azonosítók halmaza
     const usedEntryIds = new Set(
         timetablePart.StartingOrder.map(so => String(so.Entry))
     );
+    // Már kiosztott rajtszámok halmaza
     const usedNumbers = new Set(
         timetablePart.StartingOrder.map(so => so.Order)
     );
 
-    // Add missing entries with random order numbers
+    // Hiányzó nevezések hozzáadása véletlenszerű rajtszámmal
     for (let i = 0; i < entries.length; i++) {
         if (!usedEntryIds.has(String(entries[i]._id))) {
             let randomnumber;
@@ -238,32 +256,36 @@ export async function generateCompleteStartingOrder(timetablePart, entries) {
 }
 
 /**
- * Updates timetable part status fields
- * @param {string} id - Timetable part ID
- * @param {Object} data - Fields to update (conflictsChecked, drawingDone, creationMethod)
- * @returns {Promise<Object>} Updated timetable part
+ * Programrész státusz mezőinek frissítése.
+ * @param {string} id - Programrész azonosító.
+ * @param {Object} data - Frissítendő mezők (pl. conflictsChecked, drawingDone, creationMethod).
+ * @returns {Promise<Object>} Frissített programrész.
  */
 export async function updateTimetablePartStatus(id, data) {
+    // Programrész keresése azonosító alapján
     const timetablePart = await TimetablePart.findById(id);
     if (!timetablePart) {
         throw new Error("Timetable part not found.");
     }
 
     logDb('UPDATE', 'TimetablePart', `${id}`);
+    // Megadott mezők frissítése
     Object.assign(timetablePart, data);
     await timetablePart.save();
     return timetablePart;
 }
 
 /**
- * Helper to parse categories from timetable part
- * Ensures categories is always an array
- * @param {Object|Array} category - Category field from timetable part
- * @returns {Array} Categories array
+ * Segédfüggvény kategóriák tömbbé alakításához programrészből.
+ * Mindig tömböt ad vissza.
+ * @param {Object|Array} category - Programrész kategória mezője.
+ * @returns {Array} Kategóriák tömbje.
  */
 export function parseCategoriesArray(category) {
+    // Ha már tömb, visszaadjuk
     if (Array.isArray(category)) {
         return category;
     }
+    // Ha nem tömb, de van értéke, tömbbé alakítjuk
     return category ? [category] : [];
 }

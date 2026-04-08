@@ -1,10 +1,14 @@
+// Jogosultság modell importálása
 import Permissions from '../models/Permissions.js';
+// Súgóüzenet modell importálása
 import Helpmessage from '../models/HelpMessage.js';
+// Naplózó függvények importálása
 import { logDb, logDebug } from '../logger.js';
+// Üzenet konstansok importálása
 import { MESSAGES } from '../config/index.js';
 /**
- * Retrieves all help messages sorted by description
- * @returns {Promise<Array>} Array of help messages
+ * Az összes súgóüzenet lekérése leírás szerint rendezve
+ * @returns {Promise<Array>} - Súgóüzenetek listája
  */
 export async function getAllHelpMessages() {
     const helpMessages = await Helpmessage.find().sort({ description: 1 });
@@ -12,10 +16,10 @@ export async function getAllHelpMessages() {
 }
 
 /**
- * Retrieves a help message by ID
- * @param {string} id - Help message ID
- * @returns {Promise<Object>} Help message document
- * @throws {Error} If help message not found
+ * Súgóüzenet lekérése azonosító alapján
+ * @param {string} id - Súgóüzenet azonosítója
+ * @returns {Promise<Object>} - Súgóüzenet dokumentum
+ * @throws {Error} - Ha a súgóüzenet nem található
  */
 export async function getHelpMessageById(id) {
     const helpMessage = await Helpmessage.findById(id);
@@ -26,9 +30,9 @@ export async function getHelpMessageById(id) {
 }
 
 /**
- * Creates a new help message
- * @param {Object} data - Help message data
- * @returns {Promise<Object>} Created help message document
+ * Új súgóüzenet létrehozása
+ * @param {Object} data - Az új súgóüzenet adatai
+ * @returns {Promise<Object>} - A létrehozott súgóüzenet dokumentum
  */
 export async function createHelpMessage(data) {
     const newHelpMessage = new Helpmessage(data);
@@ -38,11 +42,11 @@ export async function createHelpMessage(data) {
 }
 
 /**
- * Updates a help message by ID
- * @param {string} id - Help message ID
- * @param {Object} data - Updated help message data
- * @returns {Promise<Object>} Updated help message document
- * @throws {Error} If help message not found
+ * Súgóüzenet frissítése azonosító alapján
+ * @param {string} id - Súgóüzenet azonosítója
+ * @param {Object} data - Frissített adatok
+ * @returns {Promise<Object>} - A frissített súgóüzenet dokumentum
+ * @throws {Error} - Ha a súgóüzenet nem található
  */
 export async function updateHelpMessage(id, data) {
     const helpMessage = await Helpmessage.findByIdAndUpdate(id, data, { runValidators: true });
@@ -54,10 +58,10 @@ export async function updateHelpMessage(id, data) {
 }
 
 /**
- * Deletes a help message by ID
- * @param {string} id - Help message ID
- * @returns {Promise<Object>} Deleted help message document
- * @throws {Error} If help message not found
+ * Súgóüzenet törlése azonosító alapján
+ * @param {string} id - Súgóüzenet azonosítója
+ * @returns {Promise<Object>} - A törölt súgóüzenet dokumentum
+ * @throws {Error} - Ha a súgóüzenet nem található
  */
 export async function deleteHelpMessage(id) {
     const helpMessage = await Helpmessage.findByIdAndDelete(id);
@@ -69,19 +73,17 @@ export async function deleteHelpMessage(id) {
 }
 
 /**
- * Retrieves a help message by URI
- * @param {string} uri - Help message URI
- * @returns {Promise<Object>} Help message document
- * @returns {null} If no help message found for the URI
+ * Súgóüzenet lekérése URI alapján
+ * Ha az URI végén 24 karakteres azonosító van, azt ':id'-re cseréli
+ * @param {string} uri - Súgóüzenet URI
+ * @returns {Promise<Object>} - Súgóüzenet dokumentum vagy alapértelmezett üzenet, ha nincs találat
  */
 export async function getHelpMessagebyUri(uri) {
-
     let uriParts = uri.split('/');
     if (uriParts.length > 0 && uriParts[uriParts.length - 1].length === 24) {
         uriParts[uriParts.length - 1] = ':id';
     }
     const patternUri = uriParts.join('/');
-
     const helpMessage = await Helpmessage.findOne({ url: patternUri, active: true });
     if (!helpMessage) {
         return {

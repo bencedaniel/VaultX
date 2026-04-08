@@ -1,49 +1,64 @@
+// Nevezés modell importálása
 import Entries from '../models/Entries.js';
+// Lovas modell importálása
 import Vaulter from '../models/Vaulter.js';
+// Hajtó modell importálása
 import Lunger from '../models/Lunger.js';
+// Ló modell importálása
 import Horse from '../models/Horse.js';
+// Kategória modell importálása
 import Category from '../models/Category.js';
+// Esemény modell importálása
 import Event from '../models/Event.js';
+// Időbeosztás elem modell importálása
 import TimetablePart from '../models/Timetablepart.js';
+// Naplózó függvény importálása
 import { logDb } from '../logger.js';
 
 /**
- * Get all vaulters
+ * Az összes lovas lekérése
+ * @returns {Promise<Array>} - Lovasok listája
  */
 export async function getAllVaulters() {
     return await Vaulter.find();
 }
 
 /**
- * Get all lungers
+ * Az összes hajtó lekérése
+ * @returns {Promise<Array>} - Hajtók listája
  */
 export async function getAllLungers() {
     return await Lunger.find();
 }
 
 /**
- * Get all horses
+ * Az összes ló lekérése
+ * @returns {Promise<Array>} - Lovak listája
  */
 export async function getAllHorses() {
     return await Horse.find();
 }
 
 /**
- * Get all categories sorted by Star
+ * Az összes kategória lekérése csillag szerint rendezve
+ * @returns {Promise<Array>} - Kategóriák listája csillag szerint rendezve
  */
 export async function getAllCategories() {
     return await Category.find().sort({ Star: 1 });
 }
 
 /**
- * Get all events
+ * Az összes esemény lekérése
+ * @returns {Promise<Array>} - Események listája
  */
 export async function getAllEvents() {
     return await Event.find();
 }
 
 /**
- * Create a new entry
+ * Új nevezés létrehozása
+ * @param {Object} data - Az új nevezés adatai
+ * @returns {Promise<Object>} - A létrehozott nevezés
  */
 export async function createEntry(data) {
     const newEntry = new Entries(data);
@@ -53,7 +68,9 @@ export async function createEntry(data) {
 }
 
 /**
- * Get entries by event ID with full population
+ * Nevezések lekérése esemény szerint, minden kapcsolódó adattal
+ * @param {string} eventId - Az esemény azonosítója
+ * @returns {Promise<Array>} - Nevezések listája populált mezőkkel
  */
 export async function getEntriesByEvent(eventId) {
     return await Entries.find({ event: eventId })
@@ -65,7 +82,10 @@ export async function getEntriesByEvent(eventId) {
 }
 
 /**
- * Get entry by ID with full population
+ * Nevezés lekérése azonosító alapján, minden kapcsolódó adattal
+ * @param {string} id - A nevezés azonosítója
+ * @returns {Promise<Object>} - A megtalált nevezés populált mezőkkel
+ * @throws {Error} - Ha a nevezés nem található
  */
 export async function getEntryByIdWithPopulation(id) {
     const entry = await Entries.findById(id)
@@ -81,84 +101,87 @@ export async function getEntryByIdWithPopulation(id) {
 }
 
 /**
- * Update entry using delete-create pattern and clean up timetable parts
- * This complex operation handles entry updates by recreating the entry
- * and removing it from timetable parts if status changes
+ * Nevezés frissítése törlés-újra létrehozás mintával, időbeosztás elemek tisztításával
+ * Ha a státusz nem 'confirmed', eltávolítja a nevezést az időbeosztásból
+ * @param {string} id - A frissítendő nevezés azonosítója
+ * @param {Object} updateData - Az új adatok
+ * @param {string} eventId - Az esemény azonosítója
+ * @returns {Promise<Object>} - A régi és új nevezés objektuma
+ * @throws {Error} - Ha a nevezés nem található
  */
 export async function updateEntry(id, updateData, eventId) {
-    // Delete old entry
+    // Régi nevezés törlése
     const entry = await Entries.findByIdAndDelete(id);
     if (!entry) {
         throw new Error('Entry not found');
     }
     logDb('DELETE', 'Entry', `${id}`);
-    
-    // Create new entry with updated data
+    // Új nevezés létrehozása az új adatokkal
     const updated = new Entries(updateData);
     await updated.save();
     logDb('CREATE', 'Entry', `${updated._id}`);
-    
-    // If status is not confirmed, remove from timetable parts
+    // Ha a státusz nem 'confirmed', eltávolítjuk az időbeosztásból
     if (updated.status !== 'confirmed') {
         const timetableParts = await TimetablePart.find({
             event: eventId,
             Category: updated.category
         });
-        
         for (const tp of timetableParts) {
             const originalLength = tp.StartingOrder.length;
             tp.StartingOrder = tp.StartingOrder.filter(
                 item => item.Entry.toString() !== updated._id.toString()
             );
-            
-            // Only save if something was removed
+            // Csak akkor mentjük, ha történt változás
             if (tp.StartingOrder.length !== originalLength) {
                 await tp.save();
                 logDb('UPDATE', 'TimetablePart', `${tp._id}`);
             }
         }
     }
-    
     return { oldEntry: entry, newEntry: updated };
 }
 
 /**
- * Delete an incident from entry
+ * Esemény törlése egy nevezésből
+ * @param {string} id - A nevezés azonosítója
+ * @param {Object} incidentData - A törlendő esemény adatai
+ * @returns {Promise<Object>} - A frissített nevezés
+ * @throws {Error} - Ha a nevezés nem található
  */
 export async function deleteEntryIncident(id, incidentData) {
     const entry = await Entries.findById(id);
     if (!entry) {
         throw new Error('Entry not found');
     }
-    
     entry.EntryIncident = entry.EntryIncident.filter(incident =>
         !(
             incident.description === incidentData.description &&
             incident.incidentType === incidentData.type
         )
     );
-    
     await Entries.findByIdAndUpdate(id, entry, { runValidators: true });
     logDb('UPDATE', 'Entry', `${id}`);
     return entry;
 }
 
 /**
- * Add an incident to entry
+ * Esemény hozzáadása egy nevezéshez
+ * @param {string} id - A nevezés azonosítója
+ * @param {Object} incidentData - Az esemény adatai
+ * @returns {Promise<Object>} - A frissített nevezés
+ * @throws {Error} - Ha a nevezés nem található
  */
 export async function addEntryIncident(id, incidentData) {
     const entry = await Entries.findById(id);
     if (!entry) {
         throw new Error('Entry not found');
     }
-    
     const newIncident = {
         description: incidentData.description,
         incidentType: incidentData.incidentType,
         date: Date.now(),
         User: incidentData.userId
     };
-    
     entry.EntryIncident.push(newIncident);
     await Entries.findByIdAndUpdate(id, entry, { runValidators: true });
     logDb('UPDATE', 'Entry', `${id}`);
@@ -166,45 +189,50 @@ export async function addEntryIncident(id, incidentData) {
 }
 
 /**
- * Get horses for event from entries
+ * Lovak lekérése esemény alapján a nevezésekből
+ * @param {string} eventId - Az esemény azonosítója
+ * @returns {Promise<Array>} - Lovak listája
+ * @throws {Error} - Ha nincs nevezés az eseményhez
  */
 export async function getHorsesForEvent(eventId) {
     const horsesontheEvent = await Entries.find({ event: eventId })
         .populate('horse')
         .select('horse');
-    
     if (horsesontheEvent.length === 0) {
         throw new Error('No entries found for the selected event');
     }
-    
     const uniqueHorses = Array.from(new Set(horsesontheEvent.map(entry => entry.horse._id.toString())));
     const horses = await Horse.find({ _id: { $in: uniqueHorses } }).sort({ name: 1 });
     return horses;
 }
 
 /**
- * Update horse vet check status
+ * Ló állatorvosi státuszának frissítése
+ * @param {string} horseId - A ló azonosítója
+ * @param {Object} statusData - Az állatorvosi státusz adatai
+ * @returns {Promise<Object>} - A frissített ló
+ * @throws {Error} - Ha a ló nem található
  */
 export async function updateHorseVetStatus(horseId, statusData) {
     const horse = await Horse.findById(horseId);
     if (!horse) {
         throw new Error('Horse not found');
     }
-    
     horse.VetCheckStatus.push({
         status: statusData.status,
         date: Date.now(),
         user: statusData.userId,
         eventID: statusData.eventId
     });
-    
     await Horse.findByIdAndUpdate(horseId, horse, { runValidators: true });
     logDb('UPDATE', 'Horse', `${horseId}`);
     return horse;
 }
 
 /**
- * Get selected event
+ * Kiválasztott esemény lekérése
+ * @returns {Promise<Object>} - A kiválasztott esemény
+ * @throws {Error} - Ha nincs kiválasztott esemény
  */
 export async function getSelectedEvent() {
     const selectedEvent = await Event.findOne({ selected: true });

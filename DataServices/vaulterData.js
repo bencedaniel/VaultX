@@ -3,28 +3,35 @@ import Entries from '../models/Entries.js';
 import { logDb } from '../logger.js';
 
 /**
- * Get all vaulters sorted by name
+ * Összes versenyző (vaulter) lekérdezése név szerint rendezve.
+ * @returns {Promise<Array>} Versenyzők tömbje.
  */
 export async function getAllVaulters() {
   return await Vaulter.find().sort({ name: 1 }).exec();
 }
 
 /**
- * Get vaulter by ID with incident relationships
+ * Versenyző lekérdezése azonosító alapján, incidens kapcsolatokkal.
+ * @param {string} id - Versenyző azonosító.
+ * @returns {Promise<Object>} Feltöltött versenyző dokumentum.
  */
 export async function getVaulterById(id) {
   return await Vaulter.findById(id).populate('VaulterIncident.eventID', 'EventName').exec();
 }
 
 /**
- * Get vaulter by ID (lean version for editing)
+ * Versenyző lekérdezése azonosító alapján (lean verzió szerkesztéshez).
+ * @param {string} id - Versenyző azonosító.
+ * @returns {Promise<Object>} Lean versenyző dokumentum.
  */
 export async function getVaulterByIdLean(id) {
   return await Vaulter.findById(id).lean().exec();
 }
 
 /**
- * Create new vaulter
+ * Új versenyző létrehozása.
+ * @param {Object} vaulterData - Versenyző adatai.
+ * @returns {Promise<Object>} A létrehozott versenyző dokumentum.
  */
 export async function createVaulter(vaulterData) {
   const newVaulter = new Vaulter(vaulterData);
@@ -34,7 +41,10 @@ export async function createVaulter(vaulterData) {
 }
 
 /**
- * Update vaulter by ID
+ * Versenyző adatainak frissítése azonosító alapján.
+ * @param {string} id - Versenyző azonosító.
+ * @param {Object} vaulterData - Frissített adatok.
+ * @returns {Promise<Object>} A frissített versenyző dokumentum.
  */
 export async function updateVaulter(id, vaulterData) {
   const vaulter = await Vaulter.findByIdAndUpdate(id, vaulterData, { runValidators: true }).exec();
@@ -43,7 +53,12 @@ export async function updateVaulter(id, vaulterData) {
 }
 
 /**
- * Update vaulter arm number for specific event
+ * Versenyző rajtszámának frissítése adott eseményhez.
+ * @param {string} id - Versenyző azonosító.
+ * @param {string} eventId - Esemény azonosító.
+ * @param {string|number} armNumber - Új rajtszám.
+ * @returns {Promise<Object>} A frissített versenyző dokumentum.
+ * @throws {Error} Ha a versenyző nem található.
  */
 export async function updateVaulterArmNumber(id, eventId, armNumber) {
   const vaulter = await Vaulter.findById(id).exec();
@@ -72,7 +87,11 @@ export async function updateVaulterArmNumber(id, eventId, armNumber) {
 }
 
 /**
- * Add incident to vaulter
+ * Incidens hozzáadása egy versenyzőhöz.
+ * @param {string} id - Versenyző azonosító.
+ * @param {Object} incidentData - Incidens adatai.
+ * @returns {Promise<Object>} A frissített versenyző dokumentum.
+ * @throws {Error} Ha a versenyző nem található.
  */
 export async function addIncidentToVaulter(id, incidentData) {
   const vaulter = await Vaulter.findById(id).exec();
@@ -87,7 +106,11 @@ export async function addIncidentToVaulter(id, incidentData) {
 }
 
 /**
- * Remove incident from vaulter by matching criteria
+ * Incidens eltávolítása egy versenyzőtől, megadott kritériumok alapján.
+ * @param {string} id - Versenyző azonosító.
+ * @param {Object} incidentCriteria - Kritériumok (leírás, típus, userId, dátum).
+ * @returns {Promise<Object>} A frissített versenyző dokumentum.
+ * @throws {Error} Ha a versenyző nem található.
  */
 export async function removeIncidentFromVaulter(id, incidentCriteria) {
   const vaulter = await Vaulter.findById(id).exec();
@@ -95,14 +118,14 @@ export async function removeIncidentFromVaulter(id, incidentCriteria) {
     throw new Error('Vaulter not found');
   }
 
-  // Helper: parse many date formats to ms
+  // Segédfüggvény: sokféle dátumformátumot ms-re konvertál
   const parseDateToMs = (input) => {
     if (!input && input !== 0) return null;
     if (typeof input === 'number') return input;
     const d1 = new Date(input);
     if (!Number.isNaN(d1.getTime())) return d1.getTime();
 
-    // try to extract components like "2025. 11. 05. 12:44:01" or "2025-11-05 12:44:01"
+    // próbáljuk kinyerni az összetevőket pl. "2025. 11. 05. 12:44:01" vagy "2025-11-05 12:44:01"
     const m = String(input).match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})\D+(\d{1,2}):(\d{2}):(\d{2})/);
     if (m) {
       const [ , y, mo, da, hh, mm, ss ] = m;
@@ -110,7 +133,7 @@ export async function removeIncidentFromVaulter(id, incidentCriteria) {
       if (!Number.isNaN(d2.getTime())) return d2.getTime();
     }
 
-    // try shorter pattern without seconds
+    // rövidebb minta, másodperc nélkül
     const m2 = String(input).match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})\D+(\d{1,2}):(\d{2})/);
     if (m2) {
       const [ , y, mo, da, hh, mm ] = m2;
@@ -122,7 +145,7 @@ export async function removeIncidentFromVaulter(id, incidentCriteria) {
   };
 
   const reqDateMs = parseDateToMs(incidentCriteria.date);
-  const DATE_TOLERANCE_MS = 20 * 1000; // 20s tolerance
+  const DATE_TOLERANCE_MS = 20 * 1000; // 20s tolerancia
 
   vaulter.VaulterIncident = vaulter.VaulterIncident.filter(incident => {
     const incDesc = String(incident.description || '');
@@ -153,14 +176,16 @@ export async function removeIncidentFromVaulter(id, incidentCriteria) {
 }
 
 /**
- * Get all entries with vaulter population
+ * Összes nevezés lekérdezése, versenyzővel feltöltve.
+ * @returns {Promise<Array>} Nevezések tömbje, feltöltött versenyzőkkel.
  */
 export async function getAllEntriesWithVaulters() {
   return await Entries.find().populate('vaulter').exec();
 }
 
 /**
- * Get all permissions
+ * Összes jogosultság lekérdezése.
+ * @returns {Promise<Array>} Jogosultságok tömbje.
  */
 export async function getAllPermissions() {
   const Permissions = (await import('../models/Permissions.js')).default;
@@ -168,7 +193,8 @@ export async function getAllPermissions() {
 }
 
 /**
- * Get all users
+ * Összes felhasználó lekérdezése.
+ * @returns {Promise<Array>} Felhasználók tömbje.
  */
 export async function getAllUsers() {
   const User = (await import('../models/User.js')).default;

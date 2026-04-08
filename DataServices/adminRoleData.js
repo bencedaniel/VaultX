@@ -1,24 +1,32 @@
+// Szerepkör modell importálása
 import Role from '../models/Role.js';
+// Felhasználó modell importálása
 import User from '../models/User.js';
+// Jogosultság modell importálása
 import Permissions from '../models/Permissions.js';
+// Naplózó függvény importálása
 import { logDb } from '../logger.js';
 
 /**
- * Get all roles
+ * Az összes szerepkör lekérése
+ * @returns {Promise<Array>} - Minden Role rekord
  */
 export async function getAllRoles() {
     return await Role.find();
 }
 
 /**
- * Get role by ID
+ * Szerepkör lekérése azonosító alapján
+ * @param {string} roleId - Szerepkör egyedi azonosítója
+ * @returns {Promise<Object|null>} - A megtalált Role rekord vagy null
  */
 export async function getRoleById(roleId) {
     return await Role.findById(roleId);
 }
 
 /**
- * Get all roles with user counts
+ * Az összes szerepkör lekérése, valamint hogy hány felhasználóhoz van hozzárendelve
+ * @returns {Promise<Object>} - Szerepkörök és hozzárendelt felhasználók száma
  */
 export async function getAllRolesWithUserCounts() {
     const roles = await Role.find();
@@ -33,7 +41,8 @@ export async function getAllRolesWithUserCounts() {
 }
 
 /**
- * Get form data for role creation/editing
+ * Szerepkör létrehozás/szerkesztés űrlaphoz szükséges adatok lekérése
+ * @returns {Promise<Object>} - Jogosultság lista az űrlaphoz
  */
 export async function getRoleFormData() {
     const permissions = await Permissions.find();
@@ -41,7 +50,9 @@ export async function getRoleFormData() {
 }
 
 /**
- * Create a new role
+ * Új szerepkör létrehozása
+ * @param {Object} roleData - Az új szerepkör adatai
+ * @returns {Promise<Object>} - A létrehozott Role rekord
  */
 export async function createRole(roleData) {
     const { roleName, description, permissions } = roleData;
@@ -56,7 +67,10 @@ export async function createRole(roleData) {
 }
 
 /**
- * Update role
+ * Szerepkör frissítése
+ * @param {string} roleId - A frissítendő szerepkör azonosítója
+ * @param {Object} roleData - Új adatok
+ * @returns {Promise<Object|null>} - A frissített Role rekord vagy null
  */
 export async function updateRole(roleId, roleData) {
     const { roleName, description, permissions } = roleData;
@@ -72,7 +86,10 @@ export async function updateRole(roleId, roleData) {
 }
 
 /**
- * Delete role (with validation that it's not assigned to any user)
+ * Szerepkör törlése (csak ha nincs hozzárendelve felhasználóhoz)
+ * @param {string} roleId - A törlendő szerepkör azonosítója
+ * @returns {Promise<Object>} - A törölt Role rekord
+ * @throws {Error} - Ha a szerepkör használatban van, vagy nem található
  */
 export async function deleteRole(roleId) {
     const role = await Role.findById(roleId);

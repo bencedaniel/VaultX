@@ -1,62 +1,58 @@
 
 /**
- * Application-wide constants
- * Includes JWT configuration, HTTP status codes, and other magic numbers
+ * Application-wide constants.
+ *
+ * This module centralizes shared numeric and string values so they can be
+ * reused consistently across controllers, services, and middleware.
  */
 
 /**
- * HTTP Status Codes
+ * Standard HTTP status codes used by API responses.
  */
 export const HTTP_STATUS = {
-  // Success
+  // 2xx: successful requests
   OK: 200,
   CREATED: 201,
   NO_CONTENT: 204,
-  
-  // Client Errors
+
+  // 4xx: client-side errors
   BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
   NOT_FOUND: 404,
   CONFLICT: 409,
   UNPROCESSABLE_ENTITY: 422,
-  
-  // Server Errors
+
+  // 5xx: server-side errors
   INTERNAL_ERROR: 500,
   NOT_IMPLEMENTED: 501,
   SERVICE_UNAVAILABLE: 503
 };
 
 /**
- * JWT Configuration
+ * JWT and session-related timing values.
  */
 export const JWT_CONFIG = {
-  // Token expiration times
-  
-  // Cookie settings - uses default value, can be overridden at runtime
+  // Default session lifetime for token-based authentication.
   SESSION_MAX_AGE: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+  // Default cookie lifetime mirrors the session lifetime unless overridden.
   COOKIE_MAX_AGE: 24 * 60 * 60 * 1000
 };
 
 /**
- * Function to set  max age based on TIMEOUT from environment
- */
-
-
-/**
- * Cookie Configuration
+ * Cookie defaults used when issuing authentication cookies.
  */
 export const COOKIE_CONFIG = {
   TOKEN_NAME: 'token',
   OPTIONS: {
     httpOnly: true,
     sameSite: 'lax'
-    // secure: set dynamically based on SECURE_MODE
+    // `secure` is enabled dynamically when the app runs in secure mode.
   }
 };
 
 /**
- * Pagination Defaults
+ * Pagination defaults used when no explicit query parameters are provided.
  */
 export const PAGINATION = {
   DEFAULT_PAGE_SIZE: 10,
@@ -64,7 +60,7 @@ export const PAGINATION = {
 };
 
 /**
- * File Upload Configuration
+ * File upload limits and accepted MIME types.
  */
 export const FILE_UPLOAD = {
   MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
@@ -73,7 +69,7 @@ export const FILE_UPLOAD = {
 };
 
 /**
- * Validation Constants
+ * Validation thresholds shared across request validators.
  */
 export const VALIDATION = {
   PASSWORD_MIN_LENGTH: 8,
@@ -83,7 +79,7 @@ export const VALIDATION = {
 };
 
 /**
- * Time Constants (in milliseconds)
+ * Time constants expressed in milliseconds.
  */
 export const TIME = {
   SECOND: 1000,
@@ -93,7 +89,7 @@ export const TIME = {
 };
 
 /**
- * Database Operation Types (for logging)
+ * Database operation labels used for structured logging and auditing.
  */
 export const DB_OPERATIONS = {
   CREATE: 'CREATE',

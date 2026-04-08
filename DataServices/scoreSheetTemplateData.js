@@ -7,7 +7,9 @@ import { logger, logDb, logValidation, logWarn, logInfo } from '../logger.js';
 const uploadsDir = path.join(process.cwd(), 'static', 'uploads');
 
 /**
- * Convert static URL to absolute file path
+ * Statikus URL-t abszolút fájl elérési úttá alakít.
+ * @param {string} urlPath - Statikus URL vagy útvonal.
+ * @returns {string|null} Abszolút fájl elérési út vagy null.
  */
 function toAbsoluteFromStaticUrl(urlPath) {
   if (!urlPath) return null;
@@ -20,7 +22,9 @@ function toAbsoluteFromStaticUrl(urlPath) {
 }
 
 /**
- * Check if path is inside uploads directory
+ * Ellenőrzi, hogy az elérési út az uploads könyvtárban van-e.
+ * @param {string} absPath - Abszolút elérési út.
+ * @returns {boolean} Igaz, ha az uploads könyvtárban van.
  */
 function isInsideUploads(absPath) {
   if (!absPath) return false;
@@ -29,7 +33,9 @@ function isInsideUploads(absPath) {
 }
 
 /**
- * Delete image file from disk
+ * Kép fájl törlése a lemezről.
+ * @param {string} staticUrl - Statikus URL a törlendő képfájlhoz.
+ * @returns {Promise<void>}
  */
 export async function deleteImageFile(staticUrl) {
   const abs = toAbsoluteFromStaticUrl(staticUrl);
@@ -44,7 +50,11 @@ export async function deleteImageFile(staticUrl) {
 }
 
 /**
- * Parse JSON array field from form
+ * JSON tömb mező feldolgozása űrlapból.
+ * @param {any} value - Az űrlap mező értéke.
+ * @param {string} fieldName - Mező neve (hibához).
+ * @returns {Array} Feldolgozott tömb.
+ * @throws {Error} Ha a mező nem tömb vagy nem értelmezhető.
  */
 export function parseJSONArrayField(value, fieldName) {
   if (!value) return [];
@@ -66,35 +76,43 @@ export function parseJSONArrayField(value, fieldName) {
 }
 
 /**
- * Get all score sheet templates with categories
+ * Összes pontozólap sablon lekérdezése kategóriákkal.
+ * @returns {Promise<Array>} Pontozólap sablonok tömbje, feltöltött kategóriákkal.
  */
 export async function getAllScoreSheetTemplates() {
   return await ScoreSheetTemp.find().populate('CategoryId').exec();
 }
 
 /**
- * Get score sheet template by ID
+ * Pontozólap sablon lekérdezése azonosító alapján.
+ * @param {string} id - Sablon azonosító.
+ * @returns {Promise<Object>} Feltöltött sablon dokumentum.
  */
 export async function getScoreSheetTemplateById(id) {
   return await ScoreSheetTemp.findById(id).populate('CategoryId').exec();
 }
 
 /**
- * Get all categories sorted by Star
+ * Összes kategória lekérdezése csillag szerint rendezve.
+ * @returns {Promise<Array>} Kategóriák tömbje.
  */
 export async function getAllCategories() {
   return await Category.find().sort({ Star: 1 }).exec();
 }
 
 /**
- * Get categories by IDs
+ * Kategóriák lekérdezése azonosítók alapján.
+ * @param {Array} ids - Kategória azonosítók tömbje.
+ * @returns {Promise<Array>} Kategóriák tömbje.
  */
 export async function getCategoriesByIds(ids) {
   return await Category.find({ _id: { $in: ids } }).exec();
 }
 
 /**
- * Create new score sheet template
+ * Új pontozólap sablon létrehozása.
+ * @param {Object} templateData - Sablon adatai.
+ * @returns {Promise<Object>} A létrehozott sablon dokumentum.
  */
 export async function createScoreSheetTemplate(templateData) {
   const sheet = new ScoreSheetTemp(templateData);
@@ -104,7 +122,10 @@ export async function createScoreSheetTemplate(templateData) {
 }
 
 /**
- * Update score sheet template
+ * Pontozólap sablon frissítése.
+ * @param {string} id - Sablon azonosító.
+ * @param {Object} templateData - Frissített sablon adatok.
+ * @returns {Promise<Object>} A frissített sablon dokumentum.
  */
 export async function updateScoreSheetTemplate(id, templateData) {
   const sheet = await ScoreSheetTemp.findByIdAndUpdate(id, templateData, {
@@ -116,7 +137,9 @@ export async function updateScoreSheetTemplate(id, templateData) {
 }
 
 /**
- * Delete score sheet template
+ * Pontozólap sablon törlése.
+ * @param {string} id - Sablon azonosító.
+ * @returns {Promise<Object>} A törölt sablon dokumentum.
  */
 export async function deleteScoreSheetTemplate(id) {
   const sheet = await ScoreSheetTemp.findByIdAndDelete(id).exec();
@@ -128,7 +151,10 @@ export async function deleteScoreSheetTemplate(id) {
 }
 
 /**
- * Validate categories have same Agegroup type
+ * Ellenőrzi, hogy a kategóriák azonos korcsoport típusúak-e.
+ * @param {Array} categories - Kategóriák tömbje.
+ * @returns {boolean} Igaz, ha minden kategória azonos típusú.
+ * @throws {Error} Ha eltérő típusú kategóriák vannak.
  */
 export function validateCategoriesAgegroup(categories) {
   if (categories.length === 0) {

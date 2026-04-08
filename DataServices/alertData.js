@@ -1,16 +1,24 @@
+// Riasztás (Alert) modell importálása
 import Alert from '../models/Alert.js';
+// Jogosultság (Permissions) modell importálása
 import Permissions from '../models/Permissions.js';
+// Naplózó függvény importálása
 import { logDb } from '../logger.js';
 
 /**
- * Get all alerts sorted by name and populated with permission data
+ * Az összes riasztás lekérése, név szerint rendezve, jogosultság adatokkal kiegészítve
+ * @returns {Promise<Array>} - Riasztások listája jogosultságokkal
  */
 export const getAllAlerts = async () => {
+    // Alert-ek lekérése, név szerint rendezve, permission mező feltöltése
     return await Alert.find().sort({ name: 1 }).populate('permission');
 };
 
 /**
- * Get alert by ID
+ * Riasztás lekérése azonosító alapján
+ * @param {string} id - A keresett riasztás azonosítója
+ * @returns {Promise<Object>} - A megtalált riasztás
+ * @throws {Error} - Ha a riasztás nem található
  */
 export const getAlertById = async (id) => {
     const alert = await Alert.findById(id);
@@ -21,7 +29,9 @@ export const getAlertById = async (id) => {
 };
 
 /**
- * Create new alert
+ * Új riasztás létrehozása
+ * @param {Object} data - Az új riasztás adatai
+ * @returns {Promise<Object>} - A létrehozott riasztás
  */
 export const createAlert = async (data) => {
     const newAlert = new Alert(data);
@@ -31,7 +41,11 @@ export const createAlert = async (data) => {
 };
 
 /**
- * Update alert by ID
+ * Riasztás frissítése azonosító alapján
+ * @param {string} id - A frissítendő riasztás azonosítója
+ * @param {Object} data - Új adatok
+ * @returns {Promise<Object>} - A frissített riasztás
+ * @throws {Error} - Ha a riasztás nem található
  */
 export const updateAlert = async (id, data) => {
     const alert = await Alert.findByIdAndUpdate(id, data, { runValidators: true });
@@ -43,7 +57,10 @@ export const updateAlert = async (id, data) => {
 };
 
 /**
- * Delete alert by ID
+ * Riasztás törlése azonosító alapján
+ * @param {string} id - A törlendő riasztás azonosítója
+ * @returns {Promise<Object>} - A törölt riasztás
+ * @throws {Error} - Ha a riasztás nem található
  */
 export const deleteAlert = async (id) => {
     const alert = await Alert.findByIdAndDelete(id);
@@ -55,7 +72,8 @@ export const deleteAlert = async (id) => {
 };
 
 /**
- * Get form data for alert creation/editing (permissions list)
+ * Riasztás létrehozás/szerkesztés űrlaphoz szükséges adatok lekérése (jogosultság lista)
+ * @returns {Promise<Object>} - Jogosultságok listája az űrlaphoz
  */
 export const getAlertFormData = async () => {
     const permissionList = await Permissions.find();

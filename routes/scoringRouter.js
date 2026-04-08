@@ -7,43 +7,126 @@ import scoringOfficeController from '../controllers/scoringOfficeController.js';
 
 
 
+
 const scoringRouter = express.Router();
 
-scoringRouter.get('/', Verify, VerifyRole(), scoringJudgeController.getScoringDashboard);
+// ==================== Bírói felület (Judge) ====================
 
-scoringRouter.get('/program/:id', Verify, VerifyRole(), scoringJudgeController.getProgramDetails);
+/**
+ * @route GET /
+ * @desc Pontozó bírói dashboard lekérése.
+ * @access Csak hitelesített és megfelelő jogosultságú felhasználók.
+ */
+scoringRouter.get('/', Verify, VerifyRole(), scoringJudgeController.getScoringDashboard); // Bírói dashboard
 
-scoringRouter.get('/newscoresheet/:entryid/:tpid', Verify, VerifyRole(), scoringJudgeController.getNewScoresheetForm);
+/**
+ * @route GET /program/:id
+ * @desc Adott program részleteinek lekérése bírói nézetben.
+ * @access Csak hitelesített és megfelelő jogosultságú felhasználók.
+ */
+scoringRouter.get('/program/:id', Verify, VerifyRole(), scoringJudgeController.getProgramDetails); // Program részletek
 
-scoringRouter.post('/newscoresheet', Verify, VerifyRole(), Validate, scoringJudgeController.createNewScoresheet);
+/**
+ * @route GET /newscoresheet/:entryid/:tpid
+ * @desc Új pontozólap űrlap lekérése adott nevezéshez és sablonhoz.
+ * @access Csak hitelesített és megfelelő jogosultságú felhasználók.
+ */
+scoringRouter.get('/newscoresheet/:entryid/:tpid', Verify, VerifyRole(), scoringJudgeController.getNewScoresheetForm); // Új pontozólap űrlap
+
+/**
+ * @route POST /newscoresheet
+ * @desc Új pontozólap létrehozása.
+ * @access Csak hitelesített és megfelelő jogosultságú felhasználók.
+ * @middleware Validate
+ */
+scoringRouter.post('/newscoresheet', Verify, VerifyRole(), Validate, scoringJudgeController.createNewScoresheet); // Pontozólap létrehozása
 
 
+// ==================== Irodai felület (Office) ====================
 
-//OFFICE ROUTES
+/**
+ * @route GET /office/dashboard
+ * @desc Irodai dashboard lekérése.
+ * @access Csak hitelesített és megfelelő jogosultságú felhasználók.
+ */
+scoringRouter.get('/office/dashboard', Verify, VerifyRole(), scoringOfficeController.getOfficeDashboard); // Irodai dashboard
 
-scoringRouter.get('/office/dashboard', Verify, VerifyRole(), scoringOfficeController.getOfficeDashboard);
+/**
+ * @route GET /office/scoresheet/edit/:id
+ * @desc Pontozólap szerkesztő űrlap lekérése azonosító alapján (alapértelmezett visszairányítás a dashboardra).
+ * @access Csak hitelesített és megfelelő jogosultságú felhasználók.
+ */
+scoringRouter.get('/office/scoresheet/edit/:id', Verify, VerifyRole(), scoringOfficeController.getEditScoresheetForm); // Szerkesztő űrlap (dashboard redirect)
 
-scoringRouter.get('/office/scoresheet/edit/:id', Verify, VerifyRole(), scoringOfficeController.getEditScoresheetForm);
+/**
+ * @route GET /office/scoresheet/edit1/:id
+ * @desc Pontozólap szerkesztő űrlap lekérése azonosító alapján (visszairányítás a pontlistára).
+ * @access Csak hitelesített és megfelelő jogosultságú felhasználók.
+ */
+scoringRouter.get('/office/scoresheet/edit1/:id', Verify, VerifyRole(), scoringOfficeController.getEditScoresheetForm); // Szerkesztő űrlap (scores redirect)
 
-scoringRouter.get('/office/scoresheet/edit1/:id', Verify, VerifyRole(), scoringOfficeController.getEditScoresheetForm);
+/**
+ * @route POST /office/scoresheet/edit/:id
+ * @desc Pontozólap frissítése azonosító alapján, majd visszairányítás a dashboardra.
+ * @access Csak hitelesített és megfelelő jogosultságú felhasználók.
+ * @middleware Validate
+ */
+scoringRouter.post('/office/scoresheet/edit/:id', Verify, VerifyRole(), Validate, (req, res) => scoringOfficeController.updateScoresheetById(req, res, '/scoring/office/dashboard')); // Frissítés + dashboard redirect
 
+/**
+ * @route POST /office/scoresheet/edit1/:id
+ * @desc Pontozólap frissítése azonosító alapján, majd visszairányítás a pontlistára.
+ * @access Csak hitelesített és megfelelő jogosultságú felhasználók.
+ * @middleware Validate
+ */
+scoringRouter.post('/office/scoresheet/edit1/:id', Verify, VerifyRole(), Validate, (req, res) => scoringOfficeController.updateScoresheetById(req, res, '/scoring/office/scores')); // Frissítés + scores redirect
 
-scoringRouter.post('/office/scoresheet/edit/:id', Verify, VerifyRole(), Validate, (req, res) => scoringOfficeController.updateScoresheetById(req, res, '/scoring/office/dashboard'));
+/**
+ * @route GET /office/scoresheet/new
+ * @desc Új pontozólap kiválasztó űrlap lekérése.
+ * @access Csak hitelesített és megfelelő jogosultságú felhasználók.
+ */
+scoringRouter.get('/office/scoresheet/new', Verify, VerifyRole(), scoringOfficeController.getNewScoresheetSelectionForm); // Új pontozólap kiválasztó
 
-scoringRouter.post('/office/scoresheet/edit1/:id', Verify, VerifyRole(), Validate, (req, res) => scoringOfficeController.updateScoresheetById(req, res, '/scoring/office/scores'));
+/**
+ * @route POST /office/scoresheet/new
+ * @desc Új pontozólap kiválasztásának feldolgozása.
+ * @access Csak hitelesített és megfelelő jogosultságú felhasználók.
+ */
+scoringRouter.post('/office/scoresheet/new', Verify, VerifyRole(), scoringOfficeController.handleNewScoresheetSelection); // Kiválasztás feldolgozása
 
-scoringRouter.get('/office/scoresheet/new', Verify, VerifyRole(), scoringOfficeController.getNewScoresheetSelectionForm);
+/**
+ * @route GET /office/newscoresheet/:entryid/:tpid
+ * @desc Új irodai pontozólap űrlap lekérése adott nevezéshez és sablonhoz.
+ * @access Csak hitelesített és megfelelő jogosultságú felhasználók.
+ */
+scoringRouter.get('/office/newscoresheet/:entryid/:tpid', Verify, VerifyRole(), scoringOfficeController.getOfficeNewScoresheetForm); // Új irodai pontozólap űrlap
 
-scoringRouter.post('/office/scoresheet/new', Verify, VerifyRole(), scoringOfficeController.handleNewScoresheetSelection);
+/**
+ * @route POST /office/newscoresheet
+ * @desc Új irodai pontozólap létrehozása.
+ * @access Csak hitelesített és megfelelő jogosultságú felhasználók.
+ * @middleware Validate
+ */
+scoringRouter.post('/office/newscoresheet', Verify, VerifyRole(), Validate, scoringOfficeController.createOfficeNewScoresheet); // Irodai pontozólap létrehozása
 
-scoringRouter.get('/office/newscoresheet/:entryid/:tpid', Verify, VerifyRole(), scoringOfficeController.getOfficeNewScoresheetForm);
+/**
+ * @route GET /office/scores
+ * @desc Pontozólapok listájának lekérése irodai nézetben.
+ * @access Csak hitelesített és megfelelő jogosultságú felhasználók.
+ */
+scoringRouter.get('/office/scores', Verify, VerifyRole(), scoringOfficeController.getScoresList); // Pontozólap lista
 
-scoringRouter.post('/office/newscoresheet', Verify, VerifyRole(), Validate, scoringOfficeController.createOfficeNewScoresheet);
+/**
+ * @route POST /office/scores/recalculate/:id
+ * @desc Pont újraszámítása azonosító alapján.
+ * @access Csak hitelesített és megfelelő jogosultságú felhasználók.
+ */
+scoringRouter.post('/office/scores/recalculate/:id', Verify, VerifyRole(), scoringOfficeController.recalculateScoreById); // Újraszámítás
 
-scoringRouter.get('/office/scores', Verify, VerifyRole(), scoringOfficeController.getScoresList);
-
-scoringRouter.post('/office/scores/recalculate/:id', Verify, VerifyRole(), scoringOfficeController.recalculateScoreById);
-
+/**
+ * A scoringRouter exportálása, amely tartalmazza az összes pontozással kapcsolatos végpontot.
+ */
 export default scoringRouter;
 
 

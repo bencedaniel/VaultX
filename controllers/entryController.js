@@ -1,25 +1,36 @@
+// Logger és naplózó függvények importálása
 import { logger, logOperation, logAuth, logError, logValidation, logWarn, logDebug } from '../logger.js';
+
+// Aszinkron hibakezelő middleware importálása
 import { asyncHandler } from '../middleware/asyncHandler.js';
+
+// HTTP státuszkódok és üzenetek konstansainak importálása
 import { HTTP_STATUS, MESSAGES } from '../config/index.js';
+
+// Nevezésekkel, lovakkal, kategóriákkal stb. kapcsolatos adatkezelő függvények importálása
 import {
-    getAllVaulters,
-    getAllLungers,
-    getAllHorses,
-    getAllCategories,
-    getAllEvents,
-    createEntry,
-    getEntriesByEvent,
-    getEntryByIdWithPopulation,
-    updateEntry,
-    deleteEntryIncident,
-    addEntryIncident,
-    getHorsesForEvent,
-    updateHorseVetStatus,
-    getSelectedEvent
+  getAllVaulters,            // Összes versenyző lekérdezése
+  getAllLungers,             // Összes futószáras lekérdezése
+  getAllHorses,              // Összes ló lekérdezése
+  getAllCategories,          // Összes kategória lekérdezése
+  getAllEvents,              // Összes esemény lekérdezése
+  createEntry,               // Új nevezés létrehozása
+  getEntriesByEvent,         // Nevezések lekérdezése esemény szerint
+  getEntryByIdWithPopulation,// Egy nevezés lekérdezése (populált adatokkal)
+  updateEntry,               // Nevezés módosítása
+  deleteEntryIncident,       // Nevezéshez tartozó incidens törlése
+  addEntryIncident,          // Nevezéshez tartozó incidens hozzáadása
+  getHorsesForEvent,         // Lovak lekérdezése eseményhez
+  updateHorseVetStatus,      // Ló állatorvosi státuszának frissítése
+  getSelectedEvent           // Kiválasztott esemény lekérdezése
 } from '../DataServices/entryData.js';
+
+// Console log import (ha szükséges)
 import { log } from 'console';
 
+// Nevezések, incidensek, lovak, kategóriák stb. vezérlője
 class EntryController {
+  // Új nevezés űrlap megjelenítése
   renderNew = asyncHandler(async (req, res) => {
     const categorys = await getAllCategories();
 
@@ -39,6 +50,7 @@ class EntryController {
     req.session.successMessage = null;
   })
 
+  // Új nevezés létrehozása POST kérésre
   createNew = asyncHandler(async (req, res) => {
     const newEntry = await createEntry(req.body);
     logOperation('ENTRY_CREATE', `Entry created: ${newEntry?.name || req.body?.name || 'unknown'}`, req.user.username, HTTP_STATUS.CREATED);
@@ -46,6 +58,7 @@ class EntryController {
     res.redirect('/entry/dashboard');
   })
 
+  // Nevezések dashboard oldal megjelenítése
   dashboard = asyncHandler(async (req, res) => {
     const selectedEvent = await getSelectedEvent();
     const entrys = await getEntriesByEvent(selectedEvent._id);
@@ -61,6 +74,7 @@ class EntryController {
     req.session.successMessage = null;
   })
 
+  // Nevezés szerkesztő űrlap megjelenítése
   editGet = asyncHandler(async (req, res) => {
     const entry = await getEntryByIdWithPopulation(req.params.id);
     const categorys = await getAllCategories();
@@ -80,6 +94,7 @@ class EntryController {
     req.session.successMessage = null;
   })
 
+  // Nevezés adatainak frissítése POST kérésre
   editPost = asyncHandler(async (req, res) => {
     logDebug('Entry request body', req.body);
     const updateData = { ...req.body, _id: req.params.id };
@@ -90,12 +105,14 @@ class EntryController {
     res.redirect('/entry/dashboard');
   })
 
+  // Nevezéshez tartozó incidens törlése
   deleteIncident = asyncHandler(async (req, res) => {
     const entry = await deleteEntryIncident(req.params.id, req.body);
     logOperation('ENTRY_UPDATE', `Entry updated: ${entry?.name || req.params.id}`, req.user.username, HTTP_STATUS.OK);
     res.status(HTTP_STATUS.OK).json({ message: 'Incident deleted successfully' });
   })
 
+  // Új incidens hozzáadása nevezéshez
   newIncidentPost = asyncHandler(async (req, res) => {
     const incidentData = {
       description: req.body.description,
@@ -107,6 +124,7 @@ class EntryController {
     res.status(HTTP_STATUS.OK).json({ message: MESSAGES.SUCCESS.INCIDENT_ADDED });
   })
 
+  // Lovak állatorvosi státuszának megjelenítése adott eseményhez
   vetCheckGet = asyncHandler(async (req, res) => {
     const horses = await getHorsesForEvent(res.locals.selectedEvent._id);
     horses.forEach(horse => {
@@ -127,6 +145,7 @@ class EntryController {
     req.session.successMessage = null;
   })
 
+  // Ló állatorvosi státuszának frissítése
   updateVetStatus = asyncHandler(async (req, res) => {
     const statusData = {
       status: req.body.status,

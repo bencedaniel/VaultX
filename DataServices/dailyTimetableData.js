@@ -1,27 +1,40 @@
+// Napi időbeosztás modell importálása
 import DailyTimeTable from '../models/DailyTimeTable.js';
+// Időbeosztás elem modell importálása
 import TimetablePart from '../models/Timetablepart.js';
+// Esemény modell importálása
 import Event from '../models/Event.js';
+// Felhasználó modell importálása
 import User from '../models/User.js';
+// Pontozólap modell importálása
 import ScoreSheet from '../models/ScoreSheet.js';
+// Kategória lekérő függvény importálása
 import { getAllCategoriesByStar } from './categoryData.js';
+// Naplózó függvény importálása
 import { logDb } from '../logger.js';
 
 /**
- * Get all daily timetables for a specific event
+ * Az adott eseményhez tartozó összes napi időbeosztás lekérése
+ * @param {string} eventId - Az esemény azonosítója
+ * @returns {Promise<Array>} - Napi időbeosztások listája
  */
 export const getAllDailyTimeTables = async (eventId) => {
     return await DailyTimeTable.find({ event: eventId }).sort({ Date: 1 });
 };
 
 /**
- * Get daily timetable by ID
+ * Napi időbeosztás lekérése azonosító alapján
+ * @param {string} id - A keresett napi időbeosztás azonosítója
+ * @returns {Promise<Object>} - A megtalált napi időbeosztás
  */
 export const getDailyTimeTableById = async (id) => {
     return await DailyTimeTable.findById(id);
 };
 
 /**
- * Create new daily timetable
+ * Új napi időbeosztás létrehozása
+ * @param {Object} data - Az új napi időbeosztás adatai
+ * @returns {Promise<Object>} - A létrehozott napi időbeosztás
  */
 export const createDailyTimeTable = async (data) => {
     const newDailyTimeTable = new DailyTimeTable(data);
@@ -31,8 +44,12 @@ export const createDailyTimeTable = async (data) => {
 };
 
 /**
- * Update daily timetable by ID
- * Checks if timetable has submitted score sheets before updating
+ * Napi időbeosztás frissítése azonosító alapján
+ * Csak akkor engedélyezett, ha nincs leadott pontozólap
+ * @param {string} id - A frissítendő napi időbeosztás azonosítója
+ * @param {Object} data - Az új adatok
+ * @returns {Promise<Object>} - A frissített napi időbeosztás
+ * @throws {Error} - Ha van leadott pontozólap
  */
 export const updateDailyTimeTable = async (id, data) => {
     const timetableParts = await TimetablePart.find({ dailytimetable: id }).select('_id');
@@ -49,8 +66,10 @@ export const updateDailyTimeTable = async (id, data) => {
 };
 
 /**
- * Delete daily timetable by ID
- * Also deletes all associated timetable parts
+ * Napi időbeosztás törlése azonosító alapján
+ * Törli a hozzá tartozó időbeosztás elemeket is
+ * @param {string} id - A törlendő napi időbeosztás azonosítója
+ * @returns {Promise<Object>} - A törölt napi időbeosztás
  */
 export const deleteDailyTimeTable = async (id) => {
     await TimetablePart.deleteMany({ dailytimetable: id });
@@ -60,14 +79,17 @@ export const deleteDailyTimeTable = async (id) => {
 };
 
 /**
- * Get form data for daily timetable creation/editing
+ * Napi időbeosztás létrehozás/szerkesztés űrlaphoz szükséges adatok lekérése
+ * @returns {Promise<Object>} - Az űrlaphoz szükséges adatok (jelenleg üres)
  */
 export const getDailyTimeTableFormData = async () => {
     return {};
 };
 
 /**
- * Get all timetable parts for a specific daily timetable
+ * Adott napi időbeosztáshoz tartozó összes időbeosztás elem lekérése
+ * @param {string} dailyTimeTableId - A napi időbeosztás azonosítója
+ * @returns {Promise<Array>} - Időbeosztás elemek listája
  */
 export const getTimetablePartsByDailyTimeTable = async (dailyTimeTableId) => {
     return await TimetablePart.find({ dailytimetable: dailyTimeTableId })
@@ -77,21 +99,26 @@ export const getTimetablePartsByDailyTimeTable = async (dailyTimeTableId) => {
 };
 
 /**
- * Get all timetable parts
+ * Az összes időbeosztás elem lekérése
+ * @returns {Promise<Array>} - Időbeosztás elemek listája
  */
 export const getAllTimetableParts = async () => {
     return await TimetablePart.find();
 };
 
 /**
- * Get timetable part by ID with population
+ * Időbeosztás elem lekérése azonosító alapján, napi időbeosztással együtt
+ * @param {string} id - Az időbeosztás elem azonosítója
+ * @returns {Promise<Object>} - Az időbeosztás elem (napi időbeosztással)
  */
 export const getTimetablePartById = async (id) => {
     return await TimetablePart.findById(id).populate('dailytimetable');
 };
 
 /**
- * Create new timetable part
+ * Új időbeosztás elem létrehozása
+ * @param {Object} data - Az új időbeosztás elem adatai
+ * @returns {Promise<Object>} - A létrehozott időbeosztás elem
  */
 export const createTimetablePart = async (data) => {
     const newTimetablePart = new TimetablePart(data);
@@ -101,8 +128,12 @@ export const createTimetablePart = async (data) => {
 };
 
 /**
- * Update timetable part by ID
- * Checks if timetable part has submitted score sheets before updating
+ * Időbeosztás elem frissítése azonosító alapján
+ * Csak akkor engedélyezett, ha nincs leadott pontozólap
+ * @param {string} id - A frissítendő időbeosztás elem azonosítója
+ * @param {Object} data - Az új adatok
+ * @returns {Promise<Object>} - A frissített időbeosztás elem
+ * @throws {Error} - Ha van leadott pontozólap
  */
 export const updateTimetablePart = async (id, data) => {
     const scoreSheets = await ScoreSheet.find({ TimetablePartId: id });
@@ -120,7 +151,9 @@ export const updateTimetablePart = async (id, data) => {
 };
 
 /**
- * Delete timetable part by ID
+ * Időbeosztás elem törlése azonosító alapján
+ * @param {string} id - A törlendő időbeosztás elem azonosítója
+ * @returns {Promise<void>} - Ha sikeres, nincs visszatérési érték
  */
 export const deleteTimetablePart = async (id) => {
     await TimetablePart.findByIdAndDelete(id);
@@ -128,7 +161,10 @@ export const deleteTimetablePart = async (id) => {
 };
 
 /**
- * Save start time for timetable part
+ * Időbeosztás elem kezdési idejének mentése
+ * @param {string} id - Az időbeosztás elem azonosítója
+ * @returns {Promise<Object>} - A frissített időbeosztás elem
+ * @throws {Error} - Ha az elem nem található
  */
 export const saveTimetablePartStartTime = async (id) => {
     const timetablepart = await TimetablePart.findById(id);
@@ -143,7 +179,10 @@ export const saveTimetablePartStartTime = async (id) => {
 };
 
 /**
- * Get form data for timetable part creation/editing
+ * Időbeosztás elem létrehozás/szerkesztés űrlaphoz szükséges adatok lekérése
+ * @param {string} eventId - Az esemény azonosítója
+ * @returns {Promise<Object>} - Bírók, napok és kategóriák listája
+ * @throws {Error} - Ha nincs onsite official
  */
 export const getTimetablePartFormData = async (eventId) => {
     const OnsiteOfficials = await Event.findOne({ selected: true }).select('AssignedOfficials');
