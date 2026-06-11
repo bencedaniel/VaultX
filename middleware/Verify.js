@@ -142,7 +142,7 @@ export const Verify = asyncHandler(async (req, res, next) => {
     return unauthorized(req, res, MESSAGES.AUTH.ACCOUNT_DEACTIVATED);
   }
   // 5 Rolling JWT generálása (lejárat frissítése): minden kérésnél új token, hogy ne járjon le a session
-  const timeoutMinutes = parseInt(TIMEOUT, 10) * 3 || 90;
+  const timeoutMinutes = parseInt(TIMEOUT, 10) || 90;
   const newToken = jwt.sign({ id: user._id }, SECRET_ACCESS_TOKEN, { expiresIn: `${timeoutMinutes}m` });
   // 6 Cookie-ba írás: új token beállítása
   res.cookie(COOKIE_CONFIG.TOKEN_NAME, newToken, {
