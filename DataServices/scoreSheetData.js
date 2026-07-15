@@ -37,27 +37,34 @@ export async function getSubmittedScoreSheets(timetablePartId, entryId, eventId,
 }
 
 /**
- * Egy esemény összes pontozólapjának lekérdezése, teljes kapcsolatokkal.
+ * Egy esemény összes pontozólapjának lekérdezése, szűkítve a táblázat oszlopaira, lean-nel optimalizálva.
  * @param {string} eventId - Esemény azonosító.
- * @returns {Promise<Array>} Pontozólapok tömbje, feltöltött kapcsolatokkal.
+ * @returns {Promise<Array>} Pontozólapok tömbje (tiszta JS objektumokként).
  */
 export async function getEventScoreSheets(eventId) {
-  // Pontozólapok lekérdezése és kapcsolt mezők feltöltése
   return await ScoreSheet.find({ EventId: eventId })
+    .select('EntryId TimetablePartId Judge totalScoreBE') 
     .populate({
       path: 'EntryId',
+      select: 'vaulter category teamName', 
       populate: [
-        { path: 'vaulter' },
-        { path: 'category' }
+        { path: 'vaulter', select: 'Name' },
+        { path: 'category', select: 'CategoryDispName' }
       ]
     })
-    .populate('TimetablePartId')
+    .populate({
+      path: 'TimetablePartId',
+      select: 'Name'
+    })
     .populate({
       path: 'Judge.userId',
-      model: 'users'
+      model: 'users',
+      select: 'fullname'
     })
+    .lean() 
     .exec();
 }
+
 
 /**
  * Egy adott pontozólap lekérdezése azonosító alapján, minden kapcsolattal feltöltve.

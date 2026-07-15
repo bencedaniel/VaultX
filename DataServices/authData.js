@@ -6,6 +6,7 @@ import Blacklist from '../models/Blacklist.js';
 import bcrypt from 'bcrypt';
 // Naplózó és autentikációs naplózó függvények importálása
 import { logDb, logAuth } from '../logger.js';
+import { FAILED_LOGINS_PER_USER, BAN_TIME } from '../config/env.js';
 
 /**
  * Felhasználó keresése felhasználónév alapján
@@ -84,4 +85,44 @@ export async function blacklistToken(token) {
     logAuth('CREATE', 'Blacklist', `${token.substring(0, 10)}...`);
     logDb(`CREATE`, 'Blacklist', `${token.substring(0, 10)}...`);
     return newBlacklist;
+}
+
+export async function addFailedLoginAttempt(userId) {
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    user.failedLoginAttempts += 1;
+
+    // Ellenőrizzük, hogy elérte-e a sikertelen bejelentkezési kísérletek számát
+    if (user.failedLoginAttempts >= FAILED_LOGINS_PER_USER) {
+        user.bannedUntil = new Date(Date.now() + BAN_TIME * 60 * 1000); // Kitiltás idejének beállítása
+        logAuth('LOGIN', user.username, false, `USER_BANNED for ${BAN_TIME} minutes due to ${user.failedLoginAttempts} failed login attempts.`);
+    }
+
+    await user.save();
+}
+
+export async function resetFailedLoginAttempts(userId) {
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    user.failedLoginAttempts = 0;
+    user.bannedUntil = null; // Kitiltás feloldása
+    await user.save();
+}
+
+export async function isUserBanned(userId) {
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new Error('User not found');
+    }
+    const isBanned = user.bannedUntil && user.bannedUntil > new Date();
+    
+    logAuth('CHECK', user.username, false, `USER_BANNED check: ${isBanned ? 'BANNED' : 'NOT BANNED'}`);
+    return isBanned;
+    
 }

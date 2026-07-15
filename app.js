@@ -18,13 +18,15 @@ import { StoreUserWithoutValidation } from './middleware/Verify.js';
 import setupRoutes from './routes/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { log } from 'console';
+import { IpCheck } from './middleware/IpCheck.js';
+import { speedTracker } from './middleware/speedTracker.js';
 
 // ============================================
 // INITIALIZATION
 // ============================================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const version = '1.1.0b';
+const version = '1.1.1';
 
 const app = express();
 
@@ -80,6 +82,17 @@ app.use((req, res, next) => {
 // 2. Static files
 app.use('/static', express.static(path.join(__dirname, '/static')));
 
+
+// ============================================
+// MIDDLEWARE FOR RATE LIMITING AND IP TRACKING
+// ============================================
+
+
+app.use(IpCheck); // IP tracking middleware
+app.use(speedTracker); // Rate limiting middleware
+
+
+
 // 3. Development logging
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
@@ -112,6 +125,7 @@ app.use((req, res, next) => {
   });
   next();
 });
+
 
 // 6. Global context middleware
 app.use(async (req, res, next) => {

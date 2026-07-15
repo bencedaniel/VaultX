@@ -54,9 +54,32 @@ export const DOMAIN = process.env.DOMAIN;
 /**
  * Alapértelmezett időtúllépés (ms)
  */
-export const TIMEOUT = process.env.TIMEOUT;
+export let TIMEOUT = process.env.TIMEOUT;
 
 /**
  * Biztonsági mentésekhez használt konténer neve
  */
-export const BACKUP_CONTAINER = process.env.BACKUP_CONTAINER;
+export let BACKUP_CONTAINER = process.env.BACKUP_CONTAINER;
+
+/**
+ * Felhasználónkénti sikertelen bejelentkezési kísérletek maximális száma
+ */
+export let FAILED_LOGINS_PER_USER = process.env.FAILED_LOGINS_PER_USER;
+/**
+ * IP-címekre vonatkozó sikertelen bejelentkezési kísérletek maximális száma
+ */
+export let FAILED_LOGINS_PER_IP = process.env.FAILED_LOGINS_PER_IP;
+/**
+ * Kitiltás ideje másodpercben
+ */
+export let BAN_TIME = process.env.BAN_TIME;
+
+
+export function modifyEnvVariables(NEW_FAILED_LOGINS_PER_USER, NEW_FAILED_LOGINS_PER_IP, NEW_BAN_TIME, NEW_BACKUP_CONTAINER, NEW_TIMEOUT) {
+    FAILED_LOGINS_PER_USER = NEW_FAILED_LOGINS_PER_USER;
+    FAILED_LOGINS_PER_IP = NEW_FAILED_LOGINS_PER_IP;
+    BAN_TIME = NEW_BAN_TIME;
+    BACKUP_CONTAINER = NEW_BACKUP_CONTAINER;
+    TIMEOUT = NEW_TIMEOUT;
+    console.log(`Environment variables modified: FAILED_LOGINS_PER_USER=${FAILED_LOGINS_PER_USER}, FAILED_LOGINS_PER_IP=${FAILED_LOGINS_PER_IP}, BAN_TIME=${BAN_TIME}, BACKUP_CONTAINER=${BACKUP_CONTAINER}, TIMEOUT=${TIMEOUT}`);
+}

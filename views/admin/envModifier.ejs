@@ -1,0 +1,75 @@
+<div class="container my-4 border border-black border-1 border-opacity-10 rounded p-3 shadow bg-primary bg-opacity-10" style="max-width: 80vh;">
+  <h1 class="text-center mb-3">Modify Environment Variables</h1>
+  <p class="text-center mb-4 text-danger">Changes only affect the current running instance</p>
+
+  <form action="/admin/envModifier" method="POST">
+    <div class="row justify-content-center g-3 m-auto">
+      <!-- Dashboard type -->
+      <div class="col-md-12">
+        <div class="form-floating position-relative searchable-dropdown">
+          <i class="bi bi-chevron-down position-absolute top-50 end-0 pe-3 translate-middle-y"></i>
+          <input type="text" class="form-control shadow-none searchable-input"
+                 placeholder="Dashboard type"
+                 autocomplete="off"
+                 value="<%= formData ? (formData.BACKUP_CONTAINER === 'true' ? 'true' : 'false') : '' %>">
+          <label class="form-label"> Backup Container</label>
+
+          <!-- Hidden input for form submission -->
+          <input type="hidden" class="searchable-hidden" name="NEW_BACKUP_CONTAINER"
+                 value="<%= formData ? formData.BACKUP_CONTAINER : '' %>">
+
+          <!-- Dropdown list -->
+          <ul class="list-group position-absolute w-100 mt-1 shadow-sm d-none searchable-list"
+              style="max-height: 200px; overflow-y: auto; z-index: 1000;">
+            <li class="list-group-item list-group-item-action searchable-item" val="true">true</li>
+            </li>
+            <li class="list-group-item list-group-item-action searchable-item" val="false">false</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Failed Logins Per User -->
+      <div class="col-md-12">
+        <div class="form-floating">
+          <input type="number" class="form-control shadow-none" id="FAILED_LOGINS_PER_USER" name="NEW_FAILED_LOGINS_PER_USER" placeholder="Failed Logins Per User" step="1" min="1"
+                 value="<%= formData?.FAILED_LOGINS_PER_USER || '' %>">
+          <label for="FAILED_LOGINS_PER_USER">Allowed failed logins per User</label>
+        </div>
+      </div>
+      <!-- Failed Logins Per IP -->
+      <div class="col-md-12">
+        <div class="form-floating">
+          <input type="number" class="form-control shadow-none" id="FAILED_LOGINS_PER_IP" name="NEW_FAILED_LOGINS_PER_IP" placeholder="Failed Logins Per IP" step="1" min="1" 
+                 value="<%= formData?.FAILED_LOGINS_PER_IP || '' %>">
+          <label for="FAILED_LOGINS_PER_IP">Allowed failed logins per IP</label>
+        </div>
+      </div>
+      <!-- BANTIME -->
+      <div class="col-md-12">
+        <div class="form-floating">
+          <input type="number" class="form-control shadow-none" id="BAN_TIME" name="NEW_BAN_TIME" placeholder="Bantime" step="1" min="1" 
+                 value="<%= formData?.BAN_TIME || '' %>">
+          <label for="BANTIME">Ban Duration (minutes)</label>
+        </div>
+      </div>
+      <!-- Session Timeout -->
+      <div class="col-md-12">
+        <div class="form-floating">
+          <input type="number" class="form-control shadow-none" id="TIMEOUT" name="NEW_TIMEOUT" placeholder="Timeout" step="1" min="1" 
+                 value="<%= formData?.TIMEOUT || '' %>">
+          <label for="TIMEOUT">Session length (minutes)</label>
+        </div>
+      </div>
+
+     
+
+      <!-- Submit -->
+      <div class="col-md-12">
+
+        <button type="submit" class="btn btn-primary mt-3 w-100">Save Changes</button>
+      </div>
+
+    </div>
+  </form>
+</div>
+

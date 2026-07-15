@@ -28,11 +28,14 @@ export const MESSAGES = {
     ROLE_NOT_FOUND: "Role not found.",
     PERMISSION_DENIED: "You do not have permission to access this resource.",
     USER_ID_REQUIRED: "User ID is required.",
-    USER_ALREADY_LOGGED_IN: "User already logged in"
+    USER_ALREADY_LOGGED_IN: "User already logged in",
+    USER_BANNED: "Your account has been temporarily banned due to multiple failed login attempts. Please try again later or contact with administrator."
   },
 
   // SUCCESS: Sikeres műveletek visszajelzései
   SUCCESS: {
+    ENV_MODIFY_RESPONSE: "Environment variables modified successfully.",
+
     // User Management
     USER_CREATED: "User created.",
     USER_MODIFIED: "User modified!",
@@ -164,6 +167,7 @@ export const MESSAGES = {
   // ERROR: Hibák, hiányzó adatok, érvénytelen műveletek
   ERROR: {
     // Permissions & Not Found
+    TOO_MANY_REQUESTS: "Too many requests from this IP, please try again later.",
     PERMISSION_NOT_FOUND: "Permission not found.",
     ROLE_NOT_FOUND: "Role not found.",
     CATEGORY_NOT_FOUND: "Category not found",
@@ -198,7 +202,12 @@ export const MESSAGES = {
     // Validation
     PERCENTAGE_SUM_ERROR: "The sum of the percentages must be 100.",
     INVALID_CREATION_METHOD: "Invalid creation method selected.",
-    COPY_METHOD_NOT_IMPLEMENTED: "Copy method not implemented yet."
+    COPY_METHOD_NOT_IMPLEMENTED: "Copy method not implemented yet.",
+    ENVERR: {
+      ENV_MODIFY_ERROR: "Failed to modify environment variables. Please check the input values and try again.",
+      BACKUP_CONTAINER_ERROR: "Backup container must be true or false!",
+      VALIDATION_ERROR: "All input values must be valid numbers."
+    }
   },
 
   // VALIDATION: Űrlap- és adatellenőrzési hibák
@@ -211,7 +220,6 @@ export const MESSAGES = {
     // Súgóüzenetek
     NO_HELP_AVAILABLE: "No help message available for this page."
   }
-
 
   
 };

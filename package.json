@@ -25,6 +25,7 @@
         "ejs": "^3.1.10",
         "express": "^5.1.0",
         "express-ejs-layouts": "^2.5.1",
+        "express-rate-limit": "^8.5.2",
         "express-session": "^1.18.1",
         "express-validator": "^7.2.1",
         "icons": "^1.0.0",

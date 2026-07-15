@@ -279,6 +279,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script>
+      window.VAULTX_EXPORT_META = {
+        systemName: <%- JSON.stringify((selectedEvent?.EventName || 'N/A').replace(/</g, '\\u003c')) %>,
+        slug: window.location.pathname.replace(/^\/+/, '') || 'root',
+        username: <%- JSON.stringify((typeof user !== 'undefined' ? user.username : '').replace(/</g, '\\u003c')) %>,
+        time: new Date().toLocaleString('hu-HU')
+      };
+    </script>
     <script src="/static/main.js"></script>
 
 </body>

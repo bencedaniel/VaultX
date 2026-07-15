@@ -1,6 +1,7 @@
 import { createLogger, format, transports, addColors } from 'winston';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import MongoBatchTransport from './LogicServices/MongoLogTransportLogic.js'; // Custom MongoDB transport for batch logging
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -20,7 +21,17 @@ addColors({
   info: 'green',         // Info messages
   debug: 'gray'          // Debug info
 });
+// 2. LÉPÉS: Példányosítod a Transportot
+// utils/logger.js fájlban:
 
+export const mongoBatchTransport = new MongoBatchTransport({
+  level: 'info',
+  batchSize: 100,
+  flushInterval: 5000,
+  format: format.combine(
+    format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' })
+  )
+});
 export const logger = createLogger({
   levels: {
     operation: 1,   // Operations: user-initiated actions
@@ -62,7 +73,9 @@ export const logger = createLogger({
       ),
       maxsize: 5242880, // 5MB
       maxFiles: 5
-    })
+    }),
+    mongoBatchTransport // MongoDB batch transport for structured logging
+  
   ]
 });
 

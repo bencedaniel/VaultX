@@ -7,6 +7,9 @@ import adminRoleController from '../controllers/adminRoleController.js';
 import adminPermissionController from '../controllers/adminPermissionController.js';
 import adminCardController from '../controllers/adminCardController.js';
 import adminDashboardController from '../controllers/adminDashboardController.js';
+import envModifierController from '../controllers/envModifierController.js';
+import ipTablesController from '../controllers/ipTablesController.js';
+import logController from '../controllers/logController.js';
 
 
 /**
@@ -200,6 +203,24 @@ adminRouter.post('/editCard/:id', Verify, VerifyRole(), adminCardController.upda
  */
 adminRouter.delete('/deleteCard/:cardId', Verify, VerifyRole(), adminCardController.deleteCardHandler);
 
+/**
+ * Környezetváltozók módosítási felületének megjelenítése.
+ * GET /admin/envModifier
+ */
+adminRouter.get("/envModifier", Verify, VerifyRole(), envModifierController.getenvironmentVariableModifiers);
+/**
+ * Környezetváltozók módosítása.
+ * POST /admin/envModifier
+ */
+adminRouter.post("/envModifier", Verify, VerifyRole(), envModifierController.modifyEnvironmentVariables);
+
+
+
+adminRouter.get("/IpTables", Verify, VerifyRole(), ipTablesController.getIpTrackerDashboard);
+
+adminRouter.delete("/IpTables/delete/:id", Verify, VerifyRole(), ipTablesController.deleteIpRecordHandler);
+
+adminRouter.get("/logViewer", Verify, VerifyRole(), logController.getLogs);
 
 /**
  * adminRouter exportálása.

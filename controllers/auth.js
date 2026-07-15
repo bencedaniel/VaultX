@@ -2,13 +2,15 @@
 import { SECURE_MODE } from "../config/env.js";
 
 // Logger és naplózó függvények importálása
-import { logger, logAuth, logError, logValidation } from "../logger.js";
+import { logger, logAuth, logError, logValidation, logDebug } from "../logger.js";
 
 // Aszinkron hibakezelő middleware importálása
 import { asyncHandler } from '../middleware/asyncHandler.js';
 
 // JWT, cookie, státuszkód és üzenet konstansok importálása
 import { JWT_CONFIG, COOKIE_CONFIG, HTTP_STATUS, MESSAGES } from '../config/index.js';
+
+import { checkIPandCreateNew, deleteIPRecordbyIP } from '../DataServices/IpTrackerData.js';
 
 // Authentikációval kapcsolatos adatkezelő függvények importálása
 import {
@@ -17,7 +19,10 @@ import {
     createUser,                        // Új felhasználó létrehozása
     validateUserPassword,              // Jelszó validálása
     isTokenBlacklisted,                // Token feketelistán van-e
-    blacklistToken                     // Token feketelistára helyezése
+    blacklistToken,                    // Token feketelistára helyezése
+    addFailedLoginAttempt,
+    resetFailedLoginAttempts,
+    isUserBanned
 } from '../DataServices/authData.js';
 
 /**
@@ -68,18 +73,27 @@ const Login = asyncHandler(async (req, res) => {
     // Felhasználó keresése jelszóval együtt
     const user = await findUserByUsernameWithPassword(username);
     if (!user) {
+        await checkIPandCreateNew(req.ip || req.connection.remoteAddress);
         // Sikertelen bejelentkezés naplózása, üzenet beállítása és visszairányítás
-        logAuth('LOGIN', username, false, 'USER_NOT_FOUND');
+        logAuth('LOGIN', username, false, 'INVALID_CREDENTIALS');
         req.session.failMessage = MESSAGES.AUTH.USER_NOT_FOUND;
         return res.redirect("/login");
     }
 
+    if (await isUserBanned(user._id)) {
+        // Sikertelen bejelentkezés naplózása, üzenet beállítása és visszairányítás
+        logAuth('LOGIN', username, false, `USER_BANNED until ${user.bannedUntil}`);
+        req.session.failMessage = MESSAGES.AUTH.USER_BANNED;
+        return res.redirect("/login");
+    }
     // Jelszó validálása
     const isPasswordValid = await validateUserPassword(password, user.password);
     if (!isPasswordValid) {
         // Sikertelen bejelentkezés naplózása, üzenet beállítása és visszairányítás
         logAuth('LOGIN', username, false, 'INVALID_CREDENTIALS');
         req.session.failMessage = MESSAGES.AUTH.INVALID_CREDENTIALS;
+        await addFailedLoginAttempt(user._id);
+        await user.save(); // Mentjük a felhasználót az adatbázisba
         return res.redirect("/login");
     }
 
@@ -94,9 +108,12 @@ const Login = asyncHandler(async (req, res) => {
     // JWT generálása és cookie beállítása
     const token = user.generateAccessJWT();
     res.cookie(COOKIE_CONFIG.TOKEN_NAME, token, options);
+    await deleteIPRecordbyIP(req.ip || req.connection.remoteAddress); // Delete IP record on successful login
+    await resetFailedLoginAttempts(user._id); // Reset failed login attempts
     // Sikeres bejelentkezés naplózása és átirányítás
     logAuth('LOGIN', username, true);
     return res.redirect("/dashboard");
+
 });
 
 

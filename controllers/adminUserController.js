@@ -156,6 +156,8 @@ const deleteUserHandler = asyncHandler(async (req, res) => {
     res.status(HTTP_STATUS.OK).send(MESSAGES.SUCCESS.USER_DELETE_RESPONSE);
 });
 
+
+
 // A vezérlő által exportált handler függvények
 export default {
     getNewUserForm,         // Új felhasználó űrlap megjelenítése

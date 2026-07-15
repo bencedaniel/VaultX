@@ -39,6 +39,7 @@ const ScoreSheetSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "events",
             required: [true, "Event ID required!"],
+            index: true // indexelés a gyorsabb keresés érdekében
         },
         /**
          * Nevezés azonosító (kötelező).

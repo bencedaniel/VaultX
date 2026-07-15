@@ -74,6 +74,14 @@ const userSchema = new mongoose.Schema({
             ref: 'roles',
             required: [true, 'Role required!'],
         },
+        failedLoginAttempts: {
+          type: Number,
+          default: 0,
+        },
+        bannedUntil: {
+          type: Date,
+          default: null,
+        },
 },{ timestamps: true });
 
 

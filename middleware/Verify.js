@@ -11,6 +11,8 @@ import {
 } from "../DataServices/authMiddlewareData.js";
 import { get } from "mongoose";
 import { getHelpMessagebyUri } from "../DataServices/helpMessageData.js";
+import { deleteIPRecordbyIP } from "../DataServices/IpTrackerData.js";
+import { resetFailedLoginAttempts } from "../DataServices/authData.js";
 
 
 /**
@@ -141,6 +143,8 @@ export const Verify = asyncHandler(async (req, res, next) => {
     req.session.failMessage = MESSAGES.AUTH.ACCOUNT_DEACTIVATED;
     return unauthorized(req, res, MESSAGES.AUTH.ACCOUNT_DEACTIVATED);
   }
+  await deleteIPRecordbyIP(req.ip || req.connection.remoteAddress); // Delete IP record on successful login
+  await resetFailedLoginAttempts(user._id); // Reset failed login attempts
   // 5 Rolling JWT generálása (lejárat frissítése): minden kérésnél új token, hogy ne járjon le a session
   const timeoutMinutes = parseInt(TIMEOUT, 10) || 90;
   const newToken = jwt.sign({ id: user._id }, SECRET_ACCESS_TOKEN, { expiresIn: `${timeoutMinutes}m` });
