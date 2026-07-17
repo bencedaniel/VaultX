@@ -34,6 +34,10 @@ const adminRouter = express.Router();
 adminRouter.get("/dashboard", Verify, VerifyRole(), adminDashboardController.getAdminDashboard);
 
 
+adminRouter.get("/officedash", Verify, VerifyRole(), adminDashboardController.getOfficeDashboard);
+
+
+
 // ===========================
 // USER MANAGEMENT
 // ===========================
@@ -214,13 +218,28 @@ adminRouter.get("/envModifier", Verify, VerifyRole(), envModifierController.gete
  */
 adminRouter.post("/envModifier", Verify, VerifyRole(), envModifierController.modifyEnvironmentVariables);
 
-
+/**
+ * IP rekordok dashboard megjelenítése.
+ * GET /admin/IpTables
+ */
 
 adminRouter.get("/IpTables", Verify, VerifyRole(), ipTablesController.getIpTrackerDashboard);
-
+/**
+ * IP rekord törlése.
+ * DELETE /admin/IpTables/delete/:id
+ */
 adminRouter.delete("/IpTables/delete/:id", Verify, VerifyRole(), ipTablesController.deleteIpRecordHandler);
-
+/**
+ * Naplózási felület megjelenítése.
+ * GET /admin/logViewer
+ */
 adminRouter.get("/logViewer", Verify, VerifyRole(), logController.getLogs);
+/**
+ * Felhasználó kitiltásának visszaállítása.
+ * GET /admin/resetBan/:userId
+ */
+
+adminRouter.post("/resetBan/:userId", Verify, VerifyRole(), adminUserController.resetBanStatus);
 
 /**
  * adminRouter exportálása.

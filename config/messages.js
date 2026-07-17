@@ -34,6 +34,10 @@ export const MESSAGES = {
 
   // SUCCESS: Sikeres műveletek visszajelzései
   SUCCESS: {
+    
+    TWO_FA_RESET: "Two-factor authentication reset successfully.",
+    TWO_FA_VERIFIED: "Two-factor authentication verified successfully.",
+    USER_BAN_RESET: "User ban status reset successfully.",
     ENV_MODIFY_RESPONSE: "Environment variables modified successfully.",
 
     // User Management
@@ -166,7 +170,13 @@ export const MESSAGES = {
 
   // ERROR: Hibák, hiányzó adatok, érvénytelen műveletek
   ERROR: {
+    MANDATORY_TWO_FACTOR: "Two-factor authentication is mandatory for your profile!",
+    TOKEN_NOT_FOUND: "Token not found.",
+    TWO_FA_NOT_ENABLED: "Two-factor authentication is not enabled for this user.",
+    TWO_FA_TOKEN_NOT_FOUND: "Two-factor authentication session token not found.",
+    TWO_FA_NOT_SET_UP: "Two-factor authentication is not set up for this user.",
     // Permissions & Not Found
+    TWO_FA_BAD_REQUEST: "Invalid 2FA code. Please try again.",
     TOO_MANY_REQUESTS: "Too many requests from this IP, please try again later.",
     PERMISSION_NOT_FOUND: "Permission not found.",
     ROLE_NOT_FOUND: "Role not found.",

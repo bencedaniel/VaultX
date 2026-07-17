@@ -26,6 +26,22 @@ export async function getAdminDashboardData() {
         roleCount
     };
 }
+export async function getOfficeDashboardData() {
+    const [cards, userCount, permissionCount, roleCount] = await Promise.all([
+        DashCards.find({ dashtype: 'office' }).sort({ priority: 1 }),
+        User.countDocuments(),
+        Permissions.countDocuments(),
+        Role.countDocuments()
+    ]);
+
+    return {
+        cards,
+        userCount,
+        permissionCount,
+        roleCount
+    };
+}
+
 
 /**
  * Az összes felhasználó lekérése az admin dashboardhoz

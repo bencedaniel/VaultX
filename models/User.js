@@ -17,6 +17,11 @@ import RoleSchema from './Role.js';
  * @property {ObjectId} role - Szerepkör azonosító (roles kollekció, kötelező).
  * @property {Date} createdAt - Létrehozás időpontja (automatikus).
  * @property {Date} updatedAt - Utolsó módosítás időpontja (automatikus).
+ * @property {Number} failedLoginAttempts - Sikertelen bejelentkezések száma.
+ * @property {Date} bannedUntil - Ha a felhasználó tiltva van, meddig.
+ * @property {Boolean} twoFactorNeeded - Kétszintű hitelesítés szükséges-e.
+ * @property {String} twoFactorSecret - Kétszintű hitelesítés titka.
+ * @property {Boolean} twoFactorEnabled - Kétszintű hitelesítés engedélyezve-e.
  */
 const userSchema = new mongoose.Schema({
       /**
@@ -82,6 +87,18 @@ const userSchema = new mongoose.Schema({
           type: Date,
           default: null,
         },
+        twoFactorNeeded: {
+          type: Boolean,
+          default: false,
+        },
+        twoFactorSecret: {
+          type: String,
+          default: null,
+        },
+        twoFactorEnabled: {
+          type: Boolean,
+          default: false,
+        }
 },{ timestamps: true });
 
 

@@ -5,7 +5,7 @@ import { logger, logOperation, logAuth, logError, logValidation, logWarn } from 
 import { asyncHandler } from '../middleware/asyncHandler.js';
 
 // Admin dashboardhoz szükséges adatok lekérő függvény importálása
-import { getAdminDashboardData } from '../DataServices/adminDashboardData.js';
+import { getAdminDashboardData, getOfficeDashboardData } from '../DataServices/adminDashboardData.js';
 
 /**
  * Admin dashboard oldal megjelenítése statisztikákkal.
@@ -37,7 +37,29 @@ const getAdminDashboard = asyncHandler(async (req, res) => {
     req.session.successMessage = null;
 });
 
+const getOfficeDashboard = asyncHandler(async (req, res) => {
+    // Dashboardhoz szükséges adatok lekérése
+    const { cards, userCount, permissionCount, roleCount } = await getOfficeDashboardData();
+    // Felhasználó aktuális szerepkörének jogosultságai
+    const rolePermissons = req.user?.role?.permissions;
+    // Nézet renderelése, session üzenetek, jogosultságok és felhasználó átadása
+    res.render("admin/officedash", {
+        cardsFromDB: cards,
+        userCount,
+        permissionCount,
+        roleCount,
+        rolePermissons: rolePermissons,
+        failMessage: req.session.failMessage,
+        successMessage: req.session.successMessage,
+        user: req.user
+    });
+    // Session üzenetek törlése a válasz után
+    req.session.failMessage = null;
+    req.session.successMessage = null;
+});
+
 // A vezérlő által exportált handler függvények
 export default {
-    getAdminDashboard // Admin dashboard oldal megjelenítése
+    getAdminDashboard, // Admin dashboard oldal megjelenítése
+    getOfficeDashboard // Office dashboard oldal megjelenítése
 };

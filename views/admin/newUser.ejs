@@ -36,6 +36,17 @@
                 <label for="feiid" class="form-label">FEI ID</label>
             </div>
         </div>
+
+                    <div class="col-md-12 ">
+            <div class="form-floating">
+                <select type="text" class="form-select shadow-none" id="twoFactorNeeded" name="twoFactorNeeded" placeholder="twoFactorNeeded"
+                    autocomplete="off" >
+                    <option value="true" <%= formData && formData.twoFactorNeeded === true ? "selected" : "" %>>True</option>
+                    <option value="false" <%= formData && formData.twoFactorNeeded === false ? "selected" : "" %>>False</option>
+                </select>
+                <label for="twoFactorNeeded" class="form-label">2FA Mandatory</label>
+            </div>
+            </div>
                 <div class="col-md-12 ">
             <div class="form-floating">
                 <select type="text" class="form-select shadow-none" id="role" name="role" placeholder="role"

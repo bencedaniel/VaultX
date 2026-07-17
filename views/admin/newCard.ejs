@@ -10,7 +10,7 @@
           <input type="text" class="form-control shadow-none searchable-input"
                  placeholder="Dashboard type"
                  autocomplete="off"
-                 value="<%= formData ? (formData.dashtype === 'user' ? 'User' : 'Admin') : '' %>">
+                 value="<%= formData ? (formData.dashtype === 'user' ? 'User' : formData.dashtype === 'admin' ? 'Admin' : 'Office') : '' %>">
           <label class="form-label">Dashboard type</label>
 
           <!-- Hidden input for form submission -->
@@ -22,6 +22,7 @@
               style="max-height: 200px; overflow-y: auto; z-index: 1000;">
             <li class="list-group-item list-group-item-action searchable-item" val="user">User</li>
             <li class="list-group-item list-group-item-action searchable-item" val="admin">Admin</li>
+            <li class="list-group-item list-group-item-action searchable-item" val="office">Office</li>
           </ul>
         </div>
       </div>

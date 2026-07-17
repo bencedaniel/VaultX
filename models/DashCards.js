@@ -24,7 +24,7 @@ const DashboardCardSchema = new mongoose.Schema({
   dashtype: {
     type: String,
     required: [true, 'Dashboard type is required'],
-    enum: ['user', 'admin']
+    enum: ['user', 'admin','office']
   },
   /**
    * Megjelenítési sorrend/prioritás.

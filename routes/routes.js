@@ -69,13 +69,16 @@ router.post(
 router.get("/login", CheckLoggedIn, loginController.getLoginPage);
 
 
+
+
+
 /**
  * @route GET /profile/:id
  * @desc Profil szerkesztő oldal lekérése azonosító alapján. Csak hitelesített felhasználók férhetnek hozzá.
  * @access Csak hitelesített felhasználók
  * @middleware Verify, UserIDValidator
  */
-router.get("/profile/:id", Verify, UserIDValidator, profileController.getProfileEditForm);
+router.get("/profile/:id", StoreUserWithoutValidation, UserIDValidator, profileController.getProfileEditForm);
 
 
 /**

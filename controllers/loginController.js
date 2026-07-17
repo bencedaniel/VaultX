@@ -22,6 +22,7 @@ const getLoginPage = asyncHandler(async (req, res) => {
     req.session.successMessage = null;
 });
 
+
 // A vezérlő által exportált handler függvények
 export default {
     getLoginPage // Bejelentkezési oldal megjelenítése

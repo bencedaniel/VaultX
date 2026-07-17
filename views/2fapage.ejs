@@ -1,0 +1,132 @@
+<% if (failMessage) { %>
+  <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 9999;">
+    <div id="formFailToast" class="toast align-items-center text-white bg-danger border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          <%= failMessage %>
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+<% } %>
+<div class="container my-5">
+
+  <div class="card shadow my-5 p-2 bg-dark bg-opacity-75" style="max-width: 420px; margin: auto;">
+    <img src="/static/VaultXLogo.png" alt="" class="img-fluid w-50 mx-auto m-3">
+
+    <div class=" text-center text-white">
+      <h5 class="mb-0">Two-Factor Authentication</h5>
+    </div>
+    <div class="card-body">
+      <form id="twofaForm">
+                              <div class="row mb-4">
+                                  <div class="col-lg-2 col-md-2 col-2 ps-0 ps-md-2">
+                      <input type="text" class="form-control text-lg text-center" placeholder="" id="firstField" aria-label="2fa" maxlength="1" inputmode="numeric">
+                                  </div>
+                                  <div class="col-lg-2 col-md-2 col-2 ps-0 ps-md-2">
+                      <input type="text" class="form-control text-lg text-center" placeholder="" aria-label="2fa" maxlength="1" inputmode="numeric">
+                                  </div>
+                                  <div class="col-lg-2 col-md-2 col-2 ps-0 ps-md-2">
+                      <input type="text" class="form-control text-lg text-center" placeholder="" aria-label="2fa" maxlength="1" inputmode="numeric">
+                                  </div>
+                                  
+                                  <div class="col-lg-2 col-md-2 col-2 pe-0 pe-md-2">
+                      <input type="text" class="form-control text-lg text-center" placeholder="" aria-label="2fa" maxlength="1" inputmode="numeric">
+                                  </div>
+                                  <div class="col-lg-2 col-md-2 col-2 pe-0 pe-md-2">
+                      <input type="text" class="form-control text-lg text-center" placeholder="" aria-label="2fa" maxlength="1" inputmode="numeric">
+                                  </div>
+                                  <div class="col-lg-2 col-md-2 col-2 pe-0 pe-md-2">
+                      <input type="text" class="form-control text-lg text-center" id="lastField" placeholder="" aria-label="2fa" maxlength="1" inputmode="numeric">
+                                  </div>
+                              </div>
+                                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                          </form>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+  const firstField = document.getElementById('firstField');
+  if (firstField) {
+    firstField.focus();
+  }
+  const form = document.getElementById('twofaForm');
+    const inputs = document.querySelectorAll('input[aria-label="2fa"]');
+
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', () => {
+      input.value = input.value.replace(/\D/g, '').slice(0, 1);
+      if (input.value.length === 1 && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+        });
+        input.addEventListener('keydown', (event) => {
+      if (event.key === 'Backspace' && input.value.length === 0 && index > 0) {
+        inputs[index - 1].focus();
+            }
+    });
+
+    input.addEventListener('paste', (event) => {
+      event.preventDefault();
+      const pastedText = (event.clipboardData || window.clipboardData).getData('text');
+      const digits = pastedText.replace(/\D/g, '').slice(0, inputs.length);
+      digits.split('').forEach((digit, digitIndex) => {
+        if (inputs[digitIndex]) {
+          inputs[digitIndex].value = digit;
+        }
+      });
+      const nextIndex = Math.min(digits.length, inputs.length - 1);
+      inputs[nextIndex]?.focus();
+    });
+
+    });
+
+  
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const code = Array.from(inputs).map((input) => input.value.trim()).join('');
+    if (code.length !== inputs.length) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/2fa/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ code : code })
+      });
+
+        window.location.href = '/dashboard';
+    } catch (error) {
+        window.location.href = '/dashboard';
+    }
+  });
+
+  const lastField = document.getElementById('lastField');
+  lastField?.addEventListener('input', (event) => {
+    if (event.inputType === 'insertText' && lastField.value.length === 1) {
+      form.dispatchEvent(new Event('submit'));
+    }
+  });
+    
+
+
+
+  });
+
+  
+  
+
+
+</script>

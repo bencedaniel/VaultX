@@ -16,6 +16,7 @@ import scoringRouter from './scoringRouter.js';
 import mappingRouter from './mappingRouter.js';
 import resultRouter from './resultRouter.js';
 import helpMessageRouter from './helpMessageRouter.js';
+import twoFaRouter from './twoFaRouter.js';
 
 /**
  * Alkalmazás route-regisztráló függvény.
@@ -74,6 +75,7 @@ const setupRoutes = (app) => {
   app.use('/scoring', scoringRouter);
   app.use('/mapping', mappingRouter);
   app.use('/result', resultRouter);
+  app.use('/2fa', twoFaRouter);
 };
 
 export default setupRoutes;

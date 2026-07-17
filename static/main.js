@@ -547,20 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
 
     
-    //Bootstrap alert block fade out after 4 seconds
-    /* const rowElement = document.getElementById('alert-row');
-    rowElement?.style && setTimeout(() => {
-        let opacity = 1;
-        const fadeOutInterval = setInterval(() => {
-            if (opacity <= 0) {
-                clearInterval(fadeOutInterval); // Animáció leállítása
-                rowElement.remove(); // Elem eltávolítása a DOM-ból
-            } else {
-                opacity -= 0.1;
-                rowElement.style.opacity = opacity;
-            }
-        }, 50); // 50ms intervallum a zökkenőmentes animációért
-    }, 4000); // 4 másodperces késleltetés */
+
 
     const successToastEl = document.getElementById('formSuccessToast');
     if (successToastEl) {
@@ -575,10 +562,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
+document.addEventListener('DOMContentLoaded', () => {
 // Success message show function
 
-  function ShowSuccessToast(message) {
+  window.ShowSuccessToast = function ShowSuccessToast(message) {
         const toastContainer = document.getElementById('toastContainer');
         const toastHTML = `
             <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 9999;">
@@ -597,23 +584,11 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             toastContainer.innerHTML = '';
         }, 3000);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
+      };
 
 //Error message show function
 
-    function ShowErrorToast(message) {
+    window.ShowErrorToast = function ShowErrorToast(message) {
         const toastContainer = document.getElementById('toastContainer');
         const toastHTML = `
             <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 9999;">
@@ -632,8 +607,10 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             toastContainer.innerHTML = '';
         }, 3000);
-    }
+      };
 
+
+  })
 
     //Excel round to 0.000
     function excelRound(value, decimals = 1) {

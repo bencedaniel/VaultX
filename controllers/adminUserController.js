@@ -13,11 +13,13 @@ import {
     getUserById,            // Egy adott felhasználó lekérdezése ID alapján
     getUserFormData,        // Felhasználó űrlaphoz szükséges adatok lekérdezése
     updateUser,             // Felhasználó adatainak frissítése
-    inactivateUser          // Felhasználó inaktiválása (törlés helyett)
+    inactivateUser,         // Felhasználó inaktiválása (törlés helyett)
+    resetBan                // Felhasználó kitiltásának visszaállítása
 } from '../DataServices/adminUserData.js';
 
 // Felhasználó modell importálása (ha szükséges)
 import User from "../models/User.js";
+
 
 /**
  * Új felhasználó létrehozásához szükséges űrlap megjelenítése.
@@ -155,6 +157,28 @@ const deleteUserHandler = asyncHandler(async (req, res) => {
     req.session.successMessage = MESSAGES.SUCCESS.USER_INACTIVATED;
     res.status(HTTP_STATUS.OK).send(MESSAGES.SUCCESS.USER_DELETE_RESPONSE);
 });
+/**
+ * Felhasználó kitiltásának visszaállítása POST kérésre.
+ * @route POST /admin/resetBan/:userId
+ * @desc Reset user ban status
+ *
+ * - Visszaállítja a megadott ID-jú felhasználó kitiltását.
+ * - Naplózza a műveletet.
+ * - Sikeres visszaállítás üzenetet küld vissza.
+ */
+const resetBanStatus = asyncHandler(async (req, res) => {
+    const userId = req.params.userId;
+    // Felhasználó inaktiválása
+    await resetBan(userId);
+    // Művelet naplózása
+    logOperation('USER_RESET_BAN', `User ban reset: ${userId}`, req.user.username, HTTP_STATUS.OK);
+    // Sikeres inaktiválás üzenet és státuszkód visszaadása
+    req.session.successMessage = MESSAGES.SUCCESS.USER_BAN_RESET;
+    res.status(HTTP_STATUS.OK).send(MESSAGES.SUCCESS.USER_BAN_RESET_RESPONSE);
+});
+
+
+
 
 
 
@@ -165,5 +189,6 @@ export default {
     getUsersDashboard,      // Felhasználók dashboard oldal megjelenítése
     getEditUserForm,        // Felhasználó szerkesztő űrlap megjelenítése
     updateUserHandler,      // Felhasználó adatainak frissítése
-    deleteUserHandler       // Felhasználó inaktiválása
+    deleteUserHandler,      // Felhasználó inaktiválása
+    resetBanStatus          // Felhasználó kitiltásának visszaállítása
 };

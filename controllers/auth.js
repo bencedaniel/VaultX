@@ -11,6 +11,7 @@ import { asyncHandler } from '../middleware/asyncHandler.js';
 import { JWT_CONFIG, COOKIE_CONFIG, HTTP_STATUS, MESSAGES } from '../config/index.js';
 
 import { checkIPandCreateNew, deleteIPRecordbyIP } from '../DataServices/IpTrackerData.js';
+import { addTokenTo2FAunauth } from '../DataServices/adminUserData.js';
 
 // Authentikációval kapcsolatos adatkezelő függvények importálása
 import {
@@ -110,6 +111,12 @@ const Login = asyncHandler(async (req, res) => {
     res.cookie(COOKIE_CONFIG.TOKEN_NAME, token, options);
     await deleteIPRecordbyIP(req.ip || req.connection.remoteAddress); // Delete IP record on successful login
     await resetFailedLoginAttempts(user._id); // Reset failed login attempts
+    if (user.twoFactorEnabled) {
+        await addTokenTo2FAunauth(user._id, token); // Add token to 2FA unauth list
+        // Ha a felhasználó engedélyezte a kétlépcsős hitelesítést, átirányítjuk a 2FA ellenőrzésre
+        return res.redirect("/2fa/verify");
+    }
+
     // Sikeres bejelentkezés naplózása és átirányítás
     logAuth('LOGIN', username, true);
     return res.redirect("/dashboard");
@@ -162,6 +169,11 @@ const Logout = asyncHandler(async (req, res) => {
     res.setHeader('Clear-Site-Data', '"cookies"');
     return res.redirect('/login');
 });
+
+
+
+
+
 
 // A vezérlő által exportált handler függvények
 export default { 
