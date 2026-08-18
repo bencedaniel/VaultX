@@ -1,5 +1,5 @@
 # 1. Alap image
-FROM node:18
+FROM node:26
 
 # 2. Munkakönyvtár beállítása
 WORKDIR /app

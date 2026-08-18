@@ -7,6 +7,15 @@ import { encrypt,decrypt } from '../LogicServices/crypto.js';
 import { logAuth } from '../logger.js';
 import { MESSAGES } from '../config/messages.js';
 
+function getTwoFactorSecret(storedSecret) {
+    const parts = typeof storedSecret === 'string' ? storedSecret.split(':') : [];
+    if (parts.length !== 3) {
+        return { secret: storedSecret, encrypted: false };
+    }
+
+    return { secret: decrypt(storedSecret), encrypted: true };
+}
+
 
 const generate2FACode = asyncHandler(async (req, res) => {
     // Feltételezve, hogy a usert a JWT token alapján már azonosítottad (req.user)
@@ -41,11 +50,10 @@ const check2FACode = asyncHandler(async (req, res) => {
         return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: MESSAGES.ERROR.TWO_FA_NOT_SET_UP });
     }
 
-    const decryptedSecret = decrypt(user.twoFactorSecret);
+    const { secret: decryptedSecret } = getTwoFactorSecret(user.twoFactorSecret);
     const isValid = verify({ token: code, secret: decryptedSecret });
     if (isValid) {
         // Ha a kód érvényes, beállítjuk a felhasználó 2FA státuszát
-        await updateUserSecret(req.user._id, decryptedSecret, true); // true jelzi, hogy a 2FA aktiválva van
         logAuth('2FA_VERIFY', req.user.username, true, `2FA code verified successfully.`);
         req.session.successMessage = MESSAGES.SUCCESS.TWO_FA_VERIFIED;
         await enableTwoFactorForUser(req.user._id); // Aktiváljuk a 2FA-t a felhasználónál
@@ -112,7 +120,7 @@ const verify2FACode = asyncHandler(async (req, res) => {
         return res.redirect('/login');
     }
     console.log('User fetched for 2FA verification:', user);
-    const decryptedSecret = decrypt(user.twoFactorSecret);
+    const { secret: decryptedSecret, encrypted } = getTwoFactorSecret(user.twoFactorSecret);
     const isValid = verify({ token: code, secret: decryptedSecret });
     if (!isValid) {
         req.session.failMessage = MESSAGES.ERROR.TWO_FA_BAD_REQUEST;
@@ -123,6 +131,10 @@ const verify2FACode = asyncHandler(async (req, res) => {
         await removeTokenFrom2FAunauth(user._id);
     }
     logAuth('2FA_VERIFY', user.username, true, `2FA code verified successfully.`);
+
+    if (!encrypted) {
+        await updateUserSecret(user._id, encrypt(decryptedSecret));
+    }
     
     
     // Ha a kód érvényes, beállítjuk a felhasználó 2FA státuszát
